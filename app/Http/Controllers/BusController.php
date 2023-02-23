@@ -65,9 +65,7 @@ class BusController extends BaseController
 
     public function delete($id){
         $bus = bus::find($id);
-
         $bus->delete();
-        
         return $this->sendResponse($bus->police_number,'Bus Deleted Successfully');
     }
 }
