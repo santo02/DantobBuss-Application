@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BusController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\RoutesController;
+use App\Models\Bookings;
 use App\Models\bus;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +37,14 @@ Route::middleware(['auth:api', 'role:admin'])->group(function () {
     Route::put('/routes/update/{id}', [RoutesController::class, 'update']);
     Route::get('/routes/show/all', [RoutesController::class, 'index']);
     Route::delete('/routes/destroy/{id}', [RoutesController::class, 'destroy']);
+
+    Route::post('bookings/{id_bus}',[BookingController::class, 'store']);
+    Route::get('/bookings/show/{id}', [BookingController::class, 'show']);
+    Route::get('/bookings/show/all', [BookingController::class, 'index']);
+    Route::put('/bookings/update/{id}', [BookingController::class, 'update']);
+
+    
+
 });
 
 Route::middleware(['auth:api', 'role:penumpang'])->group(function () {

@@ -18,4 +18,23 @@ class bus extends Model
         'supir_id'
     ];
 
+    public function driver()
+    {
+        return $this->belongsTo(User::class, 'driver_id');
+    }
+
+    public function route()
+    {
+        return $this->belongsTo(Routes::class);
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Bookings::class);
+    }
+
+    public function trackings()
+    {
+        return $this->hasMany(Trackings::class);
+    }
 }

@@ -21,12 +21,7 @@ class RoutesController extends BaseController
             'derpature' => 'required|string',
             'arrival' => 'required|string'
         ]);
-        // $input = $this->validate($request, [
-        //     'derpature' => 'required|string',
-        //     'arrival' => 'required|string'
-        // ]);
-
-        // dd($request);
+    
         if ($validator->fails()) {
             return response()->json(['message' => $validator->errors()], 400);
         }

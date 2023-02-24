@@ -13,4 +13,14 @@ class Routes extends Model
         'derpature',
         'arrival',
     ];
+
+    public function buses()
+    {
+        return $this->hasMany(bus::class);
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Bookings::class);
+    }
 }

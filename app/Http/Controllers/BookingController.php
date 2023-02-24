@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\API\BaseController;
 use App\Models\Bookings;
+use App\Models\Routes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class BookingController extends Controller
+class BookingController extends BaseController
 {
-    public function store(Request $request)
+    public function store(Request $request, $id_bus)
     {
+
+        $user = Auth::user();
+
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|exists:users,id',
-            'bus_id' => 'required|exists:buses,id',
             'route_id' => 'required|exists:routes,id',
-            'departure_date' => 'required|date_format:Y-m-d H:i:s',
-            'arrival_date' => 'required|date_format:Y-m-d H:i:s',
-            'passenger_name' => 'required',
-            'passenger_email' => 'required|email',
-            'passenger_phone' => 'required',
-            'seat_number' => 'required|integer',
+            'departure_time' => 'required|date_format:Y-m-d H:i:s',
+            'num_seats' => 'required|integer',
         ]);
 
         if ($validator->fails()) {
@@ -27,17 +28,43 @@ class BookingController extends Controller
         }
 
         $booking = new Bookings;
-        $booking->user_id = $request->user_id;
-        $booking->bus_id = $request->bus_id;
+        $booking->user_id = $user->id;
+        $booking->bus_id = $id_bus;
         $booking->route_id = $request->route_id;
-        $booking->departure_date = $request->departure_date;
-        $booking->arrival_date = $request->arrival_date;
-        $booking->passenger_name = $request->passenger_name;
-        $booking->passenger_email = $request->passenger_email;
-        $booking->passenger_phone = $request->passenger_phone;
-        $booking->seat_number = $request->seat_number;
+        $booking->departure_time = $request->departure_time;
+        $booking->num_seats = $request->num_seats;
         $booking->save();
 
-        return response()->json(['message' => 'Booking created successfully.'], 201);
+        return $this->sendResponse($booking, 'Bookings Successfully');
+    }
+
+    public function index()
+    {
+        $booking = Bookings::with('route', 'bus', 'user')->all();
+    
+        if ($booking) {
+            return response()->json($booking);
+        } else {
+            return response()->json(['message' => 'Booking not found.'], 404);
+        }
+    }
+
+    public function show($id)
+    {
+        $booking = Bookings::with('route', 'bus', 'user')->find($id);
+    
+        if ($booking) {
+            return response()->json($booking);
+        } else {
+            return response()->json(['message' => 'Booking not found.'], 404);
+        }
+    }
+    public function update($id)
+    {
+        $booking = Bookings::find($id);
+
+        
+        return $this->sendResponse($booking, 'Booking Retrieved Successfully');
+        
     }
 }
