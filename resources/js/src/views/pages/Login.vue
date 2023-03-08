@@ -4,48 +4,34 @@
       <v-card class="auth-card">
         <!-- logo -->
         <v-card-title class="d-flex align-center justify-center py-7">
-          <router-link to="/" class="d-flex align-center">
-            <v-img
-              :src="require('@/assets/images/logos/logo.svg').default"
-              max-height="30px"
-              max-width="30px"
-              alt="logo"
-              contain
-              class="me-3"
-            ></v-img>
+          <router-link :to="{ name: 'pages-login' }" class="d-flex align-center">
+            <v-img :src="require('@/assets/images/logos/logo.svg').default" max-height="30px" max-width="30px" alt="logo"
+              contain class="me-3"></v-img>
 
-            <h2 class="text-2xl font-weight-semibold">Materio</h2>
+            <h2 class="text-2xl font-weight-semibold">Dantob Buss</h2>
           </router-link>
         </v-card-title>
 
         <!-- title -->
         <v-card-text>
-          <p class="text-2xl font-weight-semibold text--primary mb-2">Welcome to Materio! 👋🏻</p>
+          <p class="text-1xl font-weight-semibold text--primary mb-2">Welcome to Dantob Buss App! 👋🏻</p>
           <p class="mb-2">Please sign-in to your account and start the adventure</p>
         </v-card-text>
-
-        <!-- login form -->
         <v-card-text>
           <v-form>
-            <v-text-field
-              v-model="email"
-              outlined
-              label="Email"
-              placeholder="john@example.com"
-              hide-details
-              class="mb-3"
-            ></v-text-field>
+            <v-text-field v-model="email" outlined label="Email" placeholder="john@example.com" hide-details
+              :error-messages="errors.email" class="mb-1"></v-text-field>
+            <label class="text-danger" v-if="errors.email" type="error" dismissible>
+              Email tidak boleh kosong!
+            </label>
 
-            <v-text-field
-              v-model="password"
-              outlined
-              :type="isPasswordVisible ? 'text' : 'password'"
-              label="Password"
-              placeholder="············"
-              :append-icon="isPasswordVisible ? icons.mdiEyeOffOutline : icons.mdiEyeOutline"
-              hide-details
-              @click:append="isPasswordVisible = !isPasswordVisible"
-            ></v-text-field>
+            <v-text-field v-model="password" outlined :type="isPasswordVisible ? 'text' : 'password'" label="Password"
+              class="mb-1 mt-3" :error-messages="errors.password" placeholder="********"
+              :append-icon="isPasswordVisible ? icons.mdiEyeOffOutline : icons.mdiEyeOutline" hide-details
+              @click:append="isPasswordVisible = !isPasswordVisible"></v-text-field>
+            <label class="text-danger" v-if="errors.password" type="error" dismissible>
+              Password tidak boleh kosong!
+            </label>
 
             <div class="d-flex align-center justify-space-between flex-wrap">
               <v-checkbox label="Remember Me" hide-details class="me-3 mt-1"> </v-checkbox>
@@ -54,7 +40,7 @@
               <a href="javascript:void(0)" class="mt-1"> Forgot Password? </a>
             </div>
 
-            <v-btn block color="primary" class="mt-6"> Login </v-btn>
+            <v-btn block color="primary" class="mt-6" @click.prevent="login"> Login </v-btn>
           </v-form>
         </v-card-text>
 
@@ -81,31 +67,13 @@
         </v-card-actions>
       </v-card>
     </div>
-
-    <!-- background triangle shape  -->
-    <img
-      class="auth-mask-bg"
-      height="173"
-      :src="require(`@/assets/images/misc/mask-${$vuetify.theme.dark ? 'dark' : 'light'}.png`).default"
-    />
-
-    <!-- tree -->
-    <v-img class="auth-tree" width="247" height="185" :src="require('@/assets/images/misc/tree.png').default"></v-img>
-
-    <!-- tree  -->
-    <v-img
-      class="auth-tree-3"
-      width="377"
-      height="289"
-      :src="require('@/assets/images/misc/tree-3.png').default"
-    ></v-img>
   </div>
 </template>
 
 <script>
-// eslint-disable-next-line object-curly-newline
 import { mdiFacebook, mdiTwitter, mdiGithub, mdiGoogle, mdiEyeOutline, mdiEyeOffOutline } from '@mdi/js'
 import { ref } from '@vue/composition-api'
+import axios from 'axios';
 
 export default {
   setup() {
@@ -134,21 +102,52 @@ export default {
         colorInDark: '#db4437',
       },
     ]
-
     return {
       isPasswordVisible,
       email,
       password,
       socialLink,
-
       icons: {
         mdiEyeOutline,
         mdiEyeOffOutline,
       },
     }
   },
+  data() {
+    return {
+      email: "",
+      password: "",
+      registrationSuccess: false,
+      errors: {},
+    };
+  },
+  methods: {
+    login() {
+      axios.post('/api/login', {
+        email: this.email,
+        password: this.password,
+      })
+        .then(response => {
+          localStorage.setItem('access_token', response.data.access_token);
+          localStorage.setItem('expires_at', response.data.expires_at);
+          this.$router.push('/dashboard');
+        })
+        .catch((error) => {
+          if (error.response.status === 422) {
+            this.errors = error.response.data.errors;
+            console.log(this.errors);
+          } else if (error.response.status === 404) {
+            this.errors = error.response.data.errors;
+            console.log(this.errors);
+          } else {
+            this.errors = { general: ["Something went wrong. Please try again later."] };
+          }
+        });
+    },
+  }
 }
 </script>
+
 
 <style lang="scss">
 @import '~@resources/sass/preset/pages/auth.scss';

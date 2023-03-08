@@ -9,9 +9,8 @@ use App\Models\Routes;
 
 class RoutesController extends BaseController
 {
-    public function index(){
+    public function index(Request $request){
         $routes = Routes::all();
-
         return $this->sendResponse($routes, 'Routes Retrieved Successfully');
 
     }

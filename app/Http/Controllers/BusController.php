@@ -6,6 +6,7 @@ use App\Models\bus;
 use Illuminate\Http\Request;
 use App\Http\Resources\Bus as BusResource;
 use App\Http\Controllers\API\BaseController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class BusController extends BaseController
@@ -30,7 +31,9 @@ class BusController extends BaseController
 
     public function show()
     {
-        $bus = bus::all();
+        $bus = DB::table('buses')
+            ->join('users', 'buses.supir_id', '=', 'users.id')
+            ->get();
 
         return $this->sendResponse(new BusResource($bus), 'Bus Retrieved Successfully');
     }
@@ -52,20 +55,21 @@ class BusController extends BaseController
         }
 
         $bus = bus::find($id);
-        $bus->type = $request['type']; 
-        $bus->police_number = $request['police_number']; 
-        $bus->number_of_seats = $request['number_of_seats']; 
-        $bus->merk = $request['merk']; 
-        $bus->status = $request['status']; 
-        $bus->supir_id = $request['supir_id']; 
+        $bus->type = $request['type'];
+        $bus->police_number = $request['police_number'];
+        $bus->number_of_seats = $request['number_of_seats'];
+        $bus->merk = $request['merk'];
+        $bus->status = $request['status'];
+        $bus->supir_id = $request['supir_id'];
         $bus->save();
 
-        return $this->sendResponse($bus,'Bus Updated Successfully');
+        return $this->sendResponse($bus, 'Bus Updated Successfully');
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $bus = bus::find($id);
         $bus->delete();
-        return $this->sendResponse($bus->police_number,'Bus Deleted Successfully');
+        return $this->sendResponse($bus->police_number, 'Bus Deleted Successfully');
     }
 }

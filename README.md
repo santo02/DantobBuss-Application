@@ -1,4 +1,4 @@
-<p align="center"></p>
+<!-- <p align="center"></p>
 
 <p align="center">
    <a href="https://themeselection.com/products/materio-free-vuetify-vuejs-laravel-admin-template" target="_blank">
@@ -34,7 +34,7 @@ If you’re a developer looking for an admin dashboard that is developer-friendl
 
 Build premium quality applications with ease. Use our innovative admin template to create eye-catching, high-quality, and high-performing single-page applications. Your apps will be completely responsive, ensuring they’ll look stunning and function flawlessly on desktops, tablets, and mobile devices.
 
-[View Demo](https://themeselection.com/demo/materio-vuetify-vuejs-laravel-admin-template-free/demo/)
+[View Demo](https://themeselection.com/demo/materio-vuetify-vuejs-laravel-admin-template-free/demo/) -->
 
 ## Installation ⚒️
 
@@ -111,7 +111,7 @@ If you are facing any issues regarding the permissions, then you need to run the
   sudo chmod -R o+rw bootstrap/cache
   sudo chmod -R o+rw storage
   ```
-
+<!-- 
 ## What's Included 📦
 
 - Dashboard
@@ -220,4 +220,4 @@ If you are looking for more free templates like Materio - Vuetify VueJS Free Adm
 - Twitter : [https://twitter.com/themeselect](https://twitter.com/themeselect)
 - Facebook : [https://www.facebook.com/ThemeSelections/](https://www.facebook.com/ThemeSelections/)
 - Pintrest : [https://pinterest.com/themeselect/](https://pinterest.com/themeselect/)
-- Instagram : [https://www.instagram.com/themeselect_official/](https://www.instagram.com/themeselect_official/)
+- Instagram : [https://www.instagram.com/themeselect_official/](https://www.instagram.com/themeselect_official/) -->

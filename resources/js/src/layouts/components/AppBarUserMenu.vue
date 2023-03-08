@@ -15,8 +15,8 @@
           </v-avatar>
         </v-badge>
         <div class="d-inline-flex flex-column justify-center ms-3" style="vertical-align: middle">
-          <span class="text--primary font-weight-semibold mb-n1"> John Doe </span>
-          <small class="text--disabled text-capitalize">Admin</small>
+          <span class="text--primary text-capitalize font-weight-semibold mb-n1"> {{ user.name }}</span>
+          <small class="text--disabled text-capitalize">{{user.email}}</small>
         </div>
       </div>
 
@@ -110,7 +110,7 @@
           </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>Logout</v-list-item-title>
+          <v-list-item-title @click.prevent="logout">Logout</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -118,6 +118,8 @@
 </template>
 
 <script>
+
+
 import {
   mdiAccountOutline,
   mdiEmailOutline,
@@ -127,8 +129,9 @@ import {
   mdiCurrencyUsd,
   mdiHelpCircleOutline,
   mdiLogoutVariant,
+  
 } from '@mdi/js'
-
+import axios from 'axios';
 export default {
   setup() {
     return {
@@ -142,8 +145,44 @@ export default {
         mdiHelpCircleOutline,
         mdiLogoutVariant,
       },
+
     }
   },
+  data() {
+    return {
+      user: {}
+    }
+  },
+  methods: {
+    logout() {
+      axios.post('/api/logout', null, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('access_token')
+        }
+      })
+        .then(response => {
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('expires_at');
+          this.$router.push('/');
+        })
+        .catch(error => {
+          console.log(error.response.data.message);
+        });
+    }
+  },
+  mounted() {
+    const access_token = localStorage.getItem('access_token');
+
+    axios.get('api/user/profile', {
+      headers: {
+        'Authorization': `Bearer ${access_token}`
+      }
+    }).then(response => {
+      this.user = response.data;
+    }).catch(error => {
+      console.log(error);
+    })
+  }
 }
 </script>
 

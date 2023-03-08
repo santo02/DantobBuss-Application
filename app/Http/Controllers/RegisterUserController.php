@@ -40,6 +40,9 @@ class RegisterUserController extends BaseController
 
     public function RegistrasiSupir(Request $request)
     {
+        if (!auth()->check()) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
         $fields = $request->validate([
             'name' => 'required|string|max:20',
             'email' => 'required|string|unique:users',
@@ -47,13 +50,13 @@ class RegisterUserController extends BaseController
             'phone_number' => 'required|string',
             'address' => 'required|string',
             'gender' => 'required|string',
-            'password' => 'required|string',
-            'confirm_password' => 'required|same:password'
+            // 'password' => 'required|string',
+            // 'confirm_password' => 'required|same:password'
 
         ]);
 
         $input = $request->all();
-        $input['password'] = bcrypt($fields['password']);
+        $input['password'] = bcrypt('supir123');
         $input['photo'] = "null";
         $input['role_id'] = '3';
         $user = User::create($input);
@@ -61,6 +64,9 @@ class RegisterUserController extends BaseController
         $success['token'] =  $user->createToken('MyApp')->accessToken;
         $success['name'] =  $user->name;
 
-        return $this->sendResponse($success, 'Supir  berhasil didaftarkan!');
+        return response()->json([
+            'data' => $success,
+            'message' => 'Supir  berhasil didaftarkan!'
+        ]);
     }
 }

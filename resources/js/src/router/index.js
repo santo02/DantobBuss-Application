@@ -6,7 +6,41 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: 'dashboard',
+    name: 'pages-login',
+    component: () => import('@/views/pages/Login.vue'),
+    meta: {
+      layout: 'blank',
+    },
+  },
+  {
+    path: '/supir',
+    name: 'pages-supir',
+    component: () => import('@/views/pages/supir/list-supir.vue'),
+  },
+  {
+    path: '/add-supir',
+    name: 'pages-add-supir',
+    component: () => import('@/views/pages/supir/add-supir.vue'),
+  },
+  {
+    path: '/mobil',
+    name: 'pages-mobil',
+    component: () => import('@/views/pages/Mobil/list-mobil.vue'),
+  },
+  {
+    path: '/add-mobil',
+    name: 'pages-add-mobil',
+    component: () => import('@/views/pages/Mobil/add-mobil.vue'),
+  },
+  {
+    path: '/route',
+    name: 'pages-routes',
+    component: () => import('@/views/pages/Rute/list-route.vue'),
+  },
+  {
+    path: '/add-route',
+    name: 'pages-add-route',
+    component: () => import('@/views/pages/Rute/add-route.vue'),
   },
   {
     path: '/dashboard',
@@ -43,14 +77,14 @@ const routes = [
     name: 'pages-account-settings',
     component: () => import('@/views/pages/account-settings/AccountSettings.vue'),
   },
-  {
-    path: '/pages/login',
-    name: 'pages-login',
-    component: () => import('@/views/pages/Login.vue'),
-    meta: {
-      layout: 'blank',
-    },
-  },
+  // {
+  //   path: '/pages/login',
+  //   name: 'pages-login',
+  //   component: () => import('@/views/pages/Login.vue'),
+  //   meta: {
+  //     layout: 'blank',
+  //   },
+  // },
   {
     path: '/pages/register',
     name: 'pages-register',

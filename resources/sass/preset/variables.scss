@@ -1,12 +1,12 @@
 // Shades
 // ? We updated black value because our template design have `rgb(94, 86, 105)` as black instead of solid black
 $shades: (
-  'black': #5e5669,
+  'black': #1D4646,
   'white': #fff,
   'transparent': transparent,
 );
 
-$primary-shade--light: #5e5669;
+$primary-shade--light: #1D4646;
 $primary-shade--dark: #e7e3fc;
 $shadow-color--light: $primary-shade--light;
 $shadow-color--dark: #131120;

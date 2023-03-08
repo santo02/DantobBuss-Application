@@ -37,4 +37,5 @@ class bus extends Model
     {
         return $this->hasMany(Trackings::class);
     }
+
 }

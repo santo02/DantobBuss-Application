@@ -49,7 +49,7 @@ export default {
   setup() {
     const desserts = [
       {
-        dessert: 'Frozen Yogurt',
+        dessert: ' Yogurt',
         calories: 159,
         fat: 6,
         carbs: 24,

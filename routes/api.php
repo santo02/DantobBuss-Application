@@ -5,8 +5,11 @@ use App\Http\Controllers\BusController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\RoutesController;
+use App\Http\Controllers\SupirController;
+use App\Http\Controllers\UserController;
 use App\Models\Bookings;
 use App\Models\bus;
+use App\Models\Role;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,12 +25,23 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('registrasi', [RegisterUserController::class, 'RegisterUser']);
 Route::post('login', [LoginController::class, 'login']);
+// Route::post('logout', [LoginController::class, 'logout']th);
+
+Route::middleware(['auth:api', 'role:admin,penumpang'])->group(function () {
+
+    Route::post('logout', [LoginController::class, 'logout']);
+    Route::get('/user/profile', [UserController::class, 'user']);
+});
 
 Route::middleware(['auth:api', 'role:admin'])->group(function () {
     Route::get('/admin', function () {
         return 'Welcome Admin';
     });
+
     Route::post('/registrasi/supir', [RegisterUserController::class, 'RegistrasiSupir']);
+    Route::get('/supir/all', [SupirController::class, 'index']);
+    Route::get('/supir/name/all', [SupirController::class, 'getOne']);
+
     Route::post('/buss/add', [BusController::class, 'store']);
     Route::get('/buss/show/all', [BusController::class, 'show']);
     Route::put('/buss/update/{id}', [BusController::class, 'update']);
@@ -38,13 +52,10 @@ Route::middleware(['auth:api', 'role:admin'])->group(function () {
     Route::get('/routes/show/all', [RoutesController::class, 'index']);
     Route::delete('/routes/destroy/{id}', [RoutesController::class, 'destroy']);
 
-    Route::post('bookings/{id_bus}',[BookingController::class, 'store']);
+    Route::post('bookings/{id_bus}', [BookingController::class, 'store']);
     Route::get('/bookings/show/{id}', [BookingController::class, 'show']);
     Route::get('/bookings/show/all', [BookingController::class, 'index']);
     Route::put('/bookings/update/{id}', [BookingController::class, 'update']);
-
-    
-
 });
 
 Route::middleware(['auth:api', 'role:penumpang'])->group(function () {
@@ -58,6 +69,3 @@ Route::middleware(['auth:api', 'role:supir'])->group(function () {
         return 'Welcome supir';
     });
 });
-
-
-
