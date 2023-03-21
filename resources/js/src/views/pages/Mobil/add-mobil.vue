@@ -12,6 +12,13 @@
             <v-text-field id="police_number" v-model="mobil.police_number" outlined dense placeholder="Nomor Polisi"
               hide-details></v-text-field>
           </v-col>
+          <v-col cols="12" md="3">
+            <label for="firstname">Nomor Pintu</label>
+          </v-col>
+          <v-col cols="12" md="9">
+            <v-text-field id="nomor_pintu" v-model="mobil.nomor_pintu" outlined dense placeholder="Nomor Pintu"
+              hide-details></v-text-field>
+          </v-col>
 
           <v-col cols="12" md="3">
             <label for="email">Type</label>
@@ -84,6 +91,7 @@ export default {
         'type',
         'driver',
         'number_of_seats',
+        'nomor_pintu',
         'merk',
         'status'
       ]
@@ -126,6 +134,7 @@ export default {
         type: this.mobil.type,
         supir_id: this.mobil.driver,
         number_of_seats: this.mobil.number_of_seats,
+        nomor_pintu: this.mobil.nomor_pintu,
         merk: 'KBT',
         status: this.mobil.status
       }, {

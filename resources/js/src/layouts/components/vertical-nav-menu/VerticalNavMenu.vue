@@ -1,30 +1,35 @@
 <template>
   <v-navigation-drawer :value="isDrawerOpen" app floating width="260" class="app-navigation-menu" :right="$vuetify.rtl"
     @input="val => $emit('update:is-drawer-open', val)">
-    <!-- Navigation Header -->
-    <div class="vertical-nav-header d-flex items-center ps-6 pe-5 pt-5 pb-2">
-      <router-link to="/" class="d-flex align-center text-decoration-none">
+
+    <div class="vertical-nav-header  d-flex items-center ps-6 pe-5 pt-5 pb-2" color="secondary">
+      <router-link to="/dashboard" class="d-flex align-center text-decoration-none">
         <v-img :src="require('@/assets/images/logos/logo-KBT.png').default" max-height="50px" max-width="100px" alt="logo"
-          contain eager class="app-logo me-3"></v-img>
-        <v-slide-x-transition>
-          <!-- <h2 class="app-title text--primary">E-KBT</h2> -->
-        </v-slide-x-transition>
+          contain eager class="app-logo me-auto" color="secondary"></v-img>
+        <!-- <v-slide-x-transition>
+          <h2 class="app-title text--primary">E-KBT</h2>
+        </v-slide-x-transition> -->
       </router-link>
     </div>
 
     <!-- Navigation Items -->
-    <v-list expand shaped class="vertical-nav-menu-items pr-5">
+    <v-list expand shaped class="vertical-nav-menu-items pr-5" color="primary" text-color="white">
       <nav-menu-link title="Dashboard" :to="{ name: 'dashboard' }" :icon="icons.mdiHomeOutline"></nav-menu-link>
       <nav-menu-link title="Account Settings" :to="{ name: 'pages-account-settings' }"
         :icon="icons.mdiAccountCogOutline"></nav-menu-link>
-      <nav-menu-link title="Supir" :to="{ name: 'pages-supir' }"
-        :icon="icons.mdiCardAccountDetailsOutline"></nav-menu-link>
-      <nav-menu-link title="Mobil" :to="{ name: 'pages-mobil' }" :icon="icons.mdiCar"></nav-menu-link>
-      <nav-menu-link title="Rute" :to="{ name: 'pages-routes' }" :icon="icons.mdiMapMarkerDistance"></nav-menu-link>
+      <nav-menu-group title="Kelola" :icon="icons.mdiCarCog">
+        <nav-menu-link title="Supir" :to="{ name: 'pages-supir' }"
+          :icon="icons.mdiCardAccountDetailsOutline"></nav-menu-link>
+        <nav-menu-link title="Mobil" :to="{ name: 'pages-mobil' }" :icon="icons.mdiCar"></nav-menu-link>
+        <nav-menu-link title="Rute" :to="{ name: 'pages-routes' }" :icon="icons.mdiMapMarkerDistance"></nav-menu-link>
+        <nav-menu-link title="Jadwal " :to="{ name: 'pages-schedule' }"
+          :icon="icons.mdiCreditCardOutline"></nav-menu-link>
+      </nav-menu-group>
+      <nav-menu-link title="Pemesanan " :to="{ name: 'pages-pemesanan' }" :icon="icons.mdiCreditCardOutline"></nav-menu-link>
       <nav-menu-group title="Pages" :icon="icons.mdiFileOutline">
-        <nav-menu-link title="Login" :to="{ name: 'pages-login' }" target="_blank"></nav-menu-link>
-        <nav-menu-link title="Register" :to="{ name: 'pages-register' }" target="_blank"></nav-menu-link>
-        <nav-menu-link title="Error" :to="{ name: 'error-404' }" target="_blank"></nav-menu-link>
+        <nav-menu-link title="Login" :to="{ name: 'pages-login' }" ></nav-menu-link>
+        <nav-menu-link title="Register" :to="{ name: 'pages-register' }" ></nav-menu-link>
+        <nav-menu-link title="Error" :to="{ name: 'error-404' }"></nav-menu-link>
       </nav-menu-group>
       <nav-menu-section-title title="USER INTERFACE"></nav-menu-section-title>
       <nav-menu-link title="Typography" :to="{ name: 'typography' }" :icon="icons.mdiAlphaTBoxOutline"></nav-menu-link>
@@ -59,7 +64,8 @@ import {
   mdiAccountCogOutline,
   mdiCardAccountDetailsOutline,
   mdiCar,
-  mdiMapMarkerDistance
+  mdiCarCog,
+  mdiMapMarkerDistance,
 } from '@mdi/js'
 import NavMenuSectionTitle from './components/NavMenuSectionTitle.vue'
 import NavMenuGroup from './components/NavMenuGroup.vue'
@@ -90,7 +96,9 @@ export default {
         mdiAccountCogOutline,
         mdiCardAccountDetailsOutline,
         mdiCar,
-        mdiMapMarkerDistance
+        mdiMapMarkerDistance,
+        mdiCarCog
+        // mdiCarClock
       },
     }
   },
@@ -125,6 +133,8 @@ export default {
 .app-navigation-menu {
   .v-list-item {
     &.vertical-nav-menu-link {
+      color: white;
+
       ::v-deep .v-list-item__icon {
         .v-icon {
           transition: none !important;

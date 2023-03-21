@@ -1,57 +1,26 @@
 <template>
   <v-card>
-    <v-card-text>
-      <!-- <v-alert v-if="message " closable title="Alert title" type="success">Hello</v-alert> -->
+    <v-card-title>
       <v-btn class="mb-3" :to="{ name: 'pages-add-supir' }" color="primary">
         Tambah supir
       </v-btn>
-      <v-simple-table>
-        <template v-slot:default>
-          <thead>
-            <tr>
-              <th class="text-uppercase">
-                Nama Lengkap
-              </th>
-              <th class="text-center text-uppercase">
-                Email
-              </th>
-              <th class="text-center text-uppercase">
-                Nomor Handphone
-              </th>
-              <th class="text-center text-uppercase">
-                Jenis Kelamin
-              </th>
-              <th class="text-center text-uppercase">
-                Alamat
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in supir" :key="item.id">
-              <td>{{ item.name }}</td>
-              <td class="text-center">
-                {{ item.email }}
-              </td>
-              <td class="text-center">
-                {{ item.phone_number }}
-              </td>
-              <td class="text-center">
-                {{ item.gender }}
-              </td>
-              <td class="text-center">
-                {{ item.address }}
-              </td>
-            </tr>
-          </tbody>
-        </template>
-      </v-simple-table>
-    </v-card-text>
+      <v-spacer></v-spacer>
+      <v-text-field v-model="search" :prepend-inner-icon="icons.magnify" label="Cari"></v-text-field>
+    </v-card-title>
+    <v-data-table :headers="headers" :items="supir" :search="search">
+      <template #item.action="{ item }">
+        <v-btn small color="primary" :to="{ name: 'pages-edit-schedule', params: { id: item.id } }"><v-icon center>{{
+          icons.mdiPencil }}</v-icon></v-btn>
+        <v-btn small color="error" @click="deleteSchedule(item.id)"><v-icon>{{ icons.mdiTrashCanOutline
+        }}</v-icon></v-btn>
+      </template>
+    </v-data-table>
   </v-card>
 </template>
 
 <script>
 import axios from 'axios';
-
+import { mdiPencil, mdiTrashCanOutline, magnify } from '@mdi/js';
 export default {
   setup() {
 
@@ -64,12 +33,32 @@ export default {
         'phone_number',
         'address',
         'gender'
-      ]
+      ],
+      icons: {
+        mdiPencil,
+        mdiTrashCanOutline,
+        magnify
+      }
     }
   },
   data() {
     return {
       supir: [],
+      search: '',
+      headers: [
+        {
+          text: 'Nama Lengkap',
+          align: '',
+          sortable: false,
+          value: 'name',
+
+        },
+        { text: 'Email', value: 'email' },
+        { text: 'No.Handphone', value: 'phone_number' },
+        { text: 'Jenis Kelamin', value: 'gender' },
+        { text: 'Alamat', value: 'address' },
+        { text: 'Action', value: 'action', align: 'center', sortable: false }
+      ],
     }
   },
   mounted() {
@@ -82,7 +71,7 @@ export default {
       }
     }).then(response => {
       this.supir = response.data;
-    // console.log(this.supir)
+      // console.log(this.supir)
     }).catch(error => {
       console.log(error);
     })

@@ -18,8 +18,9 @@ class BusController extends BaseController
             'type' => 'required|string|max:20',
             'police_number' => 'required|string|unique:buses',
             'number_of_seats' => 'required|string',
-            'merk' => 'required|string',
             'status' => 'required|string',
+            'merk' => 'required|string',
+            'nomor_pintu' => 'required|string',
             'supir_id' => 'required:uniqe:users'
         ]);
 
@@ -32,7 +33,8 @@ class BusController extends BaseController
     public function show()
     {
         $bus = DB::table('buses')
-            ->join('users', 'buses.supir_id', '=', 'users.id')
+            ->join('users', 'users.id', '=', 'buses.supir_id')
+            ->select( 'buses.*','users.name', 'users.email')
             ->get();
 
         return $this->sendResponse(new BusResource($bus), 'Bus Retrieved Successfully');

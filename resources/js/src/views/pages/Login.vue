@@ -5,17 +5,15 @@
         <!-- logo -->
         <v-card-title class="d-flex align-center justify-center py-7">
           <router-link :to="{ name: 'pages-login' }" class="d-flex align-center">
-            <v-img :src="require('@/assets/images/logos/logo.svg').default" max-height="30px" max-width="30px" alt="logo"
+            <v-img :src="require('@/assets/images/logos/logo-KBT.png').default" max-height="120px" max-width="120px" alt="logo"
               contain class="me-3"></v-img>
-
-            <h2 class="text-2xl font-weight-semibold">Dantob Buss</h2>
           </router-link>
         </v-card-title>
 
         <!-- title -->
         <v-card-text>
-          <p class="text-1xl font-weight-semibold text--primary mb-2">Welcome to Dantob Buss App! 👋🏻</p>
-          <p class="mb-2">Please sign-in to your account and start the adventure</p>
+          <p class="text-1xl font-weight-semibold text--primary mb-2">Welcome to E-KBT </p>
+          <p class="mb-2">Kepuasan Penumpang adalah Kebahagian Kami</p>
         </v-card-text>
         <v-card-text>
           <v-form>

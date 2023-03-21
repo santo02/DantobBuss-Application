@@ -1,13 +1,13 @@
 <template>
   <v-card>
     <v-card-title>
-      <v-btn class="mb-3" :to="{ name: 'pages-add-mobil' }" color="primary">
-        Tambah Mobil
+      <v-btn class="mb-3" :to="{ name: 'pages-add-schedule' }" color="primary">
+        Schedule Baru
       </v-btn>
       <v-spacer></v-spacer>
       <v-text-field v-model="search" append-icon="mdi-magnify" label="Cari" hide-details></v-text-field>
     </v-card-title>
-    <v-data-table :headers="headers" :items="buss" :search="search">
+    <v-data-table :headers="headers" :items="schedule" :search="search">
       <template #item.action="{ item }">
         <v-btn small color="primary" :to="{ name: 'pages-edit-schedule', params: { id: item.id } }"><v-icon center>{{
           icons.mdiPencil }}</v-icon></v-btn>
@@ -18,57 +18,69 @@
   </v-card>
 </template>
 
+
 <script>
 import axios from 'axios';
+import moment from 'moment';
+import 'moment/locale/id';
 import { mdiPencil, mdiTrashCanOutline } from '@mdi/js';
+
 export default {
   setup() {
     return {
-      buss: [
-        'police_number',
-        'name',
-        'number_of_seats',
-        'type',
-        'status',
-      ],
+      buss: [],
       icons: {
         mdiPencil,
         mdiTrashCanOutline
       }
+
     }
   },
   data() {
     return {
-      buss: [],
-      supir: [],
       search: '',
       headers: [
         {
-          text: 'Nomor Polisi',
+          text: 'Nomor pintu',
           align: '',
           sortable: false,
-          value: 'police_number',
+          value: 'nomor_pintu',
 
         },
-        { text: 'Nomor Pintu', value: 'nomor_pintu' },
+        { text: 'Nomor Polisi', value: 'police_number' },
         { text: 'Supir', value: 'name' },
-        { text: 'Jumlah Seat', value: 'number_of_seats' },
-        { text: 'Type', value: 'type' },
-        { text: 'status', value: 'status' },
+        { text: 'Rute', value: 'arrival' },
+        { text: 'Tanggal', value: 'tanggal' },
+        { text: 'Harga', value: 'harga' },
+        { text: 'Status', value: 'status' },
         { text: 'Action', value: 'action', align: 'center', sortable: false }
       ],
+      schedule: [],
     }
+  },
+  methods: {
+    formatDate(date) {
+      // moment.locale('id');
+      return moment(date).format('dddd, Do MMMM YYYY');
+    }
+  },
+  getColor(status) {
+    if (status == "Avaliable") return 'red'
+    // else if (calories > 200) return 'orange'
+    else return 'green'
   },
   mounted() {
     const access_token = localStorage.getItem('access_token');
 
-    axios.get('/api/buss/show/all', {
+    axios.get('/api/schedule/show/all', {
       headers: {
         'Authorization': `Bearer ${access_token}`
       }
     }).then(response => {
-      this.buss = response.data.data;
-      console.log(this.buss)
+      this.schedule = response.data.data;
+      console.log(this.schedule);
+
+
     }).catch(error => {
       console.log(error);
     });

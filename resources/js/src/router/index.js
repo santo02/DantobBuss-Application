@@ -43,6 +43,36 @@ const routes = [
     component: () => import('@/views/pages/Rute/add-route.vue'),
   },
   {
+    path: '/schedule',
+    name: 'pages-schedule',
+    component: () => import('@/views/pages/Schedule/list-schedule.vue'),
+  },
+  {
+    path: '/add-schedule',
+    name: 'pages-add-schedule',
+    component: () => import('@/views/pages/Schedule/add-schedule.vue'),
+  },
+  {
+    path: '/pemesanan',
+    name: 'pages-pemesanan',
+    component: () => import('@/views/pages/Pemesanan/pemesanan.vue'),
+  },
+  {
+    path: '/costumize-pemesanan/:id',
+    name: 'pages-costumize-pemesanan',
+    component: () => import('@/views/pages/Pemesanan/costum_pesanan.vue'),
+  },
+  {
+    path: '/confirmasi-pemesanan/:id/:seat',
+    name: 'pages-confirmasi-pemesanan',
+    component: () => import('@/views/pages/Pemesanan/confirmasi_pesanan.vue'),
+  },
+  {
+    path: '/pembayaran',
+    name: 'pembayaran',
+    component: () => import('@/views/pages/Pembayaran/pembayaran-page.vue'),
+  },
+  {
     path: '/dashboard',
     name: 'dashboard',
     component: () => import('@/views/dashboard/Dashboard.vue'),

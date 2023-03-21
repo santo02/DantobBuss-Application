@@ -5,17 +5,15 @@
         <!-- logo -->
         <v-card-title class="d-flex align-center justify-center py-7">
           <router-link to="/" class="d-flex align-center">
-            <v-img :src="require('@/assets/images/logos/logo.svg').default" max-height="30px" max-width="30px" alt="logo"
-              contain class="me-3"></v-img>
-
-            <h2 class="text-2xl font-weight-semibold">Materio</h2>
+            <v-img :src="require('@/assets/images/logos/logo-KBT.png').default" max-height="120px" max-width="120px"
+              alt="logo" contain class="me-3"></v-img>
           </router-link>
         </v-card-title>
 
         <!-- title -->
         <v-card-text>
           <p class="text-2xl font-weight-semibold text--primary mb-2">Adventure starts here</p>
-          <p class="mb-2">Make your app management easy and fun!</p>
+          <p class="mb-2">Kepuasan Penumpang adalah Kebahagian Kami</p>
         </v-card-text>
 
         <!-- regis form -->
@@ -24,7 +22,7 @@
             <v-row>
               <v-col cols="12" md="6">
                 <v-text-field v-model="user.name" :prepend-inner-icon="icons.mdiAccountOutline" label="Nama Lengkap"
-                  outlined dense placeholder="Nama Lengkap" ></v-text-field>
+                  outlined dense placeholder="Nama Lengkap"></v-text-field>
 
               </v-col>
               <v-col cols="12" md="6">
@@ -34,12 +32,12 @@
 
               <v-col cols="12" md="6">
                 <v-text-field v-model="user.username" :prepend-inner-icon="icons.mdiAccountOutline" label="Username"
-                  outlined dense placeholder="Username" ></v-text-field>
+                  outlined dense placeholder="Username"></v-text-field>
               </v-col>
 
               <v-col cols="12" md="6">
                 <v-text-field v-model="user.phone_number" :prepend-inner-icon="icons.mdiCellphone" label="Nomor Handphone"
-                  outlined dense type="number" placeholder="Nomor Handphone" ></v-text-field>
+                  outlined dense type="number" placeholder="Nomor Handphone"></v-text-field>
               </v-col>
 
               <v-col cols="12" md="6">
@@ -50,7 +48,7 @@
 
               <v-col cols="12" md="6">
                 <v-text-field v-model="user.address" :prepend-inner-icon="icons.mdiMapMarker" label="Alamat" outlined
-                  dense type="text" placeholder="Alamat" ></v-text-field>
+                  dense type="text" placeholder="Alamat"></v-text-field>
               </v-col>
 
               <v-col cols="12" md="6">
@@ -160,15 +158,6 @@ export default {
         mdiLockOutline,
         mdiMapMarker
       },
-      // errors: {},
-      // nameErrors: [],
-      // emailErrors: [],
-      // usernameErrors: [],
-      // phoneErrors: [],
-      // genderErrors: [],
-      // addressErrors: [],
-      // registrationSuccess: false,
-      // notificationMessage: ''
     }
   },
   methods: {

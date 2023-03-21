@@ -1,26 +1,26 @@
 <template>
   <v-row>
-    <v-col
+    <!-- <v-col
       cols="12"
       md="4"
     >
       <dashboard-congratulation-john></dashboard-congratulation-john>
-    </v-col>
+    </v-col> -->
     <v-col
       cols="12"
-      md="8"
+      md="12"
     >
       <dashboard-statistics-card></dashboard-statistics-card>
     </v-col>
 
-    <v-col
+    <!-- <v-col
       cols="12"
       sm="6"
       md="4"
     >
       <dashboard-weekly-overview></dashboard-weekly-overview>
-    </v-col>
-
+    </v-col> -->
+<!--
     <v-col
       cols="12"
       md="4"
@@ -101,7 +101,7 @@
       md="8"
     >
       <dashboard-card-deposit-and-withdraw></dashboard-card-deposit-and-withdraw>
-    </v-col>
+    </v-col> -->
     <v-col cols="12">
       <dashboard-datatable></dashboard-datatable>
     </v-col>

@@ -1,40 +1,26 @@
 <template>
   <v-card>
-    <v-card-text>
+    <v-card-title>
       <v-btn class="mb-3" :to="{ name: 'pages-add-route' }" color="primary">
-        Tambah Rute
+        Tambah Mobil
       </v-btn>
-      <v-simple-table>
-        <template v-slot:default>
-          <thead>
-            <tr>
-              <th class="text-uppercase">
-                Keberangkatan
-              </th>
-
-              <th class="text-center text-uppercase">
-                Kedatangan
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in route" :key="item.id">
-              <td>{{ item.derpature }}</td>
-              <!-- <td>ke</td> -->
-              <td class="text-center">
-                {{ item.arrival }}
-              </td>
-            </tr>
-          </tbody>
-        </template>
-      </v-simple-table>
-    </v-card-text>
+      <v-spacer></v-spacer>
+      <v-text-field v-model="search" append-icon="mdi-magnify" label="Cari" hide-details></v-text-field>
+    </v-card-title>
+    <v-data-table :headers="headers" :items="route" :search="search">
+      <template #item.action="{ item }">
+        <v-btn small color="primary" :to="{ name: 'pages-edit-schedule', params: { id: item.id } }"><v-icon center>{{
+          icons.mdiPencil }}</v-icon></v-btn>
+        <v-btn small color="error" @click="deleteSchedule(item.id)"><v-icon>{{ icons.mdiTrashCanOutline
+        }}</v-icon></v-btn>
+      </template>
+    </v-data-table>
   </v-card>
 </template>
 
 <script>
 import axios from 'axios';
-import {mdiSwapHorizontalBold } from '@mdi/js'
+import { mdiSwapHorizontalBold, mdiPencil, mdiTrashCanOutline } from '@mdi/js'
 export default {
   setup() {
     return {
@@ -42,8 +28,10 @@ export default {
         'derpature',
         'arrival',
       ],
-      icons:{
-        mdiSwapHorizontalBold
+      icons: {
+        mdiSwapHorizontalBold,
+        mdiPencil,
+        mdiTrashCanOutline
       }
 
     }
@@ -51,6 +39,19 @@ export default {
   data() {
     return {
       route: [],
+      supir: [],
+      search: '',
+      headers: [
+        {
+          text: 'Keberangkatan',
+          align: '',
+          sortable: false,
+          value: 'derpature',
+
+        },
+        { text: 'Kedatangan', value: 'arrival' },
+        { text: 'Action', value: 'action', align: 'center', sortable: false }
+      ],
     }
   },
   mounted() {

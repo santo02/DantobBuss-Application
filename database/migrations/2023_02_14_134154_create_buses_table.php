@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('police_number');
             $table->string('number_of_seats');
             $table->string('merk');
+            $table->string('nomor_pintu');
             $table->string('status');
             $table->timestamps();
         });

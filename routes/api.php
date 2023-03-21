@@ -5,6 +5,7 @@ use App\Http\Controllers\BusController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\RoutesController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SupirController;
 use App\Http\Controllers\UserController;
 use App\Models\Bookings;
@@ -27,7 +28,7 @@ Route::post('registrasi', [RegisterUserController::class, 'RegisterUser']);
 Route::post('login', [LoginController::class, 'login']);
 // Route::post('logout', [LoginController::class, 'logout']th);
 
-Route::middleware(['auth:api', 'role:admin,penumpang'])->group(function () {
+Route::middleware(['auth:api', 'role:admin,penumpang,supir'])->group(function () {
 
     Route::post('logout', [LoginController::class, 'logout']);
     Route::get('/user/profile', [UserController::class, 'user']);
@@ -51,6 +52,13 @@ Route::middleware(['auth:api', 'role:admin'])->group(function () {
     Route::put('/routes/update/{id}', [RoutesController::class, 'update']);
     Route::get('/routes/show/all', [RoutesController::class, 'index']);
     Route::delete('/routes/destroy/{id}', [RoutesController::class, 'destroy']);
+
+    Route::post('/schedule/add', [ScheduleController::class, 'store']);
+    Route::get('/schedule/show/all', [ScheduleController::class, 'index']);
+    Route::get('/schedule/show/{id}', [ScheduleController::class, 'SelectOne']);
+    Route::get('/schedule/type/executive', [ScheduleController::class, 'ShowExecutive']);
+    Route::get('/schedule/type/economi', [ScheduleController::class, 'ShowEconomi']);
+
 
     Route::post('bookings/{id_bus}', [BookingController::class, 'store']);
     Route::get('/bookings/show/{id}', [BookingController::class, 'show']);
