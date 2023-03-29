@@ -1,17 +1,150 @@
 <template>
-
   <div>
-    <h3>Halaman B</h3>
-    <p>Nama: {{ dataFromPageA.nama }}</p>
-    <p>Umur: {{ dataFromPageA.umur }}</p>
-    <p>Alamat Jemput: {{ dataFromPageA.alamatJemput }}</p>
+    <h3 pa-3 ma-3>Konfirmasi Data Penumpang</h3>
+    <v-card v-for="item in schedule" :key="item.id">
+      <div class="container mt-3">
+        <div class=" text-center">
+          <h2>{{ item.derpature }} -> {{ item.arrival }}</h2>
+          <h5>{{ formatHour(item.tanggal) }}</h5>
+          <h5>{{ formatDate(item.tanggal) }}</h5>
+        </div>
+        <template class="text-center">
+          <v-container class="grey lighten-5">
+            <v-row no-gutters>
+              <v-col cols="12" sm="4">
+                <v-card class="pa-2" outlined tile>
+                  <h5>Nama</h5>
+                  <h6>{{ passengerData.name }}</h6>
+                </v-card>
+              </v-col>
+              <v-col cols="12" sm="4">
+                <v-card class="pa-2" outlined tile>
+                  <h5>Umur</h5>
+                  <h6>{{ passengerData.age }}</h6>
+                </v-card>
+              </v-col>
+              <v-col cols="12" sm="4">
+                <v-card class="pa-2" outlined tile>
+                  <h5>No.Tempat duduk</h5>
+                  <h6>{{ selectedSeat }}</h6>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-container>
+        </template>
+      </div>
+      <div class="check">
+        <v-container class="grey text-center">
+          <v-card class="mb-3">
+            <v-row>
+              <v-col cols="2" sm="4">
+                <div class="pa-2" tile>
+                  <h3>Seat</h3>
+                  <h5>{{ selectedSeat }}</h5>
+                </div>
+              </v-col>
+              <v-col cols="2" sm="4">
+                <div class="pa-2">
+                  <v-btn class="mx-2" fab dark color="secondary" @click="submitData">
+                    <v-icon dark>
+                      {{ icons.mdiChevronRight }}
+                    </v-icon>
+                  </v-btn>
+                </div>
+              </v-col>
+              <v-col cols="2" sm="4">
+                <div class="pa-2" tile>
+                  <h3>Harga</h3>
+                  <h5>Rp.{{ item.harga }}</h5>
+                </div>
+              </v-col>
+              <v-col cols="2" sm="6">
+                <div class="pa-2" tile>
+                  <h3>Menaikkan</h3>
+                  <h5>{{ item.derpature }}</h5>
+                </div>
+              </v-col>
+              <v-col cols="2" sm="6">
+                <div class="pa-2" tile>
+                  <h3>Menurunkan</h3>
+                  <h5>{{ item.arrival }}</h5>
+                </div>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-container>
+      </div>
+
+    </v-card>
   </div>
 </template>
+
 <script>
-import { mapState } from 'vuex';
+import axios from 'axios';
+import moment from 'moment';
+import 'moment/locale/id';
+import { mapState, mapActions } from 'vuex'
+import { mdiCalendarClock, mdiAccountGroup, mdiAccount, mdiSofaSingleOutline, mdiSofaSingle, mdiChevronRight } from '@mdi/js';
 
 export default {
-  // Import lainnya
+  setup() {
+    return {
+      icons: {
+        mdiCalendarClock,
+        mdiAccountGroup,
+        mdiAccount,
+        mdiSofaSingleOutline,
+        mdiSofaSingle,
+        mdiChevronRight
+      }
+    }
+  },
+  data() {
+    return {
+      schedule: {}
+    }
+  },
+  computed: {
+    ...mapState(['busData', 'selectedSeat']),
+    passengerData() {
+      return this.$store.state.passengerData
+    },
+  },
+  mounted() {
+    this.getSchedule();
+  },
 
-};
+  methods: {
+    formatDate(date) {
+      moment.locale('id');
+      return moment(date).format('dddd, Do MMMM YYYY');
+    },
+    formatHour(date) {
+      moment.locale('id');
+      return moment(date).format('hh:mm');
+    },
+    getSchedule() {
+      const access_token = localStorage.getItem('access_token');
+      let uri = `/api/schedule/show/${this.busData}`;
+      axios.get(uri, {
+        headers: {
+          'Authorization': `Bearer ${access_token}`
+        }
+      }).then(response => {
+        this.schedule = response.data.data;
+        console.log(this.schedule);
+      }).catch(error => {
+        console.log(error);
+      });
+    },
+    ...mapActions(['setPassengerData']),
+    submitData() {
+
+
+      // redirect ke halaman berhasil
+      this.$router.push('/pembayaran-method')
+    }
+
+  },
+}
 </script>

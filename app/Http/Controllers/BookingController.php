@@ -12,15 +12,17 @@ use Illuminate\Support\Facades\Validator;
 
 class BookingController extends BaseController
 {
-    public function store(Request $request, $id_bus)
+    public function store(Request $request)
     {
 
         $user = Auth::user();
 
         $validator = Validator::make($request->all(), [
-            'route_id' => 'required|exists:routes,id',
-            'departure_time' => 'required|date_format:Y-m-d H:i:s',
+            'schedules_id' => 'required|exists:schedules,id',
+            'name' => 'required|string',
+            'age' => 'required|string',
             'num_seats' => 'required|integer',
+            'status' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -29,10 +31,12 @@ class BookingController extends BaseController
 
         $booking = new Bookings;
         $booking->user_id = $user->id;
-        $booking->bus_id = $id_bus;
-        $booking->route_id = $request->route_id;
-        $booking->departure_time = $request->departure_time;
+        $booking->schedules_id = $request->schedules_id;
+        $booking->name = $request->name;
+        $booking->age = $request->age;
+        $booking->alamatJemput = $request->alamatJemput;
         $booking->num_seats = $request->num_seats;
+        $booking->status = $request->status;
         $booking->save();
 
         return $this->sendResponse($booking, 'Bookings Successfully');
@@ -40,8 +44,10 @@ class BookingController extends BaseController
 
     public function index()
     {
-        $booking = Bookings::with('route', 'bus', 'user')->all();
-    
+        // $booking = Bookings::with('schedules', 'user')->get();
+        // $booking = Bookings::with('schedules', 'user')->all()->get();
+        $booking = Bookings::with('schedules', 'user')->get();
+
         if ($booking) {
             return response()->json($booking);
         } else {
@@ -49,12 +55,22 @@ class BookingController extends BaseController
         }
     }
 
-    public function show($id)
+    public function getOne($id)
     {
-        $booking = Bookings::with('route', 'bus', 'user')->find($id);
-    
+        $booking = Bookings::with('schedules', 'user')->where('id', $id)->get();
+
         if ($booking) {
             return response()->json($booking);
+        } else {
+            return response()->json(['message' => 'Booking not found.'], 404);
+        }
+    }
+    public function getOneSchedules($id)
+    {
+        $booking = Bookings::with('schedules', 'user')->where('schedules_id', $id)->get();
+        $num_of_bookings = $booking->count();
+        if ($booking) {
+            return response()->json(['total' => $num_of_bookings, 'data' => $booking]);
         } else {
             return response()->json(['message' => 'Booking not found.'], 404);
         }
@@ -63,8 +79,7 @@ class BookingController extends BaseController
     {
         $booking = Bookings::find($id);
 
-        
+
         return $this->sendResponse($booking, 'Booking Retrieved Successfully');
-        
     }
 }

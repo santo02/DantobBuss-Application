@@ -5,7 +5,7 @@
         Tambah supir
       </v-btn>
       <v-spacer></v-spacer>
-      <v-text-field v-model="search" :prepend-inner-icon="icons.magnify" label="Cari"></v-text-field>
+      <v-text-field v-model="search" append-icon="mdi-magnify" label="Cari" hide-details></v-text-field>
     </v-card-title>
     <v-data-table :headers="headers" :items="supir" :search="search">
       <template #item.action="{ item }">
@@ -20,7 +20,7 @@
 
 <script>
 import axios from 'axios';
-import { mdiPencil, mdiTrashCanOutline, magnify } from '@mdi/js';
+import { mdiPencil, mdiTrashCanOutline } from '@mdi/js';
 export default {
   setup() {
 
@@ -36,8 +36,7 @@ export default {
       ],
       icons: {
         mdiPencil,
-        mdiTrashCanOutline,
-        magnify
+        mdiTrashCanOutline
       }
     }
   },

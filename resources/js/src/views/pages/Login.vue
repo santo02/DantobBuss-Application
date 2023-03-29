@@ -5,8 +5,8 @@
         <!-- logo -->
         <v-card-title class="d-flex align-center justify-center py-7">
           <router-link :to="{ name: 'pages-login' }" class="d-flex align-center">
-            <v-img :src="require('@/assets/images/logos/logo-KBT.png').default" max-height="120px" max-width="120px" alt="logo"
-              contain class="me-3"></v-img>
+            <v-img :src="require('@/assets/images/logos/logo-KBT.png').default" max-height="120px" max-width="120px"
+              alt="logo" contain class="me-3"></v-img>
           </router-link>
         </v-card-title>
 
@@ -38,7 +38,12 @@
               <a href="javascript:void(0)" class="mt-1"> Forgot Password? </a>
             </div>
 
-            <v-btn block color="primary" class="mt-6" @click.prevent="login"> Login </v-btn>
+            <v-btn block color="primary" class="mt-6" :loading="isLoading" @click.prevent="login">
+              <template v-if="!isLoading"> Login </template>
+              <template v-else> <v-progress-circular indeterminate size="24" color="white"></v-progress-circular>
+              </template>
+            </v-btn>
+
           </v-form>
         </v-card-text>
 
@@ -117,18 +122,23 @@ export default {
       password: "",
       registrationSuccess: false,
       errors: {},
+      isLoading: false
     };
   },
   methods: {
     login() {
+      this.isLoading = true;
       axios.post('/api/login', {
         email: this.email,
         password: this.password,
       })
         .then(response => {
-          localStorage.setItem('access_token', response.data.access_token);
+          const token = response.data.access_token
+          localStorage.setItem('access_token', token);
+          this.$store.dispatch('updateUserRole', token)
           localStorage.setItem('expires_at', response.data.expires_at);
           this.$router.push('/dashboard');
+
         })
         .catch((error) => {
           if (error.response.status === 422) {
@@ -139,8 +149,10 @@ export default {
             console.log(this.errors);
           } else {
             this.errors = { general: ["Something went wrong. Please try again later."] };
+            t
           }
         });
+      this.isLoading = false;
     },
   }
 }

@@ -1,6 +1,9 @@
 <template>
-  <v-card>
-    <v-tabs v-model="tab" fixed-tabs>
+  <div>
+    <h1>Penumpang</h1>
+  </div>
+
+    <!-- <v-tabs v-model="tab" fixed-tabs>
       <v-tab color="primary">
         Ekonomi
       </v-tab>
@@ -35,10 +38,11 @@
                 <v-row no-gutters class="my-3">
                   <v-col cols="12">
                     <div class="row">
-                      <div class="col-md-5"><v-icon left>{{ icons.mdiCalendarClock }}</v-icon> {{ formatDate(eco.tanggal) }}</div>
+                      <div class="col-md-5"><v-icon left>{{ icons.mdiCalendarClock }}</v-icon> {{ formatDate(eco.tanggal)
+                      }}</div>
                       <div class="col-md-3"><v-icon left>{{ icons.mdiAccount }}</v-icon> {{ eco.name }}</div>
                       <div class="col-md-2" v-for="(count, id) in bookingCounts" :key="id" v-if="eco.schedule_id == id">
-                          <small color="secondary">Tersedia : {{ eco.number_of_seats - count - 1 }} Kursi </small>
+                        <small color="secondary">Tersedia : {{ eco.number_of_seats - count - 1 }} Kursi </small>
                       </div>
                       <div class="col-md-2">
                         <v-btn color="secondary" @click="selectBus(eco.schedule_id)" class="ml-3"
@@ -57,7 +61,7 @@
       <v-tab-item>
         <v-card flat>
           <v-card-text v-for="exe in executive" :key="exe.schedule_id">
-            <!-- <v-card class="mt-2"> -->
+             <v-card class="mt-2">
             <v-row no-gutters>
               <v-col cols="auto">
                 <v-avatar size="40" class="mt-2 ml-2">
@@ -84,17 +88,16 @@
                 </v-card-text>
               </v-col>
             </v-row>
-            <!-- </v-card> -->
+          </v-card>
           </v-card-text>
         </v-card>
       </v-tab-item>
-    </v-tabs-items>
-  </v-card>
+    </v-tabs-items> -->
 </template>
 
 
 
-<script>
+<!-- <script>
 import axios from 'axios';
 import moment from 'moment';
 import 'moment/locale/id';
@@ -185,4 +188,4 @@ export default {
     });
   }
 }
-</script>
+</script> -->

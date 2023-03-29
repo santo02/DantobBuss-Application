@@ -119,7 +119,7 @@ export default {
         }
 
       });
-      console.log(this.supir)
+      console.log("ini",this.supir)
     }).catch(error => {
       console.log(error);
     });

@@ -6,15 +6,16 @@
       <v-container class="grey text-center">
         <v-row no-gutters>
           <v-col v-for="n in +item.number_of_seats" :key="n" cols="2" sm="4">
-            <div v-if="n != 3" :class="['pa- text-center  text-no-wrap rounded', { 'style': selectedChair === n }]"
-              @click="selectedChair = n">
+            <div v-if="n != 3" :class="['pa- text-center  text-no-wrap rounded', {
+              'style': selectedChair === n,
+              'booked': bookingsChair.some(chair => chair.num_seats === n)
+            }]" @click="selectedChair = n">
               <v-icon x-large>{{ selectedChair === n ? icons.mdiSofaSingle : icons.mdiSofaSingleOutline }}</v-icon>
               <h4>{{ n }}</h4>
             </div>
             <div v-else>
               <h4>Supir</h4>
             </div>
-
           </v-col>
         </v-row>
       </v-container>
@@ -30,13 +31,10 @@
               </v-col>
               <v-col cols="2" sm="4">
                 <div class="pa-2">
-                  <v-btn class="mx-2" fab dark color="secondary">
-                    <router-link
-                      :to="{ name: 'pages-confirmasi-pemesanan', params: { id: item.schedule_id, seat: selectedChair } }"> <v-icon
-                        dark>
-                        {{ icons.mdiChevronRight }}
-                      </v-icon>
-                    </router-link>
+                  <v-btn class="mx-2" fab dark color="secondary" @click="selectSeat(selectedChair)">
+                    <v-icon dark>
+                      {{ icons.mdiChevronRight }}
+                    </v-icon>
                   </v-btn>
                 </div>
               </v-col>
@@ -73,8 +71,9 @@
 import axios from 'axios';
 import moment from 'moment';
 import 'moment/locale/id';
-
+import { mapState, mapActions } from 'vuex'
 import { mdiCalendarClock, mdiAccountGroup, mdiAccount, mdiSofaSingleOutline, mdiSofaSingle, mdiChevronRight } from '@mdi/js';
+
 export default {
   setup() {
     return {
@@ -94,19 +93,53 @@ export default {
     return {
       schedule: {},
       selectedChair: null,
+      bookingsChair: [],
     }
   },
+  computed: {
+    ...mapState(['busData', 'selectedSeat'])
+  },
+
   mounted() {
     this.getSchedule();
+    this.getbookingsChair()
   },
+
   methods: {
     formatDate(date) {
       moment.locale('id');
       return moment(date).format('dddd, Do MMMM YYYY, hh:mm:ss');
     },
+    ...mapActions(['setSelectedSeat']),
+
+    selectSeat(seat) {
+      // set tempat duduk yang dipilih ke state Vuex
+      this.$store.dispatch('setSelectedSeat', seat)
+
+      this.$router.push('/confirmasi-pemesanan')
+    },
+
+    getbookingsChair() {
+      const access_token = localStorage.getItem('access_token');
+      axios.get(`/api/bookings/show/schedules/${this.busData}`, {
+        headers: {
+          'Authorization': `Bearer ${access_token}`
+        }
+      }).then(response => {
+        this.bookingsChair = response.data.data.map((item) => {
+          return {
+            num_seats: item.num_seats,
+          }
+        });
+
+        console.log(this.bookingsChair);
+      }).catch(error => {
+        console.log(error);
+      });
+    },
     getSchedule() {
       const access_token = localStorage.getItem('access_token');
-      let uri = `/api/schedule/show/${this.$route.params.id}`;
+      let uri = `/api/schedule/show/${this.busData}`;
       axios.get(uri, {
         headers: {
           'Authorization': `Bearer ${access_token}`
@@ -119,14 +152,44 @@ export default {
         console.log(error);
       });
     }
+  },
+  watch: {
+    // cek setiap kali nilai dari selectedChair berubah
+    selectedChair(newValue) {
+      // simpan data selectedSeat ke local storage
+      localStorage.setItem('selectedSeat', JSON.stringify(newValue));
+
+      if (this.bookingsChair.some(chair => chair.num_seats === newValue)) {
+        alert('Kursi telah dipilih orang lain');
+        this.selectedChair = null;
+      }
+    }
   }
 }
 </script>
 
 <style scoped>
 .style {
-  background-color: rgb(173, 173, 173);
+  background-color: gainsboro;
   color: white;
   cursor: pointer;
+
+}
+
+.booked {
+  background-color: rgb(173, 173, 173);
+  color: black;
+  position: relative;
+}
+
+.booked::before {
+  content: "Telah di booking";
+  position: absolute;
+  color: #000;
+  padding: 5px 10px;
+  border-radius: 5px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>

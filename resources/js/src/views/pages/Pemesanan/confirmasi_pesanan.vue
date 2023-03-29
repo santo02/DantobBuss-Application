@@ -13,7 +13,8 @@
             <label for="name">Nama Lengkap</label>
           </v-col>
           <v-col>
-            <v-text-field id="name" v-model="name" outlined dense placeholder="Nama Lengkap" hide-details></v-text-field>
+            <v-text-field id="name" v-model="passenger.name" outlined dense placeholder="Nama Lengkap" required
+              hide-details :rules="[v => !!v || 'Nama harus diisi']"></v-text-field>
           </v-col>
         </div>
         <div>
@@ -22,8 +23,8 @@
           </v-col>
 
           <v-col>
-            <v-text-field id="umur" v-model="umur" type="number" outlined dense placeholder="Umur"
-              hide-details></v-text-field>
+            <v-text-field id="umur" v-model="passenger.age" type="number" outlined dense placeholder="Umur" required
+              hide-details :rules="[v => !!v || 'Umur harus diisi']"></v-text-field>
           </v-col>
         </div>
         <div>
@@ -32,18 +33,21 @@
             Request penjemputan akan diarahkan ke lokasi rekomendasi sistem dengan posisi terdekat dari sekitaran alamat
             yang dicantumkan penumpang.
           </p>
-          <v-switch v-model="people" color="primary" value="jemput"></v-switch>
-          <v-col v-if="people === 'jemput'" cols="12" md="3">
+          <v-switch v-model="jemput" color="primary"></v-switch>
+          <v-col v-if="jemput" cols="12">
             <label for="alamat">Alamat Jemput</label>
+            <v-text-field id="alamat" v-model="passenger.alamatJemput" outlined dense placeholder="Alamat Jemput"
+              hide-details></v-text-field>
+            <v-spacer></v-spacer>
           </v-col>
-          <v-col v-if="people === 'jemput'">
-            <v-text-field id="alamat" v-model="alamatJemput" outlined dense placeholder="Alamat Jemput"
+          <v-col v-else cols="12" style="display: none;">
+            <label for="alamat">Alamat Jemput</label>
+            <v-text-field id="alamat" v-model="passenger.alamatJemput" outlined dense placeholder="Alamat Jemput"
               hide-details></v-text-field>
             <v-spacer></v-spacer>
           </v-col>
 
         </div>
-
       </div>
       <div class="check">
         <v-container class="grey text-center">
@@ -52,17 +56,15 @@
               <v-col cols="2" sm="4">
                 <div class="pa-2" tile>
                   <h3>Seat</h3>
-                  <h5>{{ seat }}</h5>
+                  <h5>{{ selectedSeat }}</h5>
                 </div>
               </v-col>
               <v-col cols="2" sm="4">
                 <div class="pa-2">
-                  <v-btn class="mx-2" fab dark color="secondary">
-                    <router-link :to="{ name: 'pembayaran' }" @click="sendDataToPembayaran">
-                      <v-icon dark>
-                        {{ icons.mdiChevronRight }}
-                      </v-icon>
-                    </router-link>
+                  <v-btn class="mx-2" fab dark color="secondary" @click="submitData">
+                    <v-icon dark>
+                      {{ icons.mdiChevronRight }}
+                    </v-icon>
                   </v-btn>
                 </div>
               </v-col>
@@ -89,6 +91,14 @@
         </v-container>
       </div>
     </v-card>
+    <v-snackbar ref="snackbar" v-model="snackbar" color="error" relative outlined top>
+      Nama lengkap dan umur harus diisi!
+      <template v-slot:action="{ attrs }">
+        <v-btn color="error" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -98,7 +108,7 @@
 import axios from 'axios';
 import moment from 'moment';
 import 'moment/locale/id';
-
+import { mapState, mapActions } from 'vuex'
 import { mdiCalendarClock, mdiAccountGroup, mdiAccount, mdiSofaSingleOutline, mdiSofaSingle, mdiChevronRight } from '@mdi/js';
 export default {
   setup() {
@@ -113,20 +123,30 @@ export default {
       }
     }
   },
-
+  computed: {
+    ...mapState({
+      busData: state => state.busData,
+      selectedSeat: state => state.selectedSeat,
+    })
+  },
   data() {
     return {
-      seat: `${this.$route.params.seat}`,
       schedule: {},
-      people: '',
-      alamatJemput: '',
-      name: '',
-      umur: ''
+      jemput: '',
+      passenger: {
+        name: '',
+        age: '',
+        alamatJemput: this.jemput ? this.passenger.alamatJemput : "not request"
+      },
+      snackbar: false
     }
   },
+
   mounted() {
     this.getSchedule();
+
   },
+
   methods: {
     formatDate(date) {
       moment.locale('id');
@@ -138,7 +158,7 @@ export default {
     },
     getSchedule() {
       const access_token = localStorage.getItem('access_token');
-      let uri = `/api/schedule/show/${this.$route.params.id}`;
+      let uri = `/api/schedule/show/${this.busData}`;
       axios.get(uri, {
         headers: {
           'Authorization': `Bearer ${access_token}`
@@ -150,17 +170,19 @@ export default {
         console.log(error);
       });
     },
-    sendDataToPembayaran() {
-      const paymentData = {
-        seat: this.seat,
-        schedule: this.schedule,
-        people: this.people,
-        alamatJemput: this.alamatJemput,
-        name: this.name,
-        umur: this.umur
-      };
-      this.$store.dispatch('setPaymentData', paymentData);
-      this.$router.push({ name: 'pembayaran' });
+    ...mapActions(['setPassengerData']),
+    submitData() {
+      if (!this.passenger.name || !this.passenger.age) {
+        // Tampilkan pesan error menggunakan Vuetify Snackbar
+        this.snackbar = true;
+        return;
+      }
+      // set data penumpang ke state Vuex
+
+      this.$store.dispatch('setPassengerData', this.passenger)
+
+      // redirect ke halaman berhasil
+      this.$router.push('/pembayaran')
     }
   }
 }

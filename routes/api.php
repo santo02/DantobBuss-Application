@@ -28,7 +28,7 @@ Route::post('registrasi', [RegisterUserController::class, 'RegisterUser']);
 Route::post('login', [LoginController::class, 'login']);
 // Route::post('logout', [LoginController::class, 'logout']th);
 
-Route::middleware(['auth:api', 'role:admin,penumpang,supir'])->group(function () {
+Route::middleware(['auth:api', 'role:admin,driver,passenger'])->group(function () {
 
     Route::post('logout', [LoginController::class, 'logout']);
     Route::get('/user/profile', [UserController::class, 'user']);
@@ -60,9 +60,13 @@ Route::middleware(['auth:api', 'role:admin'])->group(function () {
     Route::get('/schedule/type/economi', [ScheduleController::class, 'ShowEconomi']);
 
 
-    Route::post('bookings/{id_bus}', [BookingController::class, 'store']);
-    Route::get('/bookings/show/{id}', [BookingController::class, 'show']);
-    Route::get('/bookings/show/all', [BookingController::class, 'index']);
+
+    Route::post('bookings', [BookingController::class, 'store']);
+    //mengambil satu pesanan
+    Route::get('/bookings/show/{id}', [BookingController::class, 'getOne']);
+    //mengambil semua pesanan yang memiliki schedule_id == $id
+    Route::get('/bookings/show/schedules/{id}', [BookingController::class, 'getOneSchedules']);
+    Route::get('/bookings/index/all', [BookingController::class, 'index']);
     Route::put('/bookings/update/{id}', [BookingController::class, 'update']);
 });
 

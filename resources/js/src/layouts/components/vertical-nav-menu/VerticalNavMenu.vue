@@ -1,8 +1,8 @@
 <template>
-  <v-navigation-drawer :value="isDrawerOpen" app floating width="260" class="app-navigation-menu" :right="$vuetify.rtl"
-    @input="val => $emit('update:is-drawer-open', val)">
+  <v-navigation-drawer :value="isDrawerOpen" app floating width="260" color="primary" class="app-navigation-menu"
+    :right="$vuetify.rtl" @input="val => $emit('update:is-drawer-open', val)">
 
-    <div class="vertical-nav-header  d-flex items-center ps-6 pe-5 pt-5 pb-2" color="secondary">
+    <div class="vertical-nav-header  d-flex items-center ps-6 pe-5 pt-5 pb-2" color="primary">
       <router-link to="/dashboard" class="d-flex align-center text-decoration-none">
         <v-img :src="require('@/assets/images/logos/logo-KBT.png').default" max-height="50px" max-width="100px" alt="logo"
           contain eager class="app-logo me-auto" color="secondary"></v-img>
@@ -13,10 +13,10 @@
     </div>
 
     <!-- Navigation Items -->
-    <v-list expand shaped class="vertical-nav-menu-items pr-5" color="primary" text-color="white">
+    <v-list expand shaped class="vertical-nav-menu-items pr-5" v-if="userRole == 'admin'" text-color="white">
       <nav-menu-link title="Dashboard" :to="{ name: 'dashboard' }" :icon="icons.mdiHomeOutline"></nav-menu-link>
-      <nav-menu-link title="Account Settings" :to="{ name: 'pages-account-settings' }"
-        :icon="icons.mdiAccountCogOutline"></nav-menu-link>
+      <!-- <nav-menu-link title="Account Settings" :to="{ name: 'pages-account-settings' }"
+        :icon="icons.mdiAccountCogOutline"></nav-menu-link> -->
       <nav-menu-group title="Kelola" :icon="icons.mdiCarCog">
         <nav-menu-link title="Supir" :to="{ name: 'pages-supir' }"
           :icon="icons.mdiCardAccountDetailsOutline"></nav-menu-link>
@@ -25,29 +25,33 @@
         <nav-menu-link title="Jadwal " :to="{ name: 'pages-schedule' }"
           :icon="icons.mdiCreditCardOutline"></nav-menu-link>
       </nav-menu-group>
-      <nav-menu-link title="Pemesanan " :to="{ name: 'pages-pemesanan' }" :icon="icons.mdiCreditCardOutline"></nav-menu-link>
-      <nav-menu-group title="Pages" :icon="icons.mdiFileOutline">
+      <nav-menu-link title="Pemesanan " :to="{ name: 'pages-pemesanan' }"
+        :icon="icons.mdiCreditCardOutline"></nav-menu-link>
+
+
+      <!-- <nav-menu-group title="Pages" :icon="icons.mdiFileOutline">
         <nav-menu-link title="Login" :to="{ name: 'pages-login' }" ></nav-menu-link>
         <nav-menu-link title="Register" :to="{ name: 'pages-register' }" ></nav-menu-link>
         <nav-menu-link title="Error" :to="{ name: 'error-404' }"></nav-menu-link>
-      </nav-menu-group>
-      <nav-menu-section-title title="USER INTERFACE"></nav-menu-section-title>
+      </nav-menu-group> -->
+
+
+      <!-- <nav-menu-section-title title="USER INTERFACE"></nav-menu-section-title>
       <nav-menu-link title="Typography" :to="{ name: 'typography' }" :icon="icons.mdiAlphaTBoxOutline"></nav-menu-link>
       <nav-menu-link title="Icons" :to="{ name: 'icons' }" :icon="icons.mdiEyeOutline"></nav-menu-link>
       <nav-menu-link title="Cards" :to="{ name: 'cards' }" :icon="icons.mdiCreditCardOutline"></nav-menu-link>
       <nav-menu-link title="Tables" :to="{ name: 'simple-table' }" :icon="icons.mdiTable"></nav-menu-link>
-      <nav-menu-link title="Form Layouts" :to="{ name: 'form-layouts' }" :icon="icons.mdiFormSelect"></nav-menu-link>
+      <nav-menu-link title="Form Layouts" :to="{ name: 'form-layouts' }" :icon="icons.mdiFormSelect"></nav-menu-link> -->
     </v-list>
-    <a href="https://themeselection.com/products/materio-vuetify-vuejs-laravel-admin-template" target="_blank"
-      rel="nofollow">
-      <!-- <v-img
-        :src="require(`@/assets/images/pro/upgrade-banner-${$vuetify.theme.dark ? 'dark' : 'light'}.png`).default"
-        alt="upgrade-banner"
-        transition="scale-transition"
-        class="upgrade-banner mx-auto"
-        max-width="230"
-      ></v-img> -->
-    </a>
+    <v-list expand shaped class="vertical-nav-menu-items pr-5" v-if="userRole == 'passenger'" text-color="white">
+      <nav-menu-link title="Beranda" :to="{ name: 'dashboard-penumpang' }" :icon="icons.mdiHomeOutline"></nav-menu-link>
+
+      <nav-menu-link title="Pesan E-ticket" :to="{ name: 'all-bus' }"
+        :icon="icons.mdiCardAccountDetailsOutline"></nav-menu-link>
+      <nav-menu-link title="Riwayat Perjalanan" :to="{ name: 'all-bus' }" :icon="icons.mdiCar"></nav-menu-link>
+
+    </v-list>
+
   </v-navigation-drawer>
 </template>
 
@@ -102,6 +106,11 @@ export default {
       },
     }
   },
+  computed: {
+    userRole() {
+      return this.$store.state.userRole
+    },
+  }
 }
 </script>
 

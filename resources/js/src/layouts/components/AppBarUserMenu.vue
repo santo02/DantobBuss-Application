@@ -129,7 +129,7 @@ import {
   mdiCurrencyUsd,
   mdiHelpCircleOutline,
   mdiLogoutVariant,
-  
+
 } from '@mdi/js'
 import axios from 'axios';
 export default {

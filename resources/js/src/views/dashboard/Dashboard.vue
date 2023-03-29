@@ -133,6 +133,7 @@ export default {
     DashboardWeeklyOverview,
     DashboardDatatable,
   },
+
   setup() {
     const totalProfit = {
       statTitle: 'Total Profit',
@@ -178,5 +179,8 @@ export default {
       salesQueries,
     }
   },
+  mounted(){
+    console.log(this.$store.state.userRole)
+  }
 }
 </script>

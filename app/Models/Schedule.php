@@ -15,5 +15,10 @@ class Schedule extends Model
         'tanggal',
         'harga' 
     ];
+
+    public function bookings()
+    {
+        return $this->hasMany(Bookings::class);
+    }
     
 }

@@ -58,13 +58,13 @@ const routes = [
     component: () => import('@/views/pages/Pemesanan/pemesanan.vue'),
   },
   {
-    path: '/costumize-pemesanan/:id',
+    path: '/costumize-pemesanan/',
     name: 'pages-costumize-pemesanan',
     component: () => import('@/views/pages/Pemesanan/costum_pesanan.vue'),
   },
   {
-    path: '/confirmasi-pemesanan/:id/:seat',
-    name: 'pages-confirmasi-pemesanan',
+    path: '/confirmasi-pemesanan',
+    name: 'pages-confirmation-bookings',
     component: () => import('@/views/pages/Pemesanan/confirmasi_pesanan.vue'),
   },
   {
@@ -73,9 +73,24 @@ const routes = [
     component: () => import('@/views/pages/Pembayaran/pembayaran-page.vue'),
   },
   {
+    path: '/pembayaran-method',
+    name: 'pembayaran-method',
+    component: () => import('@/views/pages/Pembayaran/pembayaran-method.vue'),
+  },
+  {
+    path: '/all-bus',
+    name: 'all-bus',
+    component: () => import('@/views/pages/Pemesanan/pemesanan-by-penumpang.vue'),
+  },
+  {
     path: '/dashboard',
     name: 'dashboard',
     component: () => import('@/views/dashboard/Dashboard.vue'),
+  },
+  {
+    path: '/Beranda',
+    name: 'dashboard-penumpang',
+    component: () => import('@/views/dashboard/DashboardPenumpang.vue'),
   },
   {
     path: '/typography',
