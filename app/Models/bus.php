@@ -21,17 +21,13 @@ class bus extends Model
 
     public function driver()
     {
-        return $this->belongsTo(User::class, 'driver_id');
+        return $this->belongsTo(User::class, 'supir_id');
     }
 
-    public function route()
-    {
-        return $this->belongsTo(Routes::class);
-    }
 
     public function bookings()
     {
-        return $this->hasMany(Bookings::class);
+        return $this->hasManyThrough(Bookings::class, Schedule::class);
     }
 
     public function trackings()
@@ -39,4 +35,8 @@ class bus extends Model
         return $this->hasMany(Trackings::class);
     }
 
+    public function schedules()
+    {
+        return $this->hasMany(schedules::class, 'bus_id');
+    }
 }

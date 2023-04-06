@@ -40,7 +40,8 @@
 
             <v-btn block color="primary" class="mt-6" :loading="isLoading" @click.prevent="login">
               <template v-if="!isLoading"> Login </template>
-              <template v-else> <v-progress-circular indeterminate size="24" color="white"></v-progress-circular>
+              <template v-if="isLoading"> <v-progress-circular indeterminate size="24"
+                  color="white"></v-progress-circular>
               </template>
             </v-btn>
 
@@ -77,6 +78,8 @@
 import { mdiFacebook, mdiTwitter, mdiGithub, mdiGoogle, mdiEyeOutline, mdiEyeOffOutline } from '@mdi/js'
 import { ref } from '@vue/composition-api'
 import axios from 'axios';
+
+import doku from '../../utils/doku';
 
 export default {
   setup() {
@@ -149,10 +152,11 @@ export default {
             console.log(this.errors);
           } else {
             this.errors = { general: ["Something went wrong. Please try again later."] };
-            t
+
           }
+          this.isLoading = false;
         });
-      this.isLoading = false;
+
     },
   }
 }

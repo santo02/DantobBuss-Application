@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\API\BaseController;
 use App\Models\Bookings;
+use App\Models\Pembayaran;
 use App\Models\Routes;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,13 +18,12 @@ class BookingController extends BaseController
     {
 
         $user = Auth::user();
-
+        $currentDate = Carbon::now()->format('Ymd');
         $validator = Validator::make($request->all(), [
             'schedules_id' => 'required|exists:schedules,id',
             'name' => 'required|string',
             'age' => 'required|string',
             'num_seats' => 'required|integer',
-            'status' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -36,16 +37,38 @@ class BookingController extends BaseController
         $booking->age = $request->age;
         $booking->alamatJemput = $request->alamatJemput;
         $booking->num_seats = $request->num_seats;
-        $booking->status = $request->status;
+        $booking->status = "menunggu";
         $booking->save();
 
-        return $this->sendResponse($booking, 'Bookings Successfully');
+        $pembayaran = new Pembayaran;
+        $pembayaran->schedules_id = $request->schedules_id;
+        $pembayaran->bookings_id = $booking->id;
+        $pembayaran->method = 'cash';
+        $pembayaran->status = 'berhasil';
+        $pembayaran->date = Carbon::now();
+        $pembayaran->original_request_id    = random_int(100, 9999);
+        $pembayaran->transaksi_id = $booking->id + 100000;
+        $pembayaran->terminal_id    = random_int(100, 999);
+        $pembayaran->invoice_number     = "INV-$currentDate";
+        $pembayaran->amount    = 10000;
+        $pembayaran->virtual_account_number    = 000;
+        $pembayaran->active = 000;
+        $pembayaran->save();
+
+
+
+        if ($booking->save() && $pembayaran->save()) {
+            return response()->json([
+                'bookings' => $booking,
+                'pembayaran' => $pembayaran,
+                'message' => 'berhasil'
+            ]);
+        }
+        return 'gagal';
     }
 
     public function index()
     {
-        // $booking = Bookings::with('schedules', 'user')->get();
-        // $booking = Bookings::with('schedules', 'user')->all()->get();
         $booking = Bookings::with('schedules', 'user')->get();
 
         if ($booking) {
@@ -65,6 +88,32 @@ class BookingController extends BaseController
             return response()->json(['message' => 'Booking not found.'], 404);
         }
     }
+
+    public function getByUserId()
+    {
+        $user = Auth::user();
+        // $booking = DB::table('bookings')
+        //     ->join('schedules', 'bookings.schedules_id', 'schedules.id')
+        //     ->join('buses', 'schedules.bus_id', 'buses.id')
+        //     ->join('users', 'buses.supir_id', 'users.id')
+        //     ->where('bookings.user_id', $user->id)
+        //     ->where('schedules.status', 'complete')
+        //     ->get();
+        $booking = DB::table('bookings')
+            ->join('schedules', 'bookings.schedules_id', 'schedules.id')
+            ->join('buses', 'schedules.bus_id', 'buses.id')
+            ->join('users', 'buses.supir_id', 'users.id')
+            ->where('bookings.user_id', $user->id)
+            ->where('schedules.status', 'complete')
+            ->get();
+        // $booking = Bookings::with('schedules', 'user', 'buss')->where('user_id', $user->id)->get();
+        if ($booking) {
+            return response()->json($booking);
+        } else {
+            return response()->json(['message' => 'Booking not found.'], 404);
+        }
+    }
+
     public function getOneSchedules($id)
     {
         $booking = Bookings::with('schedules', 'user')->where('schedules_id', $id)->get();
@@ -78,8 +127,6 @@ class BookingController extends BaseController
     public function update($id)
     {
         $booking = Bookings::find($id);
-
-
         return $this->sendResponse($booking, 'Booking Retrieved Successfully');
     }
 }

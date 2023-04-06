@@ -35,18 +35,9 @@
           </p>
           <v-switch v-model="jemput" color="primary"></v-switch>
           <v-col v-if="jemput" cols="12">
-            <label for="alamat">Alamat Jemput</label>
-            <v-text-field id="alamat" v-model="passenger.alamatJemput" outlined dense placeholder="Alamat Jemput"
-              hide-details></v-text-field>
-            <v-spacer></v-spacer>
+            <v-autocomplete filled solo clearable  v-model="passenger.alamatJemput" :items="items"
+              label="Pilih Lokasi Penjemputan"></v-autocomplete>
           </v-col>
-          <v-col v-else cols="12" style="display: none;">
-            <label for="alamat">Alamat Jemput</label>
-            <v-text-field id="alamat" v-model="passenger.alamatJemput" outlined dense placeholder="Alamat Jemput"
-              hide-details></v-text-field>
-            <v-spacer></v-spacer>
-          </v-col>
-
         </div>
       </div>
       <div class="check">
@@ -92,7 +83,7 @@
       </div>
     </v-card>
     <v-snackbar ref="snackbar" v-model="snackbar" color="error" relative outlined top>
-      Nama lengkap dan umur harus diisi!
+      Nama lengkap dan umur harus di isi!
       <template v-slot:action="{ attrs }">
         <v-btn color="error" text v-bind="attrs" @click="snackbar = false">
           Close
@@ -125,20 +116,28 @@ export default {
   },
   computed: {
     ...mapState({
-      busData: state => state.busData,
       selectedSeat: state => state.selectedSeat,
-    })
+    }),
+    id_schedule() {
+      return this.$store.state.busData.id_schedule
+    },
+    harga() {
+      return this.$store.state.busData.harga
+    }
+
   },
   data() {
     return {
       schedule: {},
-      jemput: '',
+      jemput: false,
       passenger: {
         name: '',
         age: '',
-        alamatJemput: this.jemput ? this.passenger.alamatJemput : "not request"
+        alamatJemput: "not request"
       },
-      snackbar: false
+      snackbar: false,
+      items: ["Balige", "Tambunan", "Tampubolon", "Laguboti"]
+
     }
   },
 
@@ -158,7 +157,7 @@ export default {
     },
     getSchedule() {
       const access_token = localStorage.getItem('access_token');
-      let uri = `/api/schedule/show/${this.busData}`;
+      let uri = `/api/schedule/show/${this.id_schedule}`;
       axios.get(uri, {
         headers: {
           'Authorization': `Bearer ${access_token}`
@@ -178,13 +177,12 @@ export default {
         return;
       }
       // set data penumpang ke state Vuex
-
       this.$store.dispatch('setPassengerData', this.passenger)
 
       // redirect ke halaman berhasil
       this.$router.push('/pembayaran')
     }
-  }
+  },
 }
 </script>
 

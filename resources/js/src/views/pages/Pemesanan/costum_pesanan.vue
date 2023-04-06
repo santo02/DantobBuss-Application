@@ -61,7 +61,6 @@
         </v-container>
       </div>
     </div>
-
   </v-card>
 </template>
 
@@ -97,7 +96,13 @@ export default {
     }
   },
   computed: {
-    ...mapState(['busData', 'selectedSeat'])
+    ...mapState(['busData', 'selectedSeat']),
+    id_schedule() {
+      return this.$store.state.busData.id_schedule
+    },
+    harga() {
+      return this.$store.state.busData.harga
+    }
   },
 
   mounted() {
@@ -121,7 +126,7 @@ export default {
 
     getbookingsChair() {
       const access_token = localStorage.getItem('access_token');
-      axios.get(`/api/bookings/show/schedules/${this.busData}`, {
+      axios.get(`/api/bookings/show/schedules/${this.id_schedule}`, {
         headers: {
           'Authorization': `Bearer ${access_token}`
         }
@@ -139,7 +144,7 @@ export default {
     },
     getSchedule() {
       const access_token = localStorage.getItem('access_token');
-      let uri = `/api/schedule/show/${this.busData}`;
+      let uri = `/api/schedule/show/${this.id_schedule}`;
       axios.get(uri, {
         headers: {
           'Authorization': `Bearer ${access_token}`

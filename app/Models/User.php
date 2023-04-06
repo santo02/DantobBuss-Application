@@ -25,7 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function buses()
     {
-        return $this->hasMany(bus::class, 'supir_id');
+        return $this->belongsTo(bus::class, 'supir_id');
     }
 
     public function bookings()

@@ -34,7 +34,7 @@ class BusController extends BaseController
     {
         $bus = DB::table('buses')
             ->join('users', 'users.id', '=', 'buses.supir_id')
-            ->select( 'buses.*','users.name', 'users.email')
+            ->select('buses.*', 'users.name', 'users.email')
             ->get();
 
         return $this->sendResponse(new BusResource($bus), 'Bus Retrieved Successfully');

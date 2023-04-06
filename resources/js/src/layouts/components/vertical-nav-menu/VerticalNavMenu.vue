@@ -13,20 +13,35 @@
     </div>
 
     <!-- Navigation Items -->
-    <v-list expand shaped class="vertical-nav-menu-items pr-5" v-if="userRole == 'admin'" text-color="white">
+    <v-list expand shaped class="vertical-nav-menu-items pr-5" text-color="white">
       <nav-menu-link title="Dashboard" :to="{ name: 'dashboard' }" :icon="icons.mdiHomeOutline"></nav-menu-link>
-      <!-- <nav-menu-link title="Account Settings" :to="{ name: 'pages-account-settings' }"
+      <div v-if="userRole == 'admin'">
+        <!-- <nav-menu-link title="Account Settings" :to="{ name: 'pages-account-settings' }"
         :icon="icons.mdiAccountCogOutline"></nav-menu-link> -->
-      <nav-menu-group title="Kelola" :icon="icons.mdiCarCog">
-        <nav-menu-link title="Supir" :to="{ name: 'pages-supir' }"
-          :icon="icons.mdiCardAccountDetailsOutline"></nav-menu-link>
-        <nav-menu-link title="Mobil" :to="{ name: 'pages-mobil' }" :icon="icons.mdiCar"></nav-menu-link>
-        <nav-menu-link title="Rute" :to="{ name: 'pages-routes' }" :icon="icons.mdiMapMarkerDistance"></nav-menu-link>
-        <nav-menu-link title="Jadwal " :to="{ name: 'pages-schedule' }"
+        <nav-menu-group title="Kelola" :icon="icons.mdiCarCog">
+          <nav-menu-link title="Supir" :to="{ name: 'pages-supir' }"
+            :icon="icons.mdiCardAccountDetailsOutline"></nav-menu-link>
+          <nav-menu-link title="Mobil" :to="{ name: 'pages-mobil' }" :icon="icons.mdiCar"></nav-menu-link>
+          <nav-menu-link title="Rute" :to="{ name: 'pages-routes' }" :icon="icons.mdiMapMarkerDistance"></nav-menu-link>
+          <nav-menu-link title="Jadwal " :to="{ name: 'pages-schedule' }"
+            :icon="icons.mdiCreditCardOutline"></nav-menu-link>
+        </nav-menu-group>
+        <nav-menu-link title="Pemesanan " :to="{ name: 'pages-pemesanan' }"
           :icon="icons.mdiCreditCardOutline"></nav-menu-link>
-      </nav-menu-group>
-      <nav-menu-link title="Pemesanan " :to="{ name: 'pages-pemesanan' }"
-        :icon="icons.mdiCreditCardOutline"></nav-menu-link>
+      </div>
+      <div v-if="userRole == 'passenger'">
+        <nav-menu-link title="Pesan E-ticket" :to="{ name: 'all-bus' }"
+          :icon="icons.mdiCardAccountDetailsOutline"></nav-menu-link>
+        <nav-menu-link title="Riwayat Perjalanan" :to="{ name: 'riwayat-perjalanan' }"
+          :icon="icons.mdiCar"></nav-menu-link>
+
+      </div>
+      <div v-if="userRole == 'driver'">
+        <nav-menu-link title="Pesan E-ticket" :to="{ name: 'all-bus' }"
+          :icon="icons.mdiCardAccountDetailsOutline"></nav-menu-link>
+        <nav-menu-link title="Riwayat Perjalanan" :to="{ name: 'all-bus' }" :icon="icons.mdiCar"></nav-menu-link>
+
+      </div>
 
 
       <!-- <nav-menu-group title="Pages" :icon="icons.mdiFileOutline">
@@ -43,14 +58,11 @@
       <nav-menu-link title="Tables" :to="{ name: 'simple-table' }" :icon="icons.mdiTable"></nav-menu-link>
       <nav-menu-link title="Form Layouts" :to="{ name: 'form-layouts' }" :icon="icons.mdiFormSelect"></nav-menu-link> -->
     </v-list>
-    <v-list expand shaped class="vertical-nav-menu-items pr-5" v-if="userRole == 'passenger'" text-color="white">
+    <!-- <v-list expand shaped class="vertical-nav-menu-items pr-5"  text-color="white">
       <nav-menu-link title="Beranda" :to="{ name: 'dashboard-penumpang' }" :icon="icons.mdiHomeOutline"></nav-menu-link>
 
-      <nav-menu-link title="Pesan E-ticket" :to="{ name: 'all-bus' }"
-        :icon="icons.mdiCardAccountDetailsOutline"></nav-menu-link>
-      <nav-menu-link title="Riwayat Perjalanan" :to="{ name: 'all-bus' }" :icon="icons.mdiCar"></nav-menu-link>
 
-    </v-list>
+    </v-list> -->
 
   </v-navigation-drawer>
 </template>

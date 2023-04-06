@@ -19,14 +19,10 @@ class Bookings extends Model
     {
         return $this->belongsTo(Schedule::class);
     }
+    public function buss()
+    {
+        return $this->belongsTo(bus::class);
+    }
 
-    // public function bus()
-    // {
-    //     return $this->belongsTo(bus::class);
-    // }
 
-    // public function route()
-    // {
-    //     return $this->belongsTo(Routes::class);
-    // }
 }

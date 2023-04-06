@@ -7,6 +7,7 @@
           <h2>{{ item.derpature }} -> {{ item.arrival }}</h2>
           <h5>{{ formatHour(item.tanggal) }}</h5>
           <h5>{{ formatDate(item.tanggal) }}</h5>
+          <h5>{{ item.harga }}</h5>
         </div>
         <template class="text-center">
           <v-container class="grey lighten-5">
@@ -49,45 +50,55 @@
               <v-col>
                 <v-radio-group v-model="selectedMethod">
                   <!-- tunai -->
-                  <v-banner>
-                    <v-row>
-                      <v-col cols="auto">
-                        <v-icon size="22" color="primary">{{ icons.mdiCashCheck }}</v-icon>
+                  <div v-if="userRole == 'admin'">
+                    <v-banner>
+                      <v-row>
+                        <v-col cols="auto">
+                          <v-icon size="22" color="primary">{{ icons.mdiCashCheck }}</v-icon>
+                        </v-col>
+                        <v-col @click="togglePaymentcash">
+                          Tunai
+                        </v-col>
+                        <v-col cols="auto">
+                          <v-icon size="22">{{ icons.mdiChevronRight }}</v-icon>
+                        </v-col>
+                      </v-row>
+                    </v-banner>
+                    <v-col v-if="showPaymentcash">
+                      <v-col>
+                        <v-btn color="primary" @click.prevent="BayarCash">Bayar</v-btn>
                       </v-col>
-                      <v-col @click="togglePaymentcash">
-                        Tunai
-                      </v-col>
-                      <v-col cols="auto">
-                        <v-icon size="22">{{ icons.mdiChevronRight }}</v-icon>
-                      </v-col>
-                    </v-row>
-                  </v-banner>
-                  <v-col v-if="showPaymentcash">
-                    <v-col>
-                      <v-btn color="primary" @click.prevent="BayarCash">Bayar</v-btn>
                     </v-col>
-                  </v-col>
+
+                  </div>
+
                   <!-- nontunai -->
-                  <v-banner>
-                    <v-row>
-                      <v-col cols="auto">
-                        <v-icon size="22" color="primary">{{ icons.mdiWalletOutline }}</v-icon>
+                  <div v-if="userRole == 'passenger'">
+                    <v-banner>
+                      <v-row>
+                        <v-col cols="auto">
+                          <v-icon size="22" color="primary">{{ icons.mdiWalletOutline }}</v-icon>
+                        </v-col>
+                        <v-col @click="togglePaymentNoncash">
+                          NonTunai
+                        </v-col>
+                        <v-col cols="auto">
+                          <v-icon size="22">{{ icons.mdiChevronRight }}</v-icon>
+                        </v-col>
+                      </v-row>
+                    </v-banner>
+                    <v-col v-if="showPaymentNoncash">
+                      <v-col class="ml-3">
+                        <v-row>
+                          <v-col cols="auto">
+                            <v-col>
+                              <v-btn color="primary" @click.prevent="BayarNontunai">Bayar Sekarang</v-btn>
+                            </v-col>
+                          </v-col>
+                        </v-row>
                       </v-col>
-                      <v-col @click="togglePaymentNoncash">
-                        NonTunai
-                      </v-col>
-                      <v-col cols="auto">
-                        <v-icon size="22">{{ icons.mdiChevronRight }}</v-icon>
-                      </v-col>
-                    </v-row>
-                  </v-banner>
-                  <v-col v-if="showPaymentNoncash">
-                    <v-col>
-                      <ul>
-                        <li><span>Metode nontunai belum tersedia</span></li>
-                      </ul>
                     </v-col>
-                  </v-col>
+                  </div>
                 </v-radio-group>
               </v-col>
             </v-row>
@@ -128,14 +139,24 @@ export default {
         'age',
         'num_seats',
         'alamat_jemput',
-        'status'
+        'status',
+        'harga'
       ],
     }
   },
   computed: {
-    ...mapState(['busData', 'selectedSeat']),
+    ...mapState(['selectedSeat']),
     passengerData() {
       return this.$store.state.passengerData
+    },
+    id_schedule() {
+      return this.$store.state.busData.id_schedule
+    },
+    harga() {
+      return this.$store.state.busData.harga
+    },
+    userRole() {
+      return this.$store.state.userRole
     },
   },
   mounted() {
@@ -161,7 +182,7 @@ export default {
     },
     getSchedule() {
       const access_token = localStorage.getItem('access_token');
-      let uri = `/api/schedule/show/${this.busData}`;
+      let uri = `/api/schedule/show/${this.id_schedule}`;
       axios.get(uri, {
         headers: {
           'Authorization': `Bearer ${access_token}`
@@ -176,12 +197,13 @@ export default {
     BayarCash() {
       const access_token = localStorage.getItem('access_token');
 
-      axios.post('api/bookings', {
+      axios.post('api/bookings/nontunai', {
         schedules_id: this.busData,
         name: this.passengerData.name,
         age: this.passengerData.age,
         num_seats: this.selectedSeat,
         alamatJemput: this.passengerData.alamatJemput,
+        harga: this.schedule.harga,
         status: 'berhasil',
       }, {
         headers: {
@@ -197,6 +219,31 @@ export default {
         console.log(error.response.data.errors)
       })
     },
+    BayarNontunai() {
+      const access_token = localStorage.getItem('access_token');
+
+      axios.post('api/bookings/nontunai', {
+        schedules_id: this.id_schedule,
+        name: this.passengerData.name,
+        age: this.passengerData.age,
+        num_seats: this.selectedSeat,
+        alamatJemput: this.passengerData.alamatJemput,
+        harga: this.harga,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${access_token}`
+        }
+      }).then(response => {
+        console.log(response.data);
+        const { payment: { url } } = response.data.data.response;
+
+        window.open(url, "_blank");
+      }).catch((error) => {
+        console.log(error)
+        // console.log("Gagal")
+      })
+    }
+    ,
   },
 
 

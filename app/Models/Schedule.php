@@ -13,12 +13,23 @@ class Schedule extends Model
         'bus_id',
         'route_id',
         'tanggal',
-        'harga' 
+        'harga',
+        'status'
     ];
-
-    public function bookings()
+    public function buses()
     {
-        return $this->hasMany(Bookings::class);
+        return $this->belongsTo(bus::class, 'id');
     }
-    
+    public function users()
+    {
+        return $this->belongsTo(User::class, 'supir_id');
+    }
+    public function routes()
+    {
+        return $this->belongsTo(routes::class, 'route_id');
+    }
+    // public function bookings()
+    // {
+    //     return $this->hasMany(Bookings::class);
+    // }
 }

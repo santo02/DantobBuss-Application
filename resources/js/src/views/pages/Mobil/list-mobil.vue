@@ -51,7 +51,7 @@ export default {
 
         },
         { text: 'Nomor Pintu', value: 'nomor_pintu' },
-        { text: 'Supir', value: 'name' },
+        { text: 'Supir', value: 'driver.name' },
         { text: 'Jumlah Seat', value: 'number_of_seats' },
         { text: 'Type', value: 'type' },
         { text: 'status', value: 'status' },

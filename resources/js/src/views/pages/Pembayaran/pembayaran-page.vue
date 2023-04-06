@@ -105,9 +105,18 @@ export default {
     }
   },
   computed: {
-    ...mapState(['busData', 'selectedSeat']),
+    ...mapState(['selectedSeat']),
     passengerData() {
       return this.$store.state.passengerData
+    },
+    id_schedule() {
+      return this.$store.state.busData.id_schedule
+    },
+    harga() {
+      return this.$store.state.busData.harga
+    },
+    userRole() {
+      return this.$store.state.userRole
     },
   },
   mounted() {
@@ -125,7 +134,7 @@ export default {
     },
     getSchedule() {
       const access_token = localStorage.getItem('access_token');
-      let uri = `/api/schedule/show/${this.busData}`;
+      let uri = `/api/schedule/show/${this.id_schedule}`;
       axios.get(uri, {
         headers: {
           'Authorization': `Bearer ${access_token}`
@@ -139,8 +148,6 @@ export default {
     },
     ...mapActions(['setPassengerData']),
     submitData() {
-
-
       // redirect ke halaman berhasil
       this.$router.push('/pembayaran-method')
     }

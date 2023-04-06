@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BusController;
+use App\Http\Controllers\ConfirmPembayaran;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\RoutesController;
 use App\Http\Controllers\ScheduleController;
@@ -11,6 +13,8 @@ use App\Http\Controllers\UserController;
 use App\Models\Bookings;
 use App\Models\bus;
 use App\Models\Role;
+use App\Utils\SignatureDoku;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,14 +28,31 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Route::post('/pembayaran', [PembayaranController::class, 'generateToken']);
+
+
 Route::post('registrasi', [RegisterUserController::class, 'RegisterUser']);
 Route::post('login', [LoginController::class, 'login']);
+// Route::get('signature', function () {
+//     // return $request;
+//     $signature = SignatureDoku::generateToken();
+
+//     return $signature;
+// });
+
 // Route::post('logout', [LoginController::class, 'logout']th);
 
 Route::middleware(['auth:api', 'role:admin,driver,passenger'])->group(function () {
-
     Route::post('logout', [LoginController::class, 'logout']);
     Route::get('/user/profile', [UserController::class, 'user']);
+    Route::get('/schedule/show/all', [ScheduleController::class, 'index']);
+    Route::get('/schedule/show/{id}', [ScheduleController::class, 'SelectOne']);
+    Route::get('/schedule/type/executive', [ScheduleController::class, 'ShowExecutive']);
+    Route::get('/schedule/type/economi', [ScheduleController::class, 'ShowEconomi']);
+    Route::post('bookings', [BookingController::class, 'store']);
+    Route::post('bookings/nontunai', [PembayaranController::class, 'generateToken']);
+    Route::get('/bookings/show/schedules/{id}', [BookingController::class, 'getOneSchedules']);
+    Route::get('/bookings/show/{id}', [BookingController::class, 'getOne']);
 });
 
 Route::middleware(['auth:api', 'role:admin'])->group(function () {
@@ -54,30 +75,16 @@ Route::middleware(['auth:api', 'role:admin'])->group(function () {
     Route::delete('/routes/destroy/{id}', [RoutesController::class, 'destroy']);
 
     Route::post('/schedule/add', [ScheduleController::class, 'store']);
-    Route::get('/schedule/show/all', [ScheduleController::class, 'index']);
-    Route::get('/schedule/show/{id}', [ScheduleController::class, 'SelectOne']);
-    Route::get('/schedule/type/executive', [ScheduleController::class, 'ShowExecutive']);
-    Route::get('/schedule/type/economi', [ScheduleController::class, 'ShowEconomi']);
 
-
-
-    Route::post('bookings', [BookingController::class, 'store']);
-    //mengambil satu pesanan
-    Route::get('/bookings/show/{id}', [BookingController::class, 'getOne']);
-    //mengambil semua pesanan yang memiliki schedule_id == $id
-    Route::get('/bookings/show/schedules/{id}', [BookingController::class, 'getOneSchedules']);
     Route::get('/bookings/index/all', [BookingController::class, 'index']);
     Route::put('/bookings/update/{id}', [BookingController::class, 'update']);
 });
 
-Route::middleware(['auth:api', 'role:penumpang'])->group(function () {
-    Route::get('/penumpang', function () {
-        return 'Welcome penumpang';
-    });
+Route::middleware(['auth:api', 'role:passenger'])->group(function () {
+    Route::get('/bookings/my', [BookingController::class, 'getByUserId']);
 });
 
-Route::middleware(['auth:api', 'role:supir'])->group(function () {
-    Route::get('/supir', function () {
-        return 'Welcome supir';
-    });
+Route::middleware(['auth:api', 'role:driver'])->group(function () {
+    Route::get('/schedules/driver', [ScheduleController::class, 'getForSupir']);
+    Route::get('/confirmasi-pembayaran', [ConfirmPembayaran::class, 'index']);
 });

@@ -35,13 +35,14 @@
                 <v-row no-gutters class="my-3">
                   <v-col cols="12">
                     <div class="row">
-                      <div class="col-md-5"><v-icon left>{{ icons.mdiCalendarClock }}</v-icon> {{ formatDate(eco.tanggal) }}</div>
+                      <div class="col-md-5"><v-icon left>{{ icons.mdiCalendarClock }}</v-icon> {{ formatDate(eco.tanggal)
+                      }}</div>
                       <div class="col-md-3"><v-icon left>{{ icons.mdiAccount }}</v-icon> {{ eco.name }}</div>
                       <div class="col-md-2" v-for="(count, id) in bookingCounts" :key="id" v-if="eco.schedule_id == id">
-                          <small color="secondary">Tersedia : {{ eco.number_of_seats - count - 1 }} Kursi </small>
+                        <small color="secondary">Tersedia : {{ eco.number_of_seats - count - 1 }} Kursi </small>
                       </div>
                       <div class="col-md-2">
-                        <v-btn color="secondary" @click="selectBus(eco.schedule_id)" class="ml-3"
+                        <v-btn color="secondary" @click="selectBus(eco.schedule_id, eco.harga)" class="ml-3"
                           style="color: white; font-weight:bold;">
                           Pesan
                         </v-btn>
@@ -76,9 +77,11 @@
                 <v-card-text class="d-flex justify-space-between flex-column flex-sm-row fill-height">
                   <div><v-icon left>{{ icons.mdiCalendarClock }}</v-icon> {{ formatDate(exe.tanggal) }}</div>
                   <div><v-icon left>{{ icons.mdiAccount }}</v-icon> {{ exe.name }}</div>
-                  <div><v-icon left>{{ icons.mdiAccountGroup }}</v-icon> {{ exe.number_of_seats - hasbookedExe - 1 }}
+                  <div class="col-md-2" v-for="(countsExe, id) in bookingCounts" :key="id" v-if="exe.schedule_id == id">
+                    <small color="secondary">Tersedia : {{ exe.number_of_seats - countsExe - 1 }} Kursi </small>
                   </div>
-                  <v-btn color="secondary" @click="selectBus(exe.schedule_id)" style="color: white; font-weight:bold;">
+                  <v-btn color="secondary" @click="selectBus(exe.schedule_id, exe.harga)"
+                    style="color: white; font-weight:bold;">
                     Pesan
                   </v-btn>
                 </v-card-text>
@@ -91,9 +94,6 @@
     </v-tabs-items>
   </v-card>
 </template>
-
-
-
 <script>
 import axios from 'axios';
 import moment from 'moment';
@@ -119,10 +119,11 @@ export default {
       economi: [],
       executive: [],
       bookingCounts: {},
+      bookingCountsExe: {},
       hasbookedEco: '',
       hasbookedExe: '',
       dateFilter: null,
-      routeFilter: null
+      routeFilter: null,
     }
   },
   computed: {
@@ -130,9 +131,9 @@ export default {
   },
   methods: {
     ...mapActions(['setSelectedSeat']),
-    selectBus(idSchedulues) {
+    selectBus(id_schedule, harga) {
       // set data bus yang dipilih ke state Vuex
-      this.$store.dispatch('setBusData', idSchedulues)
+      this.$store.dispatch('setBusData', { id_schedule, harga })
 
       // pindah ke komponen selanjutnya (pilih tempat duduk)
       this.$router.push('/costumize-pemesanan')
@@ -156,6 +157,17 @@ export default {
       });
       return counts;
     },
+    countBookingsExe(bookings) {
+      const countsExe = {};
+      bookings.forEach((booking) => {
+        if (countsExe[booking.schedules_id]) {
+          countsExe[booking.schedules_id]++;
+        } else {
+          countsExe[booking.schedules_id] = 1;
+        }
+      });
+      return countsExe;
+    },
   },
 
   mounted() {
@@ -178,8 +190,7 @@ export default {
       }
     }).then(response => {
       this.executive = response.data.data;
-      this.hasbookedExe = response.data.total;
-      console.log(this.hasbooked)
+      this.bookingCountsExe = this.countBookingsExe(response.data.total);
     }).catch(error => {
       console.log(error);
     });

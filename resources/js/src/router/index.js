@@ -93,6 +93,11 @@ const routes = [
     component: () => import('@/views/dashboard/DashboardPenumpang.vue'),
   },
   {
+    path: '/riwayat-perjalanan',
+    name: 'riwayat-perjalanan',
+    component: () => import('@/views/pages/Pemesanan/riwayat-perjalanan.vue'),
+  },
+  {
     path: '/typography',
     name: 'typography',
     component: () => import('@/views/typography/Typography.vue'),

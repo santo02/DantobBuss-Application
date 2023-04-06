@@ -7,14 +7,18 @@ import VuexPersist from 'vuex-persistedstate'
 
 export default new Vuex.Store({
   state: {
-    busData: {},
+    busData: {
+      id_schedule: null,
+      harga: null
+    },
     selectedSeat: null,
     passengerData: {},
     userRole: null,
   },
   mutations: {
-    SET_BUS_DATA(state, data) {
-      state.busData = data
+    SET_BUS_DATA(state, bus) {
+      state.busData.id_schedule = bus.id_schedule
+      state.busData.harga = bus.harga
     },
     SET_SELECTED_SEAT(state, seat) {
       state.selectedSeat = seat
@@ -26,12 +30,11 @@ export default new Vuex.Store({
       state.userRole = role
     },
 
+
   },
   actions: {
-    setBusData({
-      commit
-    }, data) {
-      commit('SET_BUS_DATA', data)
+    setBusData({ commit }, bus) {
+      commit('SET_BUS_DATA', bus)
     },
     setSelectedSeat({
       commit
@@ -46,6 +49,11 @@ export default new Vuex.Store({
     SET_USER_ROLE(state, userRole) {
       state.userRole = userRole
     },
+    // setHargaBus({
+    //   commit
+    // }, harga) {
+    //   commit('SET_HARGA_BUS', harga)
+    // },
     //get role
     updateUserRole({
       commit

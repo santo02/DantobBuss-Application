@@ -8,9 +8,11 @@
       <v-text-field v-model="search" append-icon="mdi-magnify" label="Cari" hide-details></v-text-field>
     </v-card-title>
     <v-data-table :headers="headers" :items="schedule" :search="search">
-      <template #item.action="{ item }">
+      <template #item.edit="{ item }">
         <v-btn small color="primary" :to="{ name: 'pages-edit-schedule', params: { id: item.id } }"><v-icon center>{{
           icons.mdiPencil }}</v-icon></v-btn>
+      </template>
+      <template #item.delete="{ item }">
         <v-btn small color="error" @click="deleteSchedule(item.id)"><v-icon>{{ icons.mdiTrashCanOutline
         }}</v-icon></v-btn>
       </template>
@@ -53,7 +55,8 @@ export default {
         { text: 'Tanggal', value: 'tanggal' },
         { text: 'Harga', value: 'harga' },
         { text: 'Status', value: 'status' },
-        { text: 'Action', value: 'action', align: 'center', sortable: false }
+        { text: 'Edit', value: 'edit', align: 'center', sortable: false },
+        { text: 'Delete', value: 'delete', align: 'center', sortable: false }
       ],
       schedule: [],
     }
