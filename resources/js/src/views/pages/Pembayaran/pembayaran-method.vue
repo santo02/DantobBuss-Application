@@ -198,12 +198,12 @@ export default {
       const access_token = localStorage.getItem('access_token');
 
       axios.post('api/bookings/nontunai', {
-        schedules_id: this.busData,
+        schedules_id: this.id_schedule,
         name: this.passengerData.name,
         age: this.passengerData.age,
         num_seats: this.selectedSeat,
         alamatJemput: this.passengerData.alamatJemput,
-        harga: this.schedule.harga,
+        harga: this.harga,
         status: 'berhasil',
       }, {
         headers: {

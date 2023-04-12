@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\API\BaseController;
 use App\Models\Bookings;
+use App\Models\bus;
 use App\Models\Pembayaran;
 use App\Models\Routes;
 use Carbon\Carbon;
@@ -92,19 +93,13 @@ class BookingController extends BaseController
     public function getByUserId()
     {
         $user = Auth::user();
-        // $booking = DB::table('bookings')
-        //     ->join('schedules', 'bookings.schedules_id', 'schedules.id')
-        //     ->join('buses', 'schedules.bus_id', 'buses.id')
-        //     ->join('users', 'buses.supir_id', 'users.id')
-        //     ->where('bookings.user_id', $user->id)
-        //     ->where('schedules.status', 'complete')
-        //     ->get();
         $booking = DB::table('bookings')
             ->join('schedules', 'bookings.schedules_id', 'schedules.id')
             ->join('buses', 'schedules.bus_id', 'buses.id')
             ->join('users', 'buses.supir_id', 'users.id')
+            ->join('routes', 'schedules.route_id', 'routes.id')
             ->where('bookings.user_id', $user->id)
-            ->where('schedules.status', 'complete')
+            ->select('schedules.id','routes.derpature','routes.arrival', 'buses.nomor_pintu', 'buses.type', 'buses.number_of_seats', 'schedules.tanggal', 'users.name', 'schedules.harga', 'schedules.status')
             ->get();
         // $booking = Bookings::with('schedules', 'user', 'buss')->where('user_id', $user->id)->get();
         if ($booking) {

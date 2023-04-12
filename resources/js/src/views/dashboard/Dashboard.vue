@@ -7,8 +7,11 @@
     <div v-if="userRole == 'driver'">
       <DashboardDriver></DashboardDriver>
     </div>
-    <div v-if="userRole == 'admin'">
+    <div v-if="userRole == 'admin_loket'">
       <DashboardAdmin></DashboardAdmin>
+    </div>
+    <div v-if="userRole == 'admin_kantor'">
+      <DashboardAdminLoket></DashboardAdminLoket>
     </div>
   </div>
 </template>
@@ -17,6 +20,7 @@
 import DashboardAdmin from './DashboardAdmin.vue';
 import DashboardPenumpang from './DashboardPenumpang.vue';
 import DashboardDriver from './DashboardDriver.vue';
+import DashboardAdminLoket from './DashboardAdminLoket.vue';
 export default {
   data(){
     return{}
@@ -24,8 +28,8 @@ export default {
   components:{
     DashboardAdmin,
     DashboardPenumpang,
-    DashboardDriver
-
+    DashboardDriver,
+    DashboardAdminLoket
   },
   computed: {
     userRole() {

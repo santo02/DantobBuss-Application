@@ -15,7 +15,11 @@
     <!-- Navigation Items -->
     <v-list expand shaped class="vertical-nav-menu-items pr-5" text-color="white">
       <nav-menu-link title="Dashboard" :to="{ name: 'dashboard' }" :icon="icons.mdiHomeOutline"></nav-menu-link>
-      <div v-if="userRole == 'admin'">
+      <div v-if="userRole == 'admin_loket'">
+        <nav-menu-link title="Pemesanan " :to="{ name: 'pages-pemesanan' }"
+          :icon="icons.mdiCreditCardOutline"></nav-menu-link>
+      </div>
+      <div v-if="userRole == 'admin_kantor'">
         <!-- <nav-menu-link title="Account Settings" :to="{ name: 'pages-account-settings' }"
         :icon="icons.mdiAccountCogOutline"></nav-menu-link> -->
         <nav-menu-group title="Kelola" :icon="icons.mdiCarCog">
@@ -26,14 +30,14 @@
           <nav-menu-link title="Jadwal " :to="{ name: 'pages-schedule' }"
             :icon="icons.mdiCreditCardOutline"></nav-menu-link>
         </nav-menu-group>
-        <nav-menu-link title="Pemesanan " :to="{ name: 'pages-pemesanan' }"
-          :icon="icons.mdiCreditCardOutline"></nav-menu-link>
       </div>
       <div v-if="userRole == 'passenger'">
         <nav-menu-link title="Pesan E-ticket" :to="{ name: 'all-bus' }"
           :icon="icons.mdiCardAccountDetailsOutline"></nav-menu-link>
+        <nav-menu-link title="Pesananku" :to="{ name: 'pesananku' }" :icon="icons.mdiCar"></nav-menu-link>
         <nav-menu-link title="Riwayat Perjalanan" :to="{ name: 'riwayat-perjalanan' }"
-          :icon="icons.mdiCar"></nav-menu-link>
+          :icon="icons.mdiHistory "></nav-menu-link>
+
 
       </div>
       <div v-if="userRole == 'driver'">
@@ -50,6 +54,8 @@
         <nav-menu-link title="Error" :to="{ name: 'error-404' }"></nav-menu-link>
       </nav-menu-group> -->
 
+      <!-- <nav-menu-link title="Account Settings" :to="{ name: 'pages-account-settings' }"
+        :icon="icons.mdiAccountCogOutline"></nav-menu-link> -->
 
       <!-- <nav-menu-section-title title="USER INTERFACE"></nav-menu-section-title>
       <nav-menu-link title="Typography" :to="{ name: 'typography' }" :icon="icons.mdiAlphaTBoxOutline"></nav-menu-link>
@@ -82,6 +88,7 @@ import {
   mdiCar,
   mdiCarCog,
   mdiMapMarkerDistance,
+  mdiHistory
 } from '@mdi/js'
 import NavMenuSectionTitle from './components/NavMenuSectionTitle.vue'
 import NavMenuGroup from './components/NavMenuGroup.vue'
@@ -113,7 +120,8 @@ export default {
         mdiCardAccountDetailsOutline,
         mdiCar,
         mdiMapMarkerDistance,
-        mdiCarCog
+        mdiCarCog,
+        mdiHistory
         // mdiCarClock
       },
     }

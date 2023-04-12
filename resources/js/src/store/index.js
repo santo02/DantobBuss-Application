@@ -49,12 +49,6 @@ export default new Vuex.Store({
     SET_USER_ROLE(state, userRole) {
       state.userRole = userRole
     },
-    // setHargaBus({
-    //   commit
-    // }, harga) {
-    //   commit('SET_HARGA_BUS', harga)
-    // },
-    //get role
     updateUserRole({
       commit
     }, token) {
@@ -65,7 +59,7 @@ export default new Vuex.Store({
         })
         .then(response => {
           const userRole = response.data.role.role
-
+          // console.log(userRole);
           commit('SET_USER_ROLE', userRole)
         })
         .catch(error => {
@@ -85,6 +79,9 @@ export default new Vuex.Store({
     },
     isPassenger(state) {
       return state.userRole === 'passenger'
+    },
+    isAdminKantor(state) {
+      return state.userRole === 'admin_kantor'
     },
   },
 

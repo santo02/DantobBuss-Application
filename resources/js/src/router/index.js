@@ -93,9 +93,24 @@ const routes = [
     component: () => import('@/views/dashboard/DashboardPenumpang.vue'),
   },
   {
-    path: '/riwayat-perjalanan',
+    path: '/riwayat-pesanan',
     name: 'riwayat-perjalanan',
-    component: () => import('@/views/pages/Pemesanan/riwayat-perjalanan.vue'),
+    component: () => import('@/views/pages/Pesanan/riwayat-perjalanan.vue'),
+  },
+  {
+    path: '/pesananku',
+    name: 'pesananku',
+    component: () => import('@/views/pages/Pesanan/pesananku.vue'),
+  },
+  {
+    path: '/e-ticket',
+    name: 'e-ticket',
+    component: () => import('@/views/pages/Pesanan/e-Ticket.vue'),
+  },
+  {
+    path: '/tracking',
+    name: 'tracking',
+    component: () => import('@/views/pages/Tracking/tracking.vue'),
   },
   {
     path: '/typography',

@@ -16,6 +16,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
   <script src="{{ asset(mix('js/app.js')) }}" defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_lX5Kf_oGH_rBt6gj-e4zH_-Xb90Qk7M"></script>
 </head>
 
 <body>

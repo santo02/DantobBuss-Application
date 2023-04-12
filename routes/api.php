@@ -42,9 +42,13 @@ Route::post('login', [LoginController::class, 'login']);
 
 // Route::post('logout', [LoginController::class, 'logout']th);
 
-Route::middleware(['auth:api', 'role:admin,driver,passenger'])->group(function () {
+Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver,passenger'])->group(function () {
     Route::post('logout', [LoginController::class, 'logout']);
     Route::get('/user/profile', [UserController::class, 'user']);
+});
+
+
+Route::middleware(['auth:api', 'role:admin_loket,driver,passenger'])->group(function () {
     Route::get('/schedule/show/all', [ScheduleController::class, 'index']);
     Route::get('/schedule/show/{id}', [ScheduleController::class, 'SelectOne']);
     Route::get('/schedule/type/executive', [ScheduleController::class, 'ShowExecutive']);
@@ -55,11 +59,18 @@ Route::middleware(['auth:api', 'role:admin,driver,passenger'])->group(function (
     Route::get('/bookings/show/{id}', [BookingController::class, 'getOne']);
 });
 
-Route::middleware(['auth:api', 'role:admin'])->group(function () {
-    Route::get('/admin', function () {
-        return 'Welcome Admin';
-    });
+Route::middleware(['auth:api', 'role:admin_loket'])->group(function () {
+    Route::post('/schedule/add', [ScheduleController::class, 'store']);
+    Route::get('/bookings/index/all', [BookingController::class, 'index']);
+    Route::put('/bookings/update/{id}', [BookingController::class, 'update']);
+});
 
+Route::middleware(['auth:api', 'role:passenger'])->group(function () {
+    Route::get('/bookings/my', [BookingController::class, 'getByUserId']);
+});
+
+
+Route::middleware(['auth:api', 'role:admin_kantor'])->group(function () {
     Route::post('/registrasi/supir', [RegisterUserController::class, 'RegistrasiSupir']);
     Route::get('/supir/all', [SupirController::class, 'index']);
     Route::get('/supir/name/all', [SupirController::class, 'getOne']);
@@ -73,15 +84,6 @@ Route::middleware(['auth:api', 'role:admin'])->group(function () {
     Route::put('/routes/update/{id}', [RoutesController::class, 'update']);
     Route::get('/routes/show/all', [RoutesController::class, 'index']);
     Route::delete('/routes/destroy/{id}', [RoutesController::class, 'destroy']);
-
-    Route::post('/schedule/add', [ScheduleController::class, 'store']);
-
-    Route::get('/bookings/index/all', [BookingController::class, 'index']);
-    Route::put('/bookings/update/{id}', [BookingController::class, 'update']);
-});
-
-Route::middleware(['auth:api', 'role:passenger'])->group(function () {
-    Route::get('/bookings/my', [BookingController::class, 'getByUserId']);
 });
 
 Route::middleware(['auth:api', 'role:driver'])->group(function () {
