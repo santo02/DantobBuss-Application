@@ -27,6 +27,8 @@ export default {
       route: [
         'derpature',
         'arrival',
+        'harga',
+        'type',
       ],
       icons: {
         mdiSwapHorizontalBold,
@@ -50,6 +52,8 @@ export default {
 
         },
         { text: 'Kedatangan', value: 'arrival' },
+        { text: 'Type', value: 'type' },
+        { text: 'Harga', value: 'harga' },
         { text: 'Action', value: 'action', align: 'center', sortable: false }
       ],
     }

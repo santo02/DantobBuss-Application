@@ -18,7 +18,9 @@ class RoutesController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'derpature' => 'required|string',
-            'arrival' => 'required|string'
+            'arrival' => 'required|string',
+            'harga' => 'required|string',
+            'type' => 'required|string'
         ]);
     
         if ($validator->fails()) {
@@ -29,6 +31,8 @@ class RoutesController extends BaseController
 
         $routes->derpature = $request->derpature;
         $routes->arrival = $request->arrival;
+        $routes->harga = $request->harga;
+        $routes->type = $request->type;
         $routes->save();
 
         return $this->sendResponse($routes, 'Routes Created Successfully');

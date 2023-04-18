@@ -42,8 +42,8 @@
         </v-col>
         <v-col>
           <div class="d-flex justify-content-between">
-            <v-card-title class="text-h6 mb-0">{{ item.merk }} ({{ item.police_number }})</v-card-title>
-            <div class="text-h6 mt-4 mr-5" style="color:#FF4C51;">
+            <v-card-title class="text-h6">{{ item.derpature }} - {{ item.arrival }}</v-card-title>
+            <div class="text-h6 mt-4 mr-5 harga" style="color:#FF4C51;">
               Rp.{{ item.harga }}
             </div>
           </div>
@@ -54,7 +54,7 @@
                 </div>
                 <div class="col-md-3"><v-icon left>{{ icons.mdiAccount }}</v-icon> {{ item.name }}</div>
                 <div class="col-md-2" v-for="(count, id) in bookingCounts" :key="id" v-if="item.schedule_id == id">
-                  <small color="secondary">Tersedia : {{ item.number_of_seats - count  - 1 }} Kursi </small>
+                  <small color="secondary">Tersedia : {{ item.number_of_seats - count - 1 }} Kursi </small>
                   <!-- <small color="secondary" v-else>Tersedia : {{ item.number_of_seats - count - 1 }} Kursi </small> -->
                 </div>
                 <div class="col-md-2">
@@ -91,7 +91,7 @@ export default {
     return {
       schedules: [],
       bookingCounts: {},
-      busData:{
+      busData: {
         id_schedule: '',
         harga: ''
       },
@@ -104,7 +104,7 @@ export default {
     ...mapActions(['setSelectedSeat']),
     selectBus(id_schedule, harga) {
       // set data bus yang dipilih ke state Vuex
-      this.$store.dispatch('setBusData', {id_schedule, harga})
+      this.$store.dispatch('setBusData', { id_schedule, harga })
 
       // pindah ke komponen selanjutnya (pilih tempat duduk)
       this.$router.push('/costumize-pemesanan')

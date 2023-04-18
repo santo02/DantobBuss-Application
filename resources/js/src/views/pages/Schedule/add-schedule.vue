@@ -8,7 +8,7 @@
             <label for="bus">Bus</label>
           </v-col>
           <v-col cols="12" md="9">
-            <v-select v-model="schedule.bus_id" :items="bus" item-value="id" item-text="police_number" outlined dense
+            <v-select v-model="schedule.bus_id" :items="bus" item-value="id" item-text="police_number" outlined dense hide-details
               placeholder="Pilih Bus" @change="saveSelectBus"></v-select>
           </v-col>
 
@@ -16,24 +16,30 @@
             <label for="rute">Rute</label>
           </v-col>
           <v-col cols="12" md="9">
-            <v-select v-model="schedule.route_id" :items="route" item-value="id" item-text="derpature" outlined dense
-              placeholder="Pilih Rute" @change="saveSelectRoute"></v-select>
+            <v-select v-model="schedule.route_id" :items="route.filter(route => route.type === selectedBusType)"
+              item-value="id" item-text="derpature" outlined dense placeholder="Pilih Rute" hide-details
+              @change="saveSelectRoute"></v-select>
           </v-col>
-
           <v-col cols="12" md="3">
             <label for="rute">Tanggal</label>
           </v-col>
           <v-col cols="12" md="9">
-            <v-text-field id="rute" v-model="schedule.tanggal" type="datetime-local" outlined dense placeholder="Kedatangan"
+            <v-text-field id="rute" v-model="schedule.tanggal" type="date" outlined dense placeholder="Tanggal"
               hide-details></v-text-field>
           </v-col>
 
           <v-col cols="12" md="3">
             <label for="rute">Harga</label>
           </v-col>
+
           <v-col cols="12" md="9">
-            <v-text-field id="rute" v-model="schedule.harga" type="number" outlined dense placeholder="Harga"
-              hide-details></v-text-field>
+            <v-row>
+              <v-col cols="12" md="1" class="text-right mt-2"><b>Rp</b></v-col>
+              <v-col cols="12" md="11">
+                <v-text-field id="rute" v-model="schedule.harga" type="number" outlined dense placeholder="Harga"
+                  readonly></v-text-field>
+              </v-col>
+            </v-row>
           </v-col>
 
 
@@ -56,22 +62,18 @@
 import axios from 'axios'
 
 export default {
-  setup() {
-    return {
-      schedule: [
-        'bus_id',
-        'route_id',
-        'tanggal',
-        'harga',
-      ],
-      bus: [],
-      route: []
-    }
-  },
   data() {
     return {
+      schedule: {
+        bus_id: null,
+        route_id: null,
+        tanggal: null,
+        harga: null
+      },
       bus: [],
-      route: []
+      route: [],
+      selectedBusType: null,
+      selectedBusPrice: null
     }
   },
   mounted() {
@@ -86,8 +88,10 @@ export default {
       this.route = response.data.data.map((item) => {
         return {
           id: item.id,
-          derpature: item.derpature + " - "  + item.arrival,
+          derpature: item.derpature + " - " + item.arrival,
           arrival: item.arrival,
+          type: item.type,
+          harga: item.harga
         }
       });
       // console.log(this.route)
@@ -104,7 +108,9 @@ export default {
       this.bus = response.data.data.map((item) => {
         return {
           id: item.id,
-          police_number: item.police_number + "("+item.nomor_pintu + ")"
+          police_number: item.police_number + "(" + item.nomor_pintu + ")",
+          type: item.type
+
         }
       });
       console.log(this.bus)
@@ -115,17 +121,24 @@ export default {
   },
   methods: {
     saveSelectBus() {
-
-      console.log('Selected item id:', this.schedule.bus_id);
+      const selectedBus = this.bus.find(bus => bus.id === this.schedule.bus_id);
+      if (selectedBus) {
+        this.selectedBusType = selectedBus.type;
+        console.log(this.selectedBusType);
+        this.schedule.bus_id = selectedBus.id;
+        this.schedule.harga = null; // Reset harga saat tipe bus berubah
+      }
     },
     saveSelectRoute() {
-
-      console.log('Selected item id:', this.schedule.route_id);
+      const selectedRoute = this.route.find(route => route.id === this.schedule.route_id);
+      if (selectedRoute) {
+        this.selectedBusPrice = selectedRoute.harga;
+        this.schedule.route_id = selectedRoute.id;
+        this.schedule.harga = selectedRoute.harga;
+      }
     },
     AddSchedule() {
-
       const access_token = localStorage.getItem('access_token');
-
       axios.post('api/schedule/add', {
         bus_id: this.schedule.bus_id,
         route_id: this.schedule.route_id,

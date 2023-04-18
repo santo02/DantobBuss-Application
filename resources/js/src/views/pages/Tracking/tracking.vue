@@ -1,40 +1,87 @@
 <template>
-  <div id="map"></div>
+  <div>
+    <div id="map"></div>
+    <div>
+      <h2>Lokasi saat ini:</h2>
+      <p>Tempat: {{ currentPlace }}</p>
+    </div>
+  </div>
 </template>
 
 <script>
+import geolib from "geolib";
+
 export default {
   data() {
     return {
-      longitude: 34545,
-      latitude: 122
+      currentPlace: "",
+      listener: null,
     };
   },
-  mounted() {
-    // buat map
-    const map = new google.maps.Map(document.getElementById("map"), {
-      center: { lat: this.latitude, lng: this.longitude },
-      zoom: 20,
-    });
+  methods: {
+    tracking() {
+      // koordinat longitude dan latitude
+      const longitude = 34545;
+      const latitude = 122;
+      // buat map
+      const map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: latitude, lng: longitude },
+        zoom: 18,
+      });
+      // buat marker
+      const marker = new google.maps.Marker({
+        position: { lat: latitude, lng: longitude },
+        map: map,
+      });
+      // this.listener = setInterval(() => {
 
-    // buat marker
-    const marker = new google.maps.Marker({
-      position: { lat: this.latitude, lng: this.longitude },
-      map: map,
-    });
+      //   // buat geolocation object
+      //   const geolocation = navigator.geolocation;
 
-    // buat geolocation object
+      //   // update lokasi marker berdasarkan geolocation object
+      //   // if (geolocation) {
+      //   geolocation.getCurrentPosition((position) => {
+      //     const currentLatitude = position.coords.latitude;
+      //     const currentLongitude = position.coords.longitude;
+
+      //     marker.setPosition({ lat: currentLatitude, lng: currentLongitude });
+      //     map.setCenter({ lat: currentLatitude, lng: currentLongitude });
+
+      //     // // Menggunakan geolib untuk mendapatkan nama tempat
+      //     // const currentPlace = geolib.reverseGeocode(
+      //     //   currentLatitude,F
+      //     //   currentLongitude
+      //     // );
+      //     // if (currentPlace && currentPlace[0]) {
+      //     //   this.currentPlace = currentPlace[0].city || currentPlace[0].country;
+      //     // } else {
+      //     //   this.currentPlace = "Tidak ada nama tempat ditemukan";
+      //     // }
+      //     // console.log(this.currentPlace);
+      //   });
+      // }, 1000);
+
+      const geolocation = navigator.geolocation;
+      this.listener = geolocation.watchPosition((position)=>{
+        console.log(position);
+        marker.setPosition({lat: position.coords.latitude, lng: position.coords.longitude});
+        map.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
+      });
+    },
+  },
+  beforeDestroy() {
     const geolocation = navigator.geolocation;
+    if(this.listener !== null){
+      geolocation.clearWatch(this.listener);
+    }
+  },
+  mounted() {
 
-    // update lokasi marker berdasarkan geolocation object setiap 2 detik
-    const updateLocation = () => {
-      this.latitude += 10; // tambahkan 10 pada latitude
-      marker.setPosition({ lat: this.latitude, lng: this.longitude });
-      map.setCenter({ lat: this.latitude, lng: this.longitude });
-      console.log(this.latitude);
-      console.log(this.longitude);
-    };
-    setInterval(updateLocation, 2000); // update setiap 2 detik
+
+
+    console.log("Test");
+    this.tracking();
+    // }
   },
 };
 </script>

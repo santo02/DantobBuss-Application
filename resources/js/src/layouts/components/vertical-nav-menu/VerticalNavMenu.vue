@@ -16,8 +16,10 @@
     <v-list expand shaped class="vertical-nav-menu-items pr-5" text-color="white">
       <nav-menu-link title="Dashboard" :to="{ name: 'dashboard' }" :icon="icons.mdiHomeOutline"></nav-menu-link>
       <div v-if="userRole == 'admin_loket'">
-        <nav-menu-link title="Pemesanan " :to="{ name: 'pages-pemesanan' }"
+        <nav-menu-link title="Pesan Ticket " :to="{ name: 'pages-pemesanan' }"
           :icon="icons.mdiCreditCardOutline"></nav-menu-link>
+          <nav-menu-link title="Riwayat Pesanan" :to="{ name: 'pesananku' }" :icon="icons.mdiCar"></nav-menu-link>
+
       </div>
       <div v-if="userRole == 'admin_kantor'">
         <!-- <nav-menu-link title="Account Settings" :to="{ name: 'pages-account-settings' }"

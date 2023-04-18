@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2> Pesanan anda</h2>
+    <h2>Riwayat Perjalanan Anda</h2>
     <v-card flat>
       <v-card v-for="item in pesanan" :key="item.schedule_id" class="mb-2">
         <v-row no-gutters>
@@ -32,7 +32,7 @@
 
                     </div>
                     <div class="col-md-2">
-                      <router-link :to="{name: 'e-ticket'}">
+                      <router-link :to="{ name: 'e-ticket', params: { id: item.bookings_id } }">
                         <v-btn small color="accent" class="ml-3" style="color: white; font-weight:bold;">
                           E-Ticket
                         </v-btn>
@@ -112,7 +112,7 @@ export default {
   position: absolute;
   top: -15px;
   right: 10px;
-/*  transform: rotate(38deg); */
+  /*  transform: rotate(38deg); */
   /* Mengatur rotasi button */
 
 }

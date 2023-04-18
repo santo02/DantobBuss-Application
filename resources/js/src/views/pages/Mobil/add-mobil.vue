@@ -25,7 +25,7 @@
           </v-col>
 
           <v-col cols="12" md="9">
-            <v-select v-model="mobil.type" :items="['Economi', 'Executive',]" outlined dense placeholder="Type" hide
+            <v-select v-model="mobil.type" :items="['Ekonomi', 'Eksekutif',]" outlined dense placeholder="Type" hide
               details></v-select>
             <!-- <v-text-field id="type" v-model="mobil.type" outlined dense placeholder="type" hide-details></v-text-field> -->
           </v-col>

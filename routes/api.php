@@ -9,6 +9,7 @@ use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\RoutesController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SupirController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use App\Models\Bookings;
 use App\Models\bus;
@@ -41,6 +42,7 @@ Route::post('login', [LoginController::class, 'login']);
 // });
 
 // Route::post('logout', [LoginController::class, 'logout']th);
+Route::get('/schedule/show/all', [ScheduleController::class, 'index']);
 
 Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver,passenger'])->group(function () {
     Route::post('logout', [LoginController::class, 'logout']);
@@ -48,8 +50,8 @@ Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver,passenger']
 });
 
 
-Route::middleware(['auth:api', 'role:admin_loket,driver,passenger'])->group(function () {
-    Route::get('/schedule/show/all', [ScheduleController::class, 'index']);
+Route::middleware(['auth:api', 'role:admin_loket, admin_kantor, driver,passenger'])->group(function () {
+
     Route::get('/schedule/show/{id}', [ScheduleController::class, 'SelectOne']);
     Route::get('/schedule/type/executive', [ScheduleController::class, 'ShowExecutive']);
     Route::get('/schedule/type/economi', [ScheduleController::class, 'ShowEconomi']);
@@ -57,16 +59,19 @@ Route::middleware(['auth:api', 'role:admin_loket,driver,passenger'])->group(func
     Route::post('bookings/nontunai', [PembayaranController::class, 'generateToken']);
     Route::get('/bookings/show/schedules/{id}', [BookingController::class, 'getOneSchedules']);
     Route::get('/bookings/show/{id}', [BookingController::class, 'getOne']);
+    Route::get('/pesanan/ticket/{id}', [TicketController::class, 'index']);
+    Route::get('/bookings/my', [BookingController::class, 'getByUserId']);
 });
 
+
 Route::middleware(['auth:api', 'role:admin_loket'])->group(function () {
-    Route::post('/schedule/add', [ScheduleController::class, 'store']);
+
     Route::get('/bookings/index/all', [BookingController::class, 'index']);
     Route::put('/bookings/update/{id}', [BookingController::class, 'update']);
 });
 
 Route::middleware(['auth:api', 'role:passenger'])->group(function () {
-    Route::get('/bookings/my', [BookingController::class, 'getByUserId']);
+    // Route::get('/bookings/my', [BookingController::class, 'getByUserId']);
 });
 
 
@@ -84,6 +89,8 @@ Route::middleware(['auth:api', 'role:admin_kantor'])->group(function () {
     Route::put('/routes/update/{id}', [RoutesController::class, 'update']);
     Route::get('/routes/show/all', [RoutesController::class, 'index']);
     Route::delete('/routes/destroy/{id}', [RoutesController::class, 'destroy']);
+
+    Route::post('/schedule/add', [ScheduleController::class, 'store']);
 });
 
 Route::middleware(['auth:api', 'role:driver'])->group(function () {

@@ -12,6 +12,8 @@ class Routes extends Model
     protected $fillable = [
         'derpature',
         'arrival',
+        'harga',
+        'type'
     ];
 
     public function buses()

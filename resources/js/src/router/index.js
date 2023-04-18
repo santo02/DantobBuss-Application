@@ -103,7 +103,7 @@ const routes = [
     component: () => import('@/views/pages/Pesanan/pesananku.vue'),
   },
   {
-    path: '/e-ticket',
+    path: '/e-ticket/:id',
     name: 'e-ticket',
     component: () => import('@/views/pages/Pesanan/e-Ticket.vue'),
   },

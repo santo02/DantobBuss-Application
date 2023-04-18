@@ -50,7 +50,7 @@
               <v-col>
                 <v-radio-group v-model="selectedMethod">
                   <!-- tunai -->
-                  <div v-if="userRole == 'admin'">
+                  <div v-if="userRole == 'admin_loket'">
                     <v-banner>
                       <v-row>
                         <v-col cols="auto">
@@ -197,7 +197,7 @@ export default {
     BayarCash() {
       const access_token = localStorage.getItem('access_token');
 
-      axios.post('api/bookings/nontunai', {
+      axios.post('api/bookings', {
         schedules_id: this.id_schedule,
         name: this.passengerData.name,
         age: this.passengerData.age,

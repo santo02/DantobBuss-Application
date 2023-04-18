@@ -40,7 +40,7 @@
                       </router-link>
                     </div>
                     <div class="col-md-2">
-                      <router-link :to="{ name: 'e-ticket' }">
+                      <router-link :to="{ name: 'e-ticket', params:{id: item.bookings_id} }">
                         <v-btn small color="accent" class="ml-3" style="color: white; font-weight:bold;">
                           E-Ticket
                         </v-btn>
@@ -82,7 +82,7 @@
                     <div class="col-md-2">
                     </div>
                     <div class="col-md-2">
-                      <router-link :to="{ name: 'e-ticket' }">
+                      <router-link :to="{ name: 'e-ticket', params:{id: item.bookings_id} }">
                         <v-btn small color="accent" class="ml-3" style="color: white; font-weight:bold;">
                           E-Ticket
                         </v-btn>

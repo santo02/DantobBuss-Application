@@ -17,6 +17,18 @@ class PembayaranController extends Controller
 {
     public static function generateToken(Request $request)
     {
+        $uuid = sprintf(
+            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000,
+            mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff)
+        );
+        $testid=  substr($uuid, 0, 32); 
 
         // dd($request);
         $user = Auth::user();
@@ -34,14 +46,13 @@ class PembayaranController extends Controller
         }
 
         $clientId = "BRN-0215-1665721005141";
-        $requestId = '93626957-8ebe-4e0e-9778-3a1a623ea18b';
+        $requestId = $testid;
         $dateTime = gmdate("Y-m-d H:i:s");
         $isoDateTime = date(DATE_ISO8601, strtotime($dateTime));
         $dateTimeFinal = substr($isoDateTime, 0, 19) . "Z";
         $requestDate =  $dateTimeFinal;
         $targetPath = "/checkout/v1/payment"; // For merchant request to Jokul, use Jokul path here. For HTTP Notification, use merchant path here
         $secretKey = "SK-3ut5p5VDAKku2Dqd541q";
-
 
         $booking = new Bookings;
         $booking->user_id = $user->id;
@@ -127,11 +138,11 @@ class PembayaranController extends Controller
         $pembayaran->method = 'noncash';
         $pembayaran->status = 'menunggu';
         $pembayaran->date = Carbon::now();
-        $pembayaran->original_request_id    = random_int(999, 99999);
+        $pembayaran->original_request_id = random_int(999, 99999);
         $pembayaran->transaksi_id = $booking->id + 100000;
-        $pembayaran->terminal_id    = random_int(100, 999);
-        $pembayaran->invoice_number     = "INV-EKBT-$currentDate";
-        $pembayaran->amount    = intval($request->harga);
+        $pembayaran->terminal_id = random_int(100, 999);
+        $pembayaran->invoice_number = "INV-EKBT-$currentDate";
+        $pembayaran->amount    = $request->harga;
         $pembayaran->virtual_account_number = 000;
         $pembayaran->active = 000;
         // $pembayaran->save();

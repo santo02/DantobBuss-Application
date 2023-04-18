@@ -17,7 +17,6 @@
     </v-data-table>
   </v-card>
 </template>
-
 <script>
 import axios from 'axios';
 import { mdiPencil, mdiTrashCanOutline } from '@mdi/js';
@@ -51,7 +50,7 @@ export default {
 
         },
         { text: 'Nomor Pintu', value: 'nomor_pintu' },
-        { text: 'Supir', value: 'driver.name' },
+        { text: 'Supir', value: 'name' },
         { text: 'Jumlah Seat', value: 'number_of_seats' },
         { text: 'Type', value: 'type' },
         { text: 'status', value: 'status' },

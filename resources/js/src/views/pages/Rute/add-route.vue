@@ -22,6 +22,23 @@
               hide-details></v-text-field>
           </v-col>
 
+          <v-col cols="12" md="3">
+            <label for="username">Harga</label>
+          </v-col>
+
+          <v-col cols="12" md="9">
+            <v-text-field id="Username" v-model="routes.harga" type="text" outlined dense placeholder="Harga"
+              hide-details></v-text-field>
+          </v-col>
+          <v-col cols="12" md="3">
+            <label for="username">Type</label>
+          </v-col>
+
+          <v-col cols="12" md="9">
+            <v-select v-model="routes.type" :items="['Ekonomi', 'Eksekutif',]" outlined dense placeholder="Type" hide
+            details></v-select>
+          </v-col>
+
 
           <v-col offset-md="3" cols="12">
             <v-btn @click.prevent="AddRoute" color="primary">
@@ -47,6 +64,8 @@ export default {
       routes: [
         'derpature',
         'arrival',
+        'harga',
+        'type'
       ]
     }
   },
@@ -61,6 +80,8 @@ export default {
       axios.post('api/routes/add', {
         derpature: this.routes.derpature,
         arrival: this.routes.arrival,
+        harga: this.routes.harga,
+        type: this.routes.type,
       }, {
         headers: {
           'Authorization': `Bearer ${access_token}`

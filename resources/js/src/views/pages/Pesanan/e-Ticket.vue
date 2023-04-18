@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3 pa-3 ma-3>E-ticket</h3>
-    <v-card width="500px" class="mx-auto p-3">
+    <v-card width="500px" class="mx-auto p-3" ref="card">
       <div class="container m-3">
         <div class=" text-center">
           <v-avatar size="40" class="mt-2 ml-2">
@@ -10,7 +10,7 @@
           </v-avatar>
           <h5>KBT</h5>
           <h5>E-Ticket</h5>
-          <h6>INV-EKBT-1206202309590</h6>
+          <!-- <h6>INV-EKBT-1206202309590</h6> -->
         </div>
         <v-simple-table class="p-3">
           <template>
@@ -24,15 +24,15 @@
             <tbody>
               <tr>
                 <td>Tipe</td>
-                <td>: Economi</td>
+                <td>: {{ this.ticket.type }}</td>
               </tr>
               <tr>
                 <td>Asal</td>
-                <td>: Medan</td>
+                <td>: {{ this.ticket.derpature }}</td>
               </tr>
               <tr>
                 <td>Tujuan </td>
-                <td>: Tarutung</td>
+                <td>: {{ this.ticket.arrival }}</td>
               </tr>
               <tr>
                 <th colspan="2">
@@ -41,26 +41,26 @@
               </tr>
               <tr>
                 <td>Nama</td>
-                <td>: Santo L Harianja</td>
+                <td>: {{ this.ticket.name }}</td>
               </tr>
               <tr>
                 <td>Umur</td>
-                <td>: 23 Tahun</td>
+                <td>: {{ this.ticket.age }}</td>
               </tr>
               <tr>
                 <td>Bangku </td>
-                <td>: 6</td>
+                <td>: {{ this.ticket.num_seats }}</td>
               </tr>
               <tr class="p-3">
                 <td>Tarif </td>
-                <td class="text-right"> <b> Rp. 80.000</b></td>
+                <td class="text-right"> <b> Rp.{{ this.ticket.harga }}</b></td>
               </tr>
               <tr class="mt-3">
                 <td>
                   <h3>Status Pembayaran</h3>
                 </td>
                 <td class="text-right">
-                  <h3 class="text--primary">Lunas</h3>
+                  <h3 class="text--primary">{{ this.ticket.status }}</h3>
                 </td>
               </tr>
             </tbody>
@@ -69,7 +69,8 @@
       </div>
     </v-card>
     <div class="mx-auto text-center mt-4" width="500px">
-      <v-btn color="primary" width="500px" height="40px">Download</v-btn>
+      <v-btn color="primary" width="500px" height="40px" @click="downloadCard">Download</v-btn>
+
     </div>
   </div>
 </template>
@@ -77,6 +78,7 @@
 
 
 <script>
+import jsPDF from 'jspdf';
 import axios from 'axios';
 import moment from 'moment';
 import 'moment/locale/id';
@@ -85,83 +87,50 @@ import { mdiCalendarClock, mdiAccountGroup, mdiAccount, mdiSofaSingleOutline, md
 export default {
   setup() {
     return {
-      icons: {
-        mdiCalendarClock,
-        mdiAccountGroup,
-        mdiAccount,
-        mdiSofaSingleOutline,
-        mdiSofaSingle,
-        mdiChevronRight
-      }
+
     }
   },
   computed: {
-    ...mapState({
-      selectedSeat: state => state.selectedSeat,
-    }),
-    id_schedule() {
-      return this.$store.state.busData.id_schedule
-    },
-    harga() {
-      return this.$store.state.busData.harga
-    }
-
   },
   data() {
     return {
-      schedule: {},
-      jemput: false,
-      passenger: {
-        name: '',
-        age: '',
-        alamatJemput: "not request"
-      },
-      snackbar: false,
-      items: ["Balige", "Tambunan", "Tampubolon", "Laguboti"]
-
+      ticket: ''
     }
   },
 
   mounted() {
-    this.getSchedule();
+    this.getTIckets();
 
   },
 
   methods: {
-    formatDate(date) {
-      moment.locale('id');
-      return moment(date).format('dddd, Do MMMM YYYY');
-    },
-    formatHour(date) {
-      moment.locale('id');
-      return moment(date).format('hh:mm');
-    },
-    getSchedule() {
+    getTIckets() {
       const access_token = localStorage.getItem('access_token');
-      let uri = `/api/schedule/show/${this.id_schedule}`;
-      axios.get(uri, {
+
+      axios.get(`/api/pesanan/ticket/${this.$route.params.id}`, {
         headers: {
           'Authorization': `Bearer ${access_token}`
         }
       }).then(response => {
-        this.schedule = response.data.data;
-        console.log(this.schedule);
+        this.ticket = response.data.data[0]
+        console.log(this.ticket)
       }).catch(error => {
         console.log(error);
       });
     },
-    ...mapActions(['setPassengerData']),
-    submitData() {
-      if (!this.passenger.name || !this.passenger.age) {
-        // Tampilkan pesan error menggunakan Vuetify Snackbar
-        this.snackbar = true;
-        return;
-      }
-      // set data penumpang ke state Vuex
-      this.$store.dispatch('setPassengerData', this.passenger)
+    downloadCard() {
+      // Ambil elemen HTML dari class 'v-card' menggunakan $refs
+      const cardElement = this.$refs.card.$el;
 
-      // redirect ke halaman berhasil
-      this.$router.push('/pembayaran')
+      // Buat file PDF dari konten 'v-card' menggunakan JavaScript
+      const pdf = new jsPDF();
+      pdf.addHTML(cardElement, () => {
+        // Buat URL objek dari file PDF yang telah dibuat
+        const pdfURL = pdf.output('dataurlstring');
+
+        // Buka URL objek dalam tab baru untuk melakukan download
+        window.open(pdfURL, '_blank');
+      });
     }
   },
 }
