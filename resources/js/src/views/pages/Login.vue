@@ -16,7 +16,7 @@
           <p class="mb-2">Kepuasan Penumpang adalah Kebahagian Kami</p>
         </v-card-text>
         <v-card-text>
-          <v-form>
+          <v-form ref="form" @submit.prevent="login">
             <v-text-field v-model="email" outlined label="Email" placeholder="john@example.com" hide-details
               :error-messages="errors.email" class="mb-1"></v-text-field>
             <label class="text-danger" v-if="errors.email" type="error" dismissible>
@@ -38,7 +38,7 @@
               <a href="javascript:void(0)" class="mt-1"> Forgot Password? </a>
             </div>
 
-            <v-btn block color="primary" class="mt-6" :loading="isLoading" @click.prevent="login">
+            <v-btn type="submit" block color="primary" class="mt-6" :loading="isLoading">
               <template v-if="!isLoading"> Login </template>
               <template v-if="isLoading"> <v-progress-circular indeterminate size="24"
                   color="white"></v-progress-circular>
@@ -55,20 +55,20 @@
         </v-card-text>
 
         <!-- divider -->
-        <v-card-text class="d-flex align-center mt-2">
+        <!-- <v-card-text class="d-flex align-center mt-2">
           <v-divider></v-divider>
           <span class="mx-5">or</span>
           <v-divider></v-divider>
-        </v-card-text>
+        </v-card-text> -->
 
         <!-- social links -->
-        <v-card-actions class="d-flex justify-center">
+        <!-- <v-card-actions class="d-flex justify-center">
           <v-btn v-for="link in socialLink" :key="link.icon" icon class="ms-1">
             <v-icon :color="$vuetify.theme.dark ? link.colorInDark : link.color">
               {{ link.icon }}
             </v-icon>
           </v-btn>
-        </v-card-actions>
+        </v-card-actions>-->
       </v-card>
     </div>
   </div>

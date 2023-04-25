@@ -116,7 +116,7 @@ class ScheduleController extends BaseController
             ->join('routes', 'schedules.route_id', '=', 'routes.id')
             ->where('users.role_id', '=', 3)
             ->where('users.id', '=', $user->id)
-            ->where('schedules.status', 'complete')
+            // ->where('schedules.status', 'complete')
             ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'buses.*', 'routes.*', 'users.name')
             ->get();
 

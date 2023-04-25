@@ -24,7 +24,7 @@
             <label for="rute">Tanggal</label>
           </v-col>
           <v-col cols="12" md="9">
-            <v-text-field id="rute" v-model="schedule.tanggal" type="date" outlined dense placeholder="Tanggal"
+            <v-text-field id="rute" v-model="schedule.tanggal" type="datetime-local" outlined dense placeholder="Tanggal"
               hide-details></v-text-field>
           </v-col>
 

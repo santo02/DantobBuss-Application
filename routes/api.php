@@ -3,6 +3,7 @@
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BusController;
 use App\Http\Controllers\ConfirmPembayaran;
+use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\RegisterUserController;
@@ -65,6 +66,9 @@ Route::middleware(['auth:api', 'role:admin_loket, admin_kantor, driver,passenger
 
 
 Route::middleware(['auth:api', 'role:admin_loket'])->group(function () {
+    Route::get('/Keuangan/index', [KeuanganController::class, 'index']);
+    Route::get('/Detail-keuangan-Bydate/{tanggal}', [KeuanganController::class, 'getByTanggal']);
+    Route::get('/Detail-keuangan-ByPassenger/{id}', [KeuanganController::class, 'getPassenger']);
 
     Route::get('/bookings/index/all', [BookingController::class, 'index']);
     Route::put('/bookings/update/{id}', [BookingController::class, 'update']);

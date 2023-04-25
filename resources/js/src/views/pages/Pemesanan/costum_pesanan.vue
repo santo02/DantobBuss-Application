@@ -7,9 +7,9 @@
           <v-row no-gutters>
             <v-col v-for="n in +item.number_of_seats" :key="n" cols="2" sm="4">
               <div v-if="n !== 3" :class="['pa- text-center  text-no-wrap rounded', {
-                'style': selectedChair === (n > 3 ? n - 1 : n),
-                'booked': bookingsChair.some(chair => chair.num_seats === n)
-              }]" @click="selectedChair = (n > 3 ? n - 1 : n)">
+                  'style': selectedChair === (n > 3 ? n - 1 : n),
+                  'booked': bookingsChair.some(chair => chair.num_seats === (n > 3 ? n - 1 : n))
+                }]" @click="selectedChair = (n > 3 ? n - 1 : n)">
                 <v-icon x-large>{{ selectedChair === (n > 3 ? n - 1 : n) ? icons.mdiSofaSingle :
                   icons.mdiSofaSingleOutline
                 }}</v-icon>
@@ -190,9 +190,8 @@ export default {
 
       // Jika newValue lebih besar dari 3, kurangi satu
       if (newValue > 3) {
-        newValue -= -1;
+        newValue === newValue - 1;
       }
-
       if (this.bookingsChair.some(chair => chair.num_seats === newValue)) {
         this.snackbar.message = 'Kursi telah dipilih orang lain';
         this.snackbar.show = true;

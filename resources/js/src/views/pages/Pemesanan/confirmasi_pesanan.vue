@@ -27,7 +27,20 @@
               hide-details :rules="[v => !!v || 'Umur harus diisi']"></v-text-field>
           </v-col>
         </div>
-        <div>
+        <div v-if="userRole == 'admin_loket'">
+          <h4>Dijemput</h4>
+          <p>
+            Apabila penumpang tidak memilih request penjemputan, maka penumpang akan datang ke loket yang dipilih oleh
+            penumpang. Namun, apabila penumpang memilih Request Penjemputan maka penumpang akan diarahkan kelokasi
+            rekomendasi sistem dengan posisi terdekat dari sekitaran alamat yang dicantumkan sistem.
+          </p>
+          <v-switch v-model="jemput" color="primary"></v-switch>
+          <v-col v-if="jemput" cols="12">
+            <v-autocomplete filled solo clearable v-model="passenger.alamatJemput" :items="loket"
+              label="Pilih Lokasi Penjemputan"></v-autocomplete>
+          </v-col>
+        </div>
+        <div v-if="userRole == 'passenger'">
           <h4>Dijemput</h4>
           <p>
             Request penjemputan akan diarahkan ke lokasi rekomendasi sistem dengan posisi terdekat dari sekitaran alamat
@@ -35,7 +48,7 @@
           </p>
           <v-switch v-model="jemput" color="primary"></v-switch>
           <v-col v-if="jemput" cols="12">
-            <v-autocomplete filled solo clearable  v-model="passenger.alamatJemput" :items="items"
+            <v-autocomplete filled solo clearable v-model="passenger.alamatJemput" :items="items"
               label="Pilih Lokasi Penjemputan"></v-autocomplete>
           </v-col>
         </div>
@@ -123,7 +136,11 @@ export default {
     },
     harga() {
       return this.$store.state.busData.harga
-    }
+    },
+
+    userRole() {
+      return this.$store.state.userRole
+    },
 
   },
   data() {
@@ -136,7 +153,8 @@ export default {
         alamatJemput: "not request"
       },
       snackbar: false,
-      items: ["Balige", "Tambunan", "Tampubolon", "Laguboti"]
+      items: ["Balige", "Tambunan", "Tampubolon", "Laguboti"],
+      loket: ["Loket Balige", "Loket Tarutung", "Loket Terminal Tarutung ", "Loket Porsea", "Loket Medan"]
 
     }
   },

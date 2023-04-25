@@ -18,7 +18,10 @@
       <div v-if="userRole == 'admin_loket'">
         <nav-menu-link title="Pesan Ticket " :to="{ name: 'pages-pemesanan' }"
           :icon="icons.mdiCreditCardOutline"></nav-menu-link>
-          <nav-menu-link title="Riwayat Pesanan" :to="{ name: 'pesananku' }" :icon="icons.mdiCar"></nav-menu-link>
+        <nav-menu-link title="Riwayat Pesanan" :to="{ name: 'pesananku' }" :icon="icons.mdiCar"></nav-menu-link>
+        <nav-menu-link title="Catatan Keuangan " :to="{ name: 'catatan-keuangan' }"
+          :icon="icons.mdiCreditCardOutline"></nav-menu-link>
+        <nav-menu-link title="Komisi" :to="{ name: 'komisi' }" :icon="icons.mdiCreditCardOutline"></nav-menu-link>
 
       </div>
       <div v-if="userRole == 'admin_kantor'">
@@ -38,14 +41,15 @@
           :icon="icons.mdiCardAccountDetailsOutline"></nav-menu-link>
         <nav-menu-link title="Pesananku" :to="{ name: 'pesananku' }" :icon="icons.mdiCar"></nav-menu-link>
         <nav-menu-link title="Riwayat Perjalanan" :to="{ name: 'riwayat-perjalanan' }"
-          :icon="icons.mdiHistory "></nav-menu-link>
+          :icon="icons.mdiHistory"></nav-menu-link>
 
 
       </div>
       <div v-if="userRole == 'driver'">
-        <nav-menu-link title="Pesan E-ticket" :to="{ name: 'all-bus' }"
+        <nav-menu-link title="Penumpang" :to="{ name: 'all-bus' }"
           :icon="icons.mdiCardAccountDetailsOutline"></nav-menu-link>
-        <nav-menu-link title="Riwayat Perjalanan" :to="{ name: 'all-bus' }" :icon="icons.mdiCar"></nav-menu-link>
+        <nav-menu-link title="Riwayat Perjalanan" :to="{ name: 'riwayat-perjalanan' }"
+          :icon="icons.mdiHistory"></nav-menu-link>
 
       </div>
 

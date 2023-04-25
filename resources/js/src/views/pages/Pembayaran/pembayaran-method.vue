@@ -9,6 +9,7 @@
           <h5>{{ formatDate(item.tanggal) }}</h5>
           <h5>{{ item.harga }}</h5>
         </div>
+
         <template class="text-center">
           <v-container class="grey lighten-5">
             <v-row no-gutters>
@@ -33,9 +34,31 @@
             </v-row>
           </v-container>
         </template>
+        <div>
+          <v-col cols="12" md="3">
+            <label for="loket">Loket Pemberangkatan</label>
+          </v-col>
+
+          <v-col>
+            <v-text-field id="loket" v-model="passengerData.alamatJemput" outlined dense placeholder="Umur" required
+              hide-details readonly></v-text-field>
+          </v-col>
+        </div>
         <v-container>
-          <v-banner elevation="4">
-            <v-row align="center" color="black" justify="center" @click="showPaymentMethods = !showPaymentMethods">
+          <div v-if="userRole == 'admin_loket'">
+            <div class="text-center">
+              <v-row justify="center">
+                <v-col class="col">
+                  <v-btn class="custom-button" color="primary" @click.prevent="BayarCash">Bayar Sekarang</v-btn>
+                </v-col>
+                <v-col class="col">
+                  <v-btn class="custom-button" color="error" @click.prevent="cancel">Batalkan</v-btn>
+                </v-col>
+              </v-row>
+            </div>
+          </div>
+          <!-- <v-banner elevation="4"> -->
+          <!-- <v-row align="center" color="black" justify="center" @click="showPaymentMethods = !showPaymentMethods">
               <v-col cols="auto">
                 <v-icon size="22">{{ icons.mdiCreditCard }}</v-icon>
               </v-col>
@@ -45,64 +68,42 @@
               <v-col cols="auto">
                 <v-icon size="22">{{ icons.mdiChevronRight }}</v-icon>
               </v-col>
-            </v-row>
-            <v-row v-if="showPaymentMethods">
-              <v-col>
-                <v-radio-group v-model="selectedMethod">
-                  <!-- tunai -->
-                  <div v-if="userRole == 'admin_loket'">
-                    <v-banner>
-                      <v-row>
-                        <v-col cols="auto">
-                          <v-icon size="22" color="primary">{{ icons.mdiCashCheck }}</v-icon>
-                        </v-col>
-                        <v-col @click="togglePaymentcash">
-                          Tunai
-                        </v-col>
-                        <v-col cols="auto">
-                          <v-icon size="22">{{ icons.mdiChevronRight }}</v-icon>
-                        </v-col>
-                      </v-row>
-                    </v-banner>
-                    <v-col v-if="showPaymentcash">
+            </v-row> -->
+          <!-- <v-row v-if="showPaymentMethods"> -->
+          <v-col>
+
+            <!-- <v-radio-group v-model="selectedMethod"> -->
+            <!-- nontunai -->
+            <div v-if="userRole == 'passenger'">
+              <v-banner>
+                <v-row>
+                  <v-col cols="auto">
+                    <v-icon size="22" color="primary">{{ icons.mdiWalletOutline }}</v-icon>
+                  </v-col>
+                  <v-col @click="togglePaymentNoncash">
+                    NonTunai
+                  </v-col>
+                  <v-col cols="auto">
+                    <v-icon size="22">{{ icons.mdiChevronRight }}</v-icon>
+                  </v-col>
+                </v-row>
+              </v-banner>
+              <v-col v-if="showPaymentNoncash">
+                <v-col class="ml-3">
+                  <v-row>
+                    <v-col cols="auto">
                       <v-col>
-                        <v-btn color="primary" @click.prevent="BayarCash">Bayar</v-btn>
+                        <v-btn color="primary" @click.prevent="BayarNontunai">Bayar Sekarang</v-btn>
                       </v-col>
                     </v-col>
-
-                  </div>
-
-                  <!-- nontunai -->
-                  <div v-if="userRole == 'passenger'">
-                    <v-banner>
-                      <v-row>
-                        <v-col cols="auto">
-                          <v-icon size="22" color="primary">{{ icons.mdiWalletOutline }}</v-icon>
-                        </v-col>
-                        <v-col @click="togglePaymentNoncash">
-                          NonTunai
-                        </v-col>
-                        <v-col cols="auto">
-                          <v-icon size="22">{{ icons.mdiChevronRight }}</v-icon>
-                        </v-col>
-                      </v-row>
-                    </v-banner>
-                    <v-col v-if="showPaymentNoncash">
-                      <v-col class="ml-3">
-                        <v-row>
-                          <v-col cols="auto">
-                            <v-col>
-                              <v-btn color="primary" @click.prevent="BayarNontunai">Bayar Sekarang</v-btn>
-                            </v-col>
-                          </v-col>
-                        </v-row>
-                      </v-col>
-                    </v-col>
-                  </div>
-                </v-radio-group>
+                  </v-row>
+                </v-col>
               </v-col>
-            </v-row>
-          </v-banner>
+            </div>
+            <!-- </v-radio-group> -->
+          </v-col>
+          <!-- </v-row> -->
+          <!-- </v-banner> -->
         </v-container>
       </div>
     </v-card>
@@ -114,6 +115,8 @@ import axios from 'axios';
 import moment from 'moment';
 import 'moment/locale/id';
 import { mapState } from 'vuex';
+import Swal from 'sweetalert2'
+
 
 import { mdiChevronRight, mdiCreditCard, mdiCashCheck, mdiWalletOutline } from '@mdi/js';
 
@@ -210,13 +213,44 @@ export default {
           'Authorization': `Bearer ${access_token}`
         }
       }).then(response => {
-        console.log(this.bookings);
+        // console.log(this.bookings);
+
+        // tampilkan SweetAlert jika pembayaran berhasil
+        Swal.fire({
+          icon: 'success',
+          title: 'Pembayaran Berhasil',
+          text: 'Terima kasih sudah melakukan pembayaran'
+        })
+
         this.$router.push({
-          name: 'dashboard',
-          query: { message: this.message },
+          name: 'pesananku'
         });
       }).catch((error) => {
-        console.log(error.response.data.errors)
+        console.log(error.response.data.errors);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Terjadi kesalahan saat melakukan pembayaran'
+        })
+      })
+    },
+    cancel() {
+      Swal.fire({
+        icon: 'question',
+        title: 'Apakah anda ingin membatalkan pesanan?',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Tidak',
+        confirmButtonColor: '#307475',
+
+
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          this.$router.push({
+            name: 'pages-pemesanan'
+          });
+        }
       })
     },
     BayarNontunai() {
@@ -249,3 +283,9 @@ export default {
 
 }
 </script>
+
+<style scoped>
+.custom-button {
+  width: 80%;
+}
+</style>

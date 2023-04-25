@@ -1,93 +1,90 @@
 <template>
   <div>
-    <div id="map"></div>
-    <div>
-      <h2>Lokasi saat ini:</h2>
-      <p>Tempat: {{ currentPlace }}</p>
-    </div>
+    <google-map :center="getCenter" :zoom="15"
+      style="width: 100%; height: 80vh;">
+      <map-marker :options="getMarkerOptions"></map-marker>
+    </google-map>
+    <button @click="getCurrentLocation">Click</button>
   </div>
 </template>
 
 <script>
-import geolib from "geolib";
+import {Map, Marker } from 'vue2-google-maps';
 
 export default {
-  data() {
-    return {
-      currentPlace: "",
-      listener: null,
-    };
+  name: 'App',
+  components: {
+    'google-map': Map,
+    'map-marker': Marker
+  },
+  computed: {
+    getCenter: function () {
+      return this.center;
+    },
+    getMarkerOptions: function () {
+      return this.centerOptions;
+    }
+  },
+  created() {
+    navigator.geolocation.getCurrentPosition((position) => {
+      this.center = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      };
+      this.centerOptions = { position: this.center, label: "Current Location.", title: "ME" }
+    }, (err) => {
+      console.log(`error : ${err.message.toString()}`)
+    });
+
+    this.watcher = navigator.geolocation.watchPosition((position) => {
+      console.log(`Watch position with coordinate late: ${position.coords.latitude} and long: ${position.coords.longitude}`)
+      this.center = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      };
+      this.centerOptions = { position: this.center, label: "Current Location.", title: "ME" }
+    }, (err) => {
+      console.log(`Failed to watch location ${err}`)
+    });
+
+  },
+  unmounted() {
+    if (this.watcher !== null) {
+      console.log(`unmounted the watcher`);
+      navigator.geolocation.clearWatch(this.watcher);
+    }
   },
   methods: {
-    tracking() {
-      // koordinat longitude dan latitude
-      const longitude = 34545;
-      const latitude = 122;
-      // buat map
-      const map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: latitude, lng: longitude },
-        zoom: 18,
-      });
-      // buat marker
-      const marker = new google.maps.Marker({
-        position: { lat: latitude, lng: longitude },
-        map: map,
-      });
-      // this.listener = setInterval(() => {
-
-      //   // buat geolocation object
-      //   const geolocation = navigator.geolocation;
-
-      //   // update lokasi marker berdasarkan geolocation object
-      //   // if (geolocation) {
-      //   geolocation.getCurrentPosition((position) => {
-      //     const currentLatitude = position.coords.latitude;
-      //     const currentLongitude = position.coords.longitude;
-
-      //     marker.setPosition({ lat: currentLatitude, lng: currentLongitude });
-      //     map.setCenter({ lat: currentLatitude, lng: currentLongitude });
-
-      //     // // Menggunakan geolib untuk mendapatkan nama tempat
-      //     // const currentPlace = geolib.reverseGeocode(
-      //     //   currentLatitude,F
-      //     //   currentLongitude
-      //     // );
-      //     // if (currentPlace && currentPlace[0]) {
-      //     //   this.currentPlace = currentPlace[0].city || currentPlace[0].country;
-      //     // } else {
-      //     //   this.currentPlace = "Tidak ada nama tempat ditemukan";
-      //     // }
-      //     // console.log(this.currentPlace);
-      //   });
-      // }, 1000);
-
-      const geolocation = navigator.geolocation;
-      this.listener = geolocation.watchPosition((position)=>{
-        console.log(position);
-        marker.setPosition({lat: position.coords.latitude, lng: position.coords.longitude});
-        map.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
+    getCurrentLocation() {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.center = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        this.centerOptions = { position: this.center, label: "Current Location.", title: "ME" }
+      }, (err) => {
+        console.log(`error : ${err.message.toString()}`)
       });
     },
   },
-  beforeDestroy() {
-    const geolocation = navigator.geolocation;
-    if(this.listener !== null){
-      geolocation.clearWatch(this.listener);
-    }
+  data() {
+    return {
+      mapItems: null,
+      center: { lat: -33.9, lng: 151.1 },
+      centerOptions: {},
+      watcher: null,
+    };
   },
-  mounted() {
-
-
-
-    console.log("Test");
-    this.tracking();
-    // }
-  },
-};
+}
 </script>
 
-<style>
-#map {
-  height: 400px;
+<style scoped>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
 }
 </style>

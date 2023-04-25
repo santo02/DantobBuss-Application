@@ -32,6 +32,16 @@
             </v-row>
           </v-container>
         </template>
+        <div>
+          <v-col cols="12" md="3">
+            <label for="loket">Loket Pemberangkatan</label>
+          </v-col>
+
+          <v-col>
+            <v-text-field id="loket" v-model="passengerData.alamatJemput"  outlined dense placeholder="Umur" required
+              hide-details readonly></v-text-field>
+          </v-col>
+        </div>
       </div>
       <div class="check">
         <v-container class="grey text-center">

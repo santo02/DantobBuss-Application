@@ -3,8 +3,7 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-const routes = [
-  {
+const routes = [{
     path: '/',
     name: 'pages-login',
     component: () => import('@/views/pages/Login.vue'),
@@ -113,6 +112,31 @@ const routes = [
     component: () => import('@/views/pages/Tracking/tracking.vue'),
   },
   {
+    path: '/catatan-keuangan',
+    name: 'catatan-keuangan',
+    component: () => import('@/views/pages/Keuangan/catatan-keuangan.vue'),
+  },
+  {
+    path: '/detail-catatan-keuangan/:tanggal',
+    name: 'detail-catatan-keuangan',
+    component: () => import('@/views/pages/Keuangan/detail-catatan-keuangan.vue'),
+  },
+  {
+    path: '/detail-keuangan-by-penumpang/:id',
+    name: 'detail-keuangan-by-penumpang',
+    component: () => import('@/views/pages/Keuangan/detail-keuangan.vue'),
+  },
+  {
+    path: '/Komisi',
+    name: 'komisi',
+    component: () => import('@/views/pages/Komisi/komisi.vue'),
+  },
+  {
+    path: '/detail-Komisi/:tanggal',
+    name: 'detail-komisi',
+    component: () => import('@/views/pages/Komisi/detail-komisi.vue'),
+  },
+  {
     path: '/typography',
     name: 'typography',
     component: () => import('@/views/typography/Typography.vue'),
@@ -171,6 +195,8 @@ const routes = [
     redirect: 'error-404',
   },
 ]
+
+
 
 const router = new VueRouter({
   mode: 'history',
