@@ -5,7 +5,6 @@
         <map-marker :options="car"></map-marker>
       </div>
     </google-map>
-    <button @click="getCurrentLocation">Click</button>
   </div>
 </template>
 

@@ -27,26 +27,36 @@
               </v-col>
               <v-col>
                 <div class="d-flex justify-content-between">
-                  <v-card-title class="text-h6 mb-0">{{ eco.merk }} ({{ eco.police_number }})</v-card-title>
-                  <div class="text-h6 mt-4 mr-5" style="color:#FF4C51;">
+                  <v-card-title class="text-h6">{{ eco.derpature }} - {{ eco.arrival }}</v-card-title>
+                  <div class="text-h6 mt-4 mr-5 harga" style="color:#FF4C51;">
                     Rp.{{ eco.harga }}
                   </div>
                 </div>
+                <div class="d-flex justify-content-between ml-5">
+                  <h6>{{ eco.nomor_pintu }} </h6>
+                  <h6 class="text--primary ml-5">{{ eco.type }} </h6>
+                </div>
                 <v-row no-gutters class="my-3">
-                  <v-col cols="12">
+                  <v-col cols="12" class="detail">
                     <div class="row">
-                      <div class="col-md-5"><v-icon left>{{ icons.mdiCalendarClock }}</v-icon> {{ formatDate(eco.tanggal)
+                      <div class="col-md-3"><v-icon left>{{ icons.mdiCalendarClock }}</v-icon> {{ formatDate(eco.tanggal)
                       }}</div>
-                      <div class="col-md-3"><v-icon left>{{ icons.mdiAccount }}</v-icon> {{ eco.name }}</div>
+                      <div class="col-md-2"><v-icon left>{{ icons.mdiAccount }}</v-icon> {{ eco.name }}</div>
                       <div class="col-md-2" v-for="(count, id) in bookingCounts" :key="id" v-if="eco.schedule_id == id">
                         <small color="secondary">Tersedia : {{ eco.number_of_seats - count - 1 }} Kursi </small>
                       </div>
-                      <div class="col-md-2">
-                        <v-btn color="secondary" @click="selectBus(eco.schedule_id, eco.harga)" class="ml-3"
-                          style="color: white; font-weight:bold;">
-                          Pesan
-                        </v-btn>
+                      <div class="col-md-2" v-if="!Object.keys(bookingCounts).includes(String(eco.schedule_id))">
+                        <small color="secondary">Tersedia : {{ eco.number_of_seats - 1 }} Kursi </small>
                       </div>
+
+                      <v-row class="col-md-2 d-flex justify-space-around">
+                        <div class="col-md-2">
+                          <v-btn color="secondary" @click="selectBus(eco.schedule_id, eco.harga)" class="ml-3"
+                            style="color: white; font-weight:bold;">
+                            Pesan
+                          </v-btn>
+                        </div>
+                      </v-row>
                     </div>
                   </v-col>
                 </v-row>
@@ -57,8 +67,7 @@
       </v-tab-item>
       <v-tab-item>
         <v-card flat>
-          <v-card-text v-for="exe in executive" :key="exe.schedule_id">
-            <!-- <v-card class="mt-2"> -->
+          <v-card v-for="exe in executive" :key="exe.schedule_id" class="mb-2">
             <v-row no-gutters>
               <v-col cols="auto">
                 <v-avatar size="40" class="mt-2 ml-2">
@@ -67,28 +76,43 @@
                 </v-avatar>
               </v-col>
               <v-col>
-                <div class="d-flex justify-space-between flex-row">
-                  <v-card-title class="text-h6 mb-0">{{ exe.merk }} ({{ exe.police_number }})</v-card-title>
-                  <div class="text-h6 mt-4 mr-5" style="color:#FF4C51;">
+                <div class="d-flex justify-content-between">
+                  <v-card-title class="text-h6">{{ exe.derpature }} - {{ exe.arrival }}</v-card-title>
+                  <div class="text-h6 mt-4 mr-5 harga" style="color:#FF4C51;">
                     Rp.{{ exe.harga }}
                   </div>
                 </div>
+                <div class="d-flex justify-content-between ml-5">
+                  <h6>{{ exe.nomor_pintu }} </h6>
+                  <h6 class="text--primary ml-5">{{ exe.type }} </h6>
+                </div>
+                <v-row no-gutters class="my-3">
+                  <v-col cols="12" class="detail">
+                    <div class="row">
+                      <div class="col-md-3"><v-icon left>{{ icons.mdiCalendarClock }}</v-icon> {{ formatDate(exe.tanggal)
+                      }}</div>
+                      <div class="col-md-2"><v-icon left>{{ icons.mdiAccount }}</v-icon> {{ exe.name }}</div>
+                      <div class="col-md-2" v-for="(count, id) in bookingCountsExe" :key="id" v-if="exe.schedule_id == id">
+                        <small color="secondary">Tersedia : {{ exe.number_of_seats - count - 1 }} Kursi </small>
+                      </div>
+                      <div class="col-md-2" v-if="!Object.keys(bookingCountsExe).includes(String(exe.schedule_id))">
+                        <small color="secondary">Tersedia : {{ exe.number_of_seats - 1 }} Kursi </small>
+                      </div>
 
-                <v-card-text class="d-flex justify-space-between flex-column flex-sm-row fill-height">
-                  <div><v-icon left>{{ icons.mdiCalendarClock }}</v-icon> {{ formatDate(exe.tanggal) }}</div>
-                  <div><v-icon left>{{ icons.mdiAccount }}</v-icon> {{ exe.name }}</div>
-                  <div class="col-md-2" v-for="(countsExe, id) in bookingCounts" :key="id" v-if="exe.schedule_id == id">
-                    <small color="secondary">Tersedia : {{ exe.number_of_seats - countsExe - 1 }} Kursi </small>
-                  </div>
-                  <v-btn color="secondary" @click="selectBus(exe.schedule_id, exe.harga)"
-                    style="color: white; font-weight:bold;">
-                    Pesan
-                  </v-btn>
-                </v-card-text>
+                      <v-row class="col-md-2 d-flex justify-space-around">
+                        <div class="col-md-2">
+                          <v-btn color="secondary" @click="selectBus(exe.schedule_id, exe.harga)" class="ml-3"
+                            style="color: white; font-weight:bold;">
+                            Pesan
+                          </v-btn>
+                        </div>
+                      </v-row>
+                    </div>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
-            <!-- </v-card> -->
-          </v-card-text>
+          </v-card>
         </v-card>
       </v-tab-item>
     </v-tabs-items>

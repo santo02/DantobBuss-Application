@@ -52,9 +52,9 @@ export default {
           value: 'Tanggal',
         },
         { text: 'Total Pemasukan', value: 'total' },
-        { text: 'Total Setoran Admin Loket', value: 'total' },
-        { text: 'Komisi Adm/agen', value: 'total' },
-        { text: 'Komisi Perusahaan', value: 'total' },
+        // { text: 'Total Setoran Admin Loket', value: 0 },
+        // { text: 'Komisi Adm/agen', value: 'total' },
+        // { text: 'Komisi Perusahaan', value: 'total' },
         { text: 'Detail', value: 'Detail', sortable: false },
       ],
       filteredItemsList: []

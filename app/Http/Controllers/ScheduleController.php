@@ -60,13 +60,11 @@ class ScheduleController extends BaseController
             ->get();
 
         $hasBooked = DB::table('schedules')
-            ->join('buses', 'buses.id', '=', 'schedules.bus_id')
-            ->join('users', 'buses.supir_id', '=', 'users.id')
-            ->join('routes', 'schedules.route_id', '=', 'routes.id')
             ->join('bookings', 'bookings.schedules_id', '=', 'schedules.id')
-            ->where('buses.type', '=', 'Executive')
-            ->select('bookings.num_seats', 'schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'buses.*', 'routes.*', 'users.name')
-            ->count();
+            ->join('buses', 'schedules.bus_id', '=', 'buses.id')
+            ->where('buses.type', "=", 'Executive')
+            ->select('bookings.schedules_id')
+            ->get();
 
         return response()->json(['total' => $hasBooked, 'data' => $schedule]);
     }

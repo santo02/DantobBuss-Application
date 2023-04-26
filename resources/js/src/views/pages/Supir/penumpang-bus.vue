@@ -23,7 +23,7 @@
       </div>
     </div>
     <h5>Total Penumpang : {{ total_penumpang }}</h5>
-    <v-data-table :headers="headers" :items="penumpang" class="elevation-1">
+    <v-data-table :headers="headers" :items="penumpang"  class="elevation-1">
     </v-data-table>
   </div>
 </template>
@@ -32,6 +32,7 @@
 import axios from 'axios';
 import moment from 'moment';
 import 'moment/locale/id';
+import  {io} from "socket.io-client";
 
 export default {
   setup() {
@@ -52,7 +53,8 @@ export default {
       id_bus: this.$route.params.id,
       penumpang: [],
       bus: {},
-      total_penumpang: 0
+      total_penumpang: 0,
+      StatusBus: "",
     }
   },
 
@@ -76,8 +78,9 @@ export default {
       } catch (error) {
         console.log(error);
       }
-    }
+    },
   },
+
   mounted() {
     const access_token = localStorage.getItem('access_token');
     axios.get(`/api/bookings/show/schedules/${this.id_bus}`, {
@@ -86,12 +89,52 @@ export default {
       }
     }).then(response => {
       this.penumpang = response.data.data;
-      this.bus = response.data.data[0];
       console.log(this.penumpang)
+      this.bus = response.data.data[0];
+      this.StatusBus = response.data.data[0].status;
       this.total_penumpang = response.data.total;
     }).catch(error => {
       console.log(error);
     });
+  },
+  created() {
+    navigator.geolocation.getCurrentPosition((position) => {
+      this.center = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      };
+      this.centerOptions = { position: this.center, label: "Current Location.", title: "ME" }
+    }, (err) => {
+      console.log(`error : ${err.message.toString()}`)
+    });
+
+    this.socket = io("ws://localhost:8081", {
+      query: `id=${this.id_bus}`
+    });
+
+
+    // if (this.StatusBus === 'in_progress') {
+    this.watcher = navigator.geolocation.watchPosition((position) => {
+      console.log(`Watch position with coordinate late: ${position.coords.latitude} and long: ${position.coords.longitude}`)
+      this.center = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      };
+      this.centerOptions = { position: this.center, label: "Current Location.", title: "ME" };
+      this.socket.emit("server-sent-location", this.center);
+    }, (err) => {
+      console.log(`Failed to watch location ${err}`)
+
+    });
+
+    this.socket.on("side-get-location", (message) => {
+      console.log(message);
+      this.carLocations = {
+        ...this.carLocations,
+        [message.data.driver_id]: { position: message.data.location, label: "Current Location Driver : ", title: message.data.driver_id },
+      };
+    });
+    // }
   },
 }
 </script>

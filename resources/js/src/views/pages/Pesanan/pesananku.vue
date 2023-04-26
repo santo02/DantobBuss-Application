@@ -31,13 +31,15 @@
                   <div class="col-md-4"><v-icon left>{{ icons.mdiCalendarClock }}</v-icon> {{ formatDate(item.tanggal)
                   }}</div>
                   <div class="col-md-2"><v-icon left>{{ icons.mdiAccount }}</v-icon> {{ item.name }}</div>
-                  <v-row class="col-md-4 d-flex justify-space-around">
-                    <div class="col-md-2 ">
+                  <v-row  class="col-md-4 d-flex justify-space-around">
+                    <div v-if="userRole === 'passenger'"  class="col-md-2 ">
                       <router-link :to="{ name: 'tracking' }">
                         <v-btn small color="secondary" class="ml-3" style="color: white; font-weight:bold;">
                           Tracking
                         </v-btn>
                       </router-link>
+                    </div>
+                    <div v-else class="col-md-2">
                     </div>
                     <div class="col-md-2">
                       <router-link :to="{ name: 'e-ticket', params:{id: item.bookings_id} }">
@@ -121,6 +123,11 @@ export default {
         mdiAccount
       }
     }
+  },
+  computed: {
+    userRole() {
+      return this.$store.state.userRole
+    },
   },
   methods: {
     ...mapActions(['setSelectedSeat']),
