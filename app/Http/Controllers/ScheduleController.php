@@ -56,7 +56,8 @@ class ScheduleController extends BaseController
             ->join('users', 'buses.supir_id', '=', 'users.id')
             ->join('routes', 'schedules.route_id', '=', 'routes.id')
             ->where('buses.type', '=', 'Executive')
-            ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'buses.*', 'routes.*', 'users.name')
+            ->where('schedules.status', "!=", 'complete')
+            ->select('schedules.id as schedule_id', 'schedules.tanggal','schedules.status as status_bus', 'schedules.harga', 'buses.*', 'routes.*', 'users.name')
             ->get();
 
         $hasBooked = DB::table('schedules')
@@ -74,9 +75,10 @@ class ScheduleController extends BaseController
             ->join('buses', 'buses.id', '=', 'schedules.bus_id')
             ->join('users', 'buses.supir_id', '=', 'users.id')
             ->join('routes', 'schedules.route_id', '=', 'routes.id')
+            ->where('schedules.status', "!=", 'complete')
             // ->join('bookings', 'bookings.schedules_id', '=', 'schedules.id')
             ->where('buses.type', '=', 'Economi')
-            ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga',  'buses.*', 'routes.*', 'users.name')
+            ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.status as status_bus', 'schedules.harga',  'buses.*', 'routes.*', 'users.name')
             ->get();
 
         $hasBooked = DB::table('schedules')
