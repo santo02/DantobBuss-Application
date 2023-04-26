@@ -93,6 +93,7 @@ class BookingController extends BaseController
     public function getByUserId()
     {
         $user = Auth::user();
+        
         $booking = DB::table('bookings')
             ->join('schedules', 'bookings.schedules_id', 'schedules.id')
             ->join('buses', 'schedules.bus_id', 'buses.id')
@@ -111,7 +112,15 @@ class BookingController extends BaseController
 
     public function getOneSchedules($id)
     {
-        $booking = Bookings::with('schedules', 'user')->where('schedules_id', $id)->get();
+        $booking = DB::table('bookings')
+        ->join('schedules', 'bookings.schedules_id', 'schedules.id')
+        ->join('buses', 'schedules.bus_id', 'buses.id')
+        ->join('routes', 'schedules.route_id', 'routes.id')
+        ->join('pembayarans', 'pembayarans.bookings_id', 'bookings.id')
+        ->where('schedules.id', $id)
+        ->select('bookings.*','schedules.id','routes.derpature','routes.arrival', 'buses.nomor_pintu', 'buses.type', 'buses.number_of_seats', 'schedules.tanggal', 'schedules.harga', 'schedules.status', 'pembayarans.method')
+        ->get();
+
         $num_of_bookings = $booking->count();
         if ($booking) {
             return response()->json(['total' => $num_of_bookings, 'data' => $booking]);

@@ -51,7 +51,7 @@ Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver,passenger']
 });
 
 
-Route::middleware(['auth:api', 'role:admin_loket, admin_kantor, driver,passenger'])->group(function () {
+Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver,passenger'])->group(function () {
 
     Route::get('/schedule/show/{id}', [ScheduleController::class, 'SelectOne']);
     Route::get('/schedule/type/executive', [ScheduleController::class, 'ShowExecutive']);
@@ -101,3 +101,5 @@ Route::middleware(['auth:api', 'role:driver'])->group(function () {
     Route::get('/schedules/driver', [ScheduleController::class, 'getForSupir']);
     Route::get('/confirmasi-pembayaran', [ConfirmPembayaran::class, 'index']);
 });
+
+Route::put('/update-status/{id}', [ScheduleController::class, 'UpdateStatusBus']);

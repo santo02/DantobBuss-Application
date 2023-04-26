@@ -46,9 +46,9 @@
 
       </div>
       <div v-if="userRole == 'driver'">
-        <nav-menu-link title="Penumpang" :to="{ name: 'all-bus' }"
+        <nav-menu-link title="Penumpang" :to="{ name: 'penumpang' }"
           :icon="icons.mdiCardAccountDetailsOutline"></nav-menu-link>
-        <nav-menu-link title="Riwayat Perjalanan" :to="{ name: 'riwayat-perjalanan' }"
+        <nav-menu-link title="Riwayat Perjalanan" :to="{ name: 'perjalanan-supir' }"
           :icon="icons.mdiHistory"></nav-menu-link>
 
       </div>

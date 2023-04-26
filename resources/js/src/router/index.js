@@ -92,9 +92,19 @@ const routes = [{
     component: () => import('@/views/dashboard/DashboardPenumpang.vue'),
   },
   {
-    path: '/riwayat-pesanan',
+    path: '/perjalanan-supir',
+    name: 'perjalanan-supir',
+    component: () => import('@/views/pages/Supir/riwayat-perjalanan-supir.vue'),
+  },
+  {
+    path: '/riwayat-pe',
     name: 'riwayat-perjalanan',
     component: () => import('@/views/pages/Pesanan/riwayat-perjalanan.vue'),
+  },
+  {
+    path: '/penumpang',
+    name: 'penumpang',
+    component: () => import('@/views/pages/Supir/penumpang.vue'),
   },
   {
     path: '/pesananku',
@@ -135,6 +145,11 @@ const routes = [{
     path: '/detail-Komisi/:tanggal',
     name: 'detail-komisi',
     component: () => import('@/views/pages/Komisi/detail-komisi.vue'),
+  },
+  {
+    path: '/penumpang-bus/:id',
+    name: 'penumpang-bus',
+    component: () => import('@/views/pages/Supir/penumpang-bus.vue'),
   },
   {
     path: '/typography',

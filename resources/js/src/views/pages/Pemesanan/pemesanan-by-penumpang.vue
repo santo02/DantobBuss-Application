@@ -28,8 +28,11 @@
                 <div class="col-md-2"><v-icon left>{{ icons.mdiAccount }}</v-icon> {{ item.name }}</div>
                 <div class="col-md-2" v-for="(count, id) in bookingCounts" :key="id" v-if="item.schedule_id == id">
                   <small color="secondary">Tersedia : {{ item.number_of_seats - count - 1 }} Kursi </small>
-                  <!-- <small color="secondary" v-else>Tersedia : {{ item.number_of_seats - count - 1 }} Kursi </small> -->
                 </div>
+                <div class="col-md-2" v-if="!Object.keys(bookingCounts).includes(String(item.schedule_id))">
+                  <small color="secondary">Tersedia : {{ item.number_of_seats - 1 }} Kursi </small>
+                </div>
+
                 <v-row class="col-md-2 d-flex justify-space-around">
                   <div class="col-md-2">
                     <v-btn color="secondary" @click="selectBus(item.schedule_id, item.harga)" class="ml-3"

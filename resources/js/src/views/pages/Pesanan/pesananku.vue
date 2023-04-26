@@ -2,7 +2,7 @@
   <div>
     <h2> Pesanan anda</h2>
     <v-card flat>
-      <v-card v-for="item in pesanan" :key="item.schedule_id" class="mb-2" v-if="item.status === 'in_progres'">
+      <v-card v-for="item in pesanan" :key="item.schedule_id" class="mb-2" v-if="item.status === 'in_progress'">
         <v-row no-gutters>
           <v-col cols="auto">
             <v-avatar size="40" class="mt-2 ml-2">
@@ -53,7 +53,7 @@
           </v-col>
         </v-row>
       </v-card>
-      <v-card v-for="item in pesanan" :key="item.schedule_id" class="mb-2" v-if="item.status !== 'in_progres'">
+      <v-card v-for="item in pesanan" :key="item.schedule_id" class="mb-2" v-if="item.status !== 'in_progress'">
         <v-row no-gutters>
           <v-col cols="auto">
             <v-avatar size="40" class="mt-2 ml-2">
@@ -148,8 +148,8 @@ export default {
         'Authorization': `Bearer ${access_token}`
       }
     }).then(response => {
-      this.pesanan = response.data.filter(pesanan => pesanan.status === 'in_progres' || pesanan.status === 'not_started');
-      console.log(this.pesanan)
+      this.pesanan = response.data.filter(pesanan => pesanan.status === 'in_progress' || pesanan.status === 'not_started');
+      console.log(response.data)
     }).catch(error => {
       console.log(error);
     });
