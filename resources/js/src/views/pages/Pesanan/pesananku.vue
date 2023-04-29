@@ -1,49 +1,85 @@
 <template>
   <div>
-    <h2> Pesanan anda</h2>
+    <h2>Pesanan anda</h2>
     <v-card flat>
-      <v-card v-for="item in pesanan" :key="item.schedule_id" class="mb-2" v-if="item.status === 'in_progress'">
+      <v-card
+        v-for="item in pesanan"
+        :key="item.bookings_id"
+        class="mb-2"
+        v-if="item.status === 'in_progress'"
+      >
         <v-row no-gutters>
           <v-col cols="auto">
             <v-avatar size="40" class="mt-2 ml-2">
-              <img :src="require('@/assets/images/logos/logo-KBT.png').default" max-height="50px" max-width="100px"
-                alt="avatar">
+              <img
+                :src="require('@/assets/images/logos/logo-KBT.png').default"
+                max-height="50px"
+                max-width="100px"
+                alt="avatar"
+              />
             </v-avatar>
           </v-col>
           <v-col>
             <div class="d-flex justify-content-between">
-              <v-card-title class="text-h6">{{ item.derpature }} - {{ item.arrival }}</v-card-title>
-              <div class="text-h6 mt-4 mr-5 harga" style="color:#FF4C51;">
+              <v-card-title class="text-h6"
+                >{{ item.derpature }} - {{ item.arrival }}</v-card-title
+              >
+              <div class="text-h6 mt-4 mr-5 harga" style="color: #ff4c51">
                 Rp.{{ item.harga }}
               </div>
-              <v-btn rounded small color="warning" class="ml-3 status text-capitalize"
-                style="color: white; font-weight:bold;">
+              <v-btn
+                rounded
+                small
+                color="warning"
+                class="ml-3 status text-capitalize"
+                style="color: white; font-weight: bold"
+              >
                 sedang berjalan
               </v-btn>
             </div>
             <div class="d-flex justify-content-between ml-5">
-              <h6>{{ item.nomor_pintu }} </h6>
-              <h6 class="text--primary ml-5">{{ item.type }} </h6>
+              <h6>{{ item.nomor_pintu }}</h6>
+              <h6 class="text--primary ml-5">{{ item.type }}</h6>
             </div>
             <v-row no-gutters class="my-3">
               <v-col cols="12">
                 <div class="row">
-                  <div class="col-md-4"><v-icon left>{{ icons.mdiCalendarClock }}</v-icon> {{ formatDate(item.tanggal)
-                  }}</div>
-                  <div class="col-md-2"><v-icon left>{{ icons.mdiAccount }}</v-icon> {{ item.name }}</div>
-                  <v-row  class="col-md-4 d-flex justify-space-around">
-                    <div v-if="userRole === 'passenger'"  class="col-md-2 ">
-                      <router-link :to="{ name: 'tracking' }">
-                        <v-btn small color="secondary" class="ml-3" style="color: white; font-weight:bold;">
+                  <div class="col-md-4">
+                    <v-icon left>{{ icons.mdiCalendarClock }}</v-icon>
+                    {{ formatDate(item.tanggal) }}
+                  </div>
+                  <div class="col-md-2">
+                    <v-icon left>{{ icons.mdiAccount }}</v-icon> {{ item.name }}
+                  </div>
+                  <v-row class="col-md-4 d-flex justify-space-around">
+                    <div v-if="userRole === 'passenger'" class="col-md-2">
+                      <router-link
+                        :to="{
+                          name: 'tracking',
+                          params: { schedule_id: item.schedule_id },
+                        }"
+                      >
+                        <v-btn
+                          small
+                          color="secondary"
+                          class="ml-3"
+                          style="color: white; font-weight: bold"
+                        >
                           Tracking
                         </v-btn>
                       </router-link>
                     </div>
-                    <div v-else class="col-md-2">
-                    </div>
+                    <div v-else class="col-md-2"></div>
                     <div class="col-md-2">
-                      <router-link :to="{ name: 'e-ticket', params:{id: item.bookings_id} }">
-                        <v-btn small color="accent" class="ml-3" style="color: white; font-weight:bold;">
+                      <router-link
+                        :to="{ name: 'e-ticket', params: { id: item.bookings_id } }"
+                      >
+                        <v-btn
+                          small
+                          color="accent"
+                          class="ml-3"
+                          style="color: white; font-weight: bold"
+                        >
                           E-Ticket
                         </v-btn>
                       </router-link>
@@ -55,37 +91,58 @@
           </v-col>
         </v-row>
       </v-card>
-      <v-card v-for="item in pesanan" :key="item.schedule_id" class="mb-2" v-if="item.status !== 'in_progress'">
+      <v-card
+        v-for="item in pesanan"
+        :key="item.schedule_id"
+        class="mb-2"
+        v-if="item.status !== 'in_progress'"
+      >
         <v-row no-gutters>
           <v-col cols="auto">
             <v-avatar size="40" class="mt-2 ml-2">
-              <img :src="require('@/assets/images/logos/logo-KBT.png').default" max-height="50px" max-width="100px"
-                alt="avatar">
+              <img
+                :src="require('@/assets/images/logos/logo-KBT.png').default"
+                max-height="50px"
+                max-width="100px"
+                alt="avatar"
+              />
             </v-avatar>
           </v-col>
           <v-col>
             <div class="d-flex justify-content-between">
-              <v-card-title class="text-h6">{{ item.derpature }} - {{ item.arrival }}</v-card-title>
-              <div class="text-h6 mt-4 harga mr-5" style="color:#FF4C51;">
+              <v-card-title class="text-h6"
+                >{{ item.derpature }} - {{ item.arrival }}</v-card-title
+              >
+              <div class="text-h6 mt-4 harga mr-5" style="color: #ff4c51">
                 Rp.{{ item.harga }}
               </div>
             </div>
             <div class="d-flex justify-content-between ml-5">
-              <h6>{{ item.nomor_pintu }} </h6>
-              <h6 class="text--primary ml-5">{{ item.type }} </h6>
+              <h6>{{ item.nomor_pintu }}</h6>
+              <h6 class="text--primary ml-5">{{ item.type }}</h6>
             </div>
             <v-row no-gutters class="my-3">
               <v-col cols="12">
                 <div class="row">
-                  <div class="col-md-4"><v-icon left>{{ icons.mdiCalendarClock }}</v-icon> {{ formatDate(item.tanggal)
-                  }}</div>
-                  <div class="col-md-2"><v-icon left>{{ icons.mdiAccount }}</v-icon> {{ item.name }}</div>
+                  <div class="col-md-4">
+                    <v-icon left>{{ icons.mdiCalendarClock }}</v-icon>
+                    {{ formatDate(item.tanggal) }}
+                  </div>
+                  <div class="col-md-2">
+                    <v-icon left>{{ icons.mdiAccount }}</v-icon> {{ item.name }}
+                  </div>
                   <v-row class="col-md-4 d-flex justify-space-around">
+                    <div class="col-md-2"></div>
                     <div class="col-md-2">
-                    </div>
-                    <div class="col-md-2">
-                      <router-link :to="{ name: 'e-ticket', params:{id: item.bookings_id} }">
-                        <v-btn small color="accent" class="ml-3" style="color: white; font-weight:bold;">
+                      <router-link
+                        :to="{ name: 'e-ticket', params: { id: item.bookings_id } }"
+                      >
+                        <v-btn
+                          small
+                          color="accent"
+                          class="ml-3"
+                          style="color: white; font-weight: bold"
+                        >
                           E-Ticket
                         </v-btn>
                       </router-link>
@@ -101,67 +158,72 @@
   </div>
 </template>
 <script>
-import axios from 'axios';
-import moment from 'moment';
-import 'moment/locale/id';
-import { mapActions } from 'vuex';
+import axios from "axios";
+import moment from "moment";
+import "moment/locale/id";
+import { mapActions } from "vuex";
 
-
-import { mdiCalendarClock, mdiAccountGroup, mdiAccount } from '@mdi/js';
+import { mdiCalendarClock, mdiAccountGroup, mdiAccount } from "@mdi/js";
 export default {
   data() {
     return {
       tab: null,
-      pesanan: []
-    }
+      pesanan: [],
+    };
   },
   setup() {
     return {
       icons: {
         mdiCalendarClock,
         mdiAccountGroup,
-        mdiAccount
-      }
-    }
+        mdiAccount,
+      },
+    };
   },
   computed: {
     userRole() {
-      return this.$store.state.userRole
+      return this.$store.state.userRole;
     },
   },
   methods: {
-    ...mapActions(['setSelectedSeat']),
+    ...mapActions(["setSelectedSeat"]),
     selectBus(idSchedulues) {
       // set data bus yang dipilih ke state Vuex
-      this.$store.dispatch('setBusData', idSchedulues)
+      this.$store.dispatch("setBusData", idSchedulues);
 
       // pindah ke komponen selanjutnya (pilih tempat duduk)
-      this.$router.push('/costumize-pemesanan')
+      this.$router.push("/costumize-pemesanan");
     },
     isSelected(seatNumber) {
       // check apakah tempat duduk sudah dipilih sebelumnya
-      return this.$store.state.selectedSeat === seatNumber
+      return this.$store.state.selectedSeat === seatNumber;
     },
     formatDate(date) {
-      moment.locale('id');
-      return moment(date).format('dddd, Do MMMM YYYY, hh:mm:ss');
+      moment.locale("id");
+      return moment(date).format("dddd, Do MMMM YYYY, hh:mm:ss");
     },
   },
   mounted() {
-    const access_token = localStorage.getItem('access_token');
+    const access_token = localStorage.getItem("access_token");
 
-    axios.get('/api/bookings/my', {
-      headers: {
-        'Authorization': `Bearer ${access_token}`
-      }
-    }).then(response => {
-      this.pesanan = response.data.filter(pesanan => pesanan.status === 'in_progress' || pesanan.status === 'not_started');
-      console.log(response.data)
-    }).catch(error => {
-      console.log(error);
-    });
-  }
-}
+    axios
+      .get("/api/bookings/my", {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+      .then((response) => {
+        this.pesanan = response.data.filter(
+          (pesanan) =>
+            pesanan.status === "in_progress" || pesanan.status === "not_started"
+        );
+        // console.log(response.pesanan);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+};
 </script>
 
 <style>
@@ -171,13 +233,11 @@ export default {
   right: 10px;
   /*  transform: rotate(38deg); */
   /* Mengatur rotasi button */
-
 }
 
 /* Mengatur jarak dari kanan card */
 .harga {
   position: absolute;
   right: 150px;
-
 }
 </style>

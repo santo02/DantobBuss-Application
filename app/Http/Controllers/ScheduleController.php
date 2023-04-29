@@ -35,7 +35,9 @@ class ScheduleController extends BaseController
             ->join('buses', 'buses.id', '=', 'schedules.bus_id')
             ->join('users', 'buses.supir_id', '=', 'users.id')
             ->join('routes', 'schedules.route_id', '=', 'routes.id')
+            ->where('schedules.status', "!=", 'complete')
             ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'buses.*', 'routes.*', 'users.name')
+            ->orderBy('schedules.tanggal', 'DESC')
             ->get();
 
         // return $this->sendResponse($schedule, 'Schedule Retrieved Successfully');

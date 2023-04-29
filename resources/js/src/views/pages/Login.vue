@@ -5,34 +5,58 @@
         <!-- logo -->
         <v-card-title class="d-flex align-center justify-center py-7">
           <router-link :to="{ name: 'pages-login' }" class="d-flex align-center">
-            <v-img :src="require('@/assets/images/logos/logo-KBT.png').default" max-height="120px" max-width="120px"
-              alt="logo" contain class="me-3"></v-img>
+            <v-img
+              :src="require('@/assets/images/logos/logo-KBT.png').default"
+              max-height="120px"
+              max-width="120px"
+              alt="logo"
+              contain
+              class="me-3"
+            ></v-img>
           </router-link>
         </v-card-title>
 
         <!-- title -->
         <v-card-text>
-          <p class="text-1xl font-weight-semibold text--primary mb-2">Welcome to E-KBT </p>
+          <p class="text-1xl font-weight-semibold text--primary mb-2">Welcome to E-KBT</p>
           <p class="mb-2">Kepuasan Penumpang adalah Kebahagian Kami</p>
         </v-card-text>
         <v-card-text>
           <v-form ref="form" @submit.prevent="login">
-            <v-text-field v-model="email" outlined label="Email" placeholder="john@example.com" hide-details
-              :error-messages="errors.email" class="mb-1"></v-text-field>
+            <v-text-field
+              v-model="email"
+              outlined
+              label="Email"
+              placeholder="john@example.com"
+              hide-details
+              :error-messages="errors.email"
+              class="mb-1"
+            ></v-text-field>
             <label class="text-danger" v-if="errors.email" type="error" dismissible>
               Email tidak boleh kosong!
             </label>
 
-            <v-text-field v-model="password" outlined :type="isPasswordVisible ? 'text' : 'password'" label="Password"
-              class="mb-1 mt-3" :error-messages="errors.password" placeholder="********"
-              :append-icon="isPasswordVisible ? icons.mdiEyeOffOutline : icons.mdiEyeOutline" hide-details
-              @click:append="isPasswordVisible = !isPasswordVisible"></v-text-field>
+            <v-text-field
+              v-model="password"
+              outlined
+              :type="isPasswordVisible ? 'text' : 'password'"
+              label="Password"
+              class="mb-1 mt-3"
+              :error-messages="errors.password"
+              placeholder="********"
+              :append-icon="
+                isPasswordVisible ? icons.mdiEyeOffOutline : icons.mdiEyeOutline
+              "
+              hide-details
+              @click:append="isPasswordVisible = !isPasswordVisible"
+            ></v-text-field>
             <label class="text-danger" v-if="errors.password" type="error" dismissible>
               Password tidak boleh kosong!
             </label>
 
             <div class="d-flex align-center justify-space-between flex-wrap">
-              <v-checkbox label="Remember Me" hide-details class="me-3 mt-1"> </v-checkbox>
+              <v-checkbox label="Remember Me" hide-details class="me-3 mt-1">
+              </v-checkbox>
 
               <!-- forgot link -->
               <a href="javascript:void(0)" class="mt-1"> Forgot Password? </a>
@@ -40,11 +64,14 @@
 
             <v-btn type="submit" block color="primary" class="mt-6" :loading="isLoading">
               <template v-if="!isLoading"> Login </template>
-              <template v-if="isLoading"> <v-progress-circular indeterminate size="24"
-                  color="white"></v-progress-circular>
+              <template v-if="isLoading">
+                <v-progress-circular
+                  indeterminate
+                  size="24"
+                  color="white"
+                ></v-progress-circular>
               </template>
             </v-btn>
-
           </v-form>
         </v-card-text>
 
@@ -75,39 +102,46 @@
 </template>
 
 <script>
-import { mdiFacebook, mdiTwitter, mdiGithub, mdiGoogle, mdiEyeOutline, mdiEyeOffOutline } from '@mdi/js'
-import { ref } from '@vue/composition-api'
-import axios from 'axios';
+import {
+  mdiFacebook,
+  mdiTwitter,
+  mdiGithub,
+  mdiGoogle,
+  mdiEyeOutline,
+  mdiEyeOffOutline,
+} from "@mdi/js";
+import { ref } from "@vue/composition-api";
+import axios from "axios";
 
-import doku from '../../utils/doku';
+import doku from "../../utils/doku";
 
 export default {
   setup() {
-    const isPasswordVisible = ref(false)
-    const email = ref('')
-    const password = ref('')
+    const isPasswordVisible = ref(false);
+    const email = ref("");
+    const password = ref("");
     const socialLink = [
       {
         icon: mdiFacebook,
-        color: '#4267b2',
-        colorInDark: '#4267b2',
+        color: "#4267b2",
+        colorInDark: "#4267b2",
       },
       {
         icon: mdiTwitter,
-        color: '#1da1f2',
-        colorInDark: '#1da1f2',
+        color: "#1da1f2",
+        colorInDark: "#1da1f2",
       },
       {
         icon: mdiGithub,
-        color: '#272727',
-        colorInDark: '#fff',
+        color: "#272727",
+        colorInDark: "#fff",
       },
       {
         icon: mdiGoogle,
-        color: '#db4437',
-        colorInDark: '#db4437',
+        color: "#db4437",
+        colorInDark: "#db4437",
       },
-    ]
+    ];
     return {
       isPasswordVisible,
       email,
@@ -117,7 +151,7 @@ export default {
         mdiEyeOutline,
         mdiEyeOffOutline,
       },
-    }
+    };
   },
   data() {
     return {
@@ -125,23 +159,23 @@ export default {
       password: "",
       registrationSuccess: false,
       errors: {},
-      isLoading: false
+      isLoading: false,
     };
   },
   methods: {
     login() {
       this.isLoading = true;
-      axios.post('/api/login', {
-        email: this.email,
-        password: this.password,
-      })
-        .then(response => {
-          const token = response.data.access_token
-          localStorage.setItem('access_token', token);
-          this.$store.dispatch('updateUserRole', token)
-          localStorage.setItem('expires_at', response.data.expires_at);
-          this.$router.push('/dashboard');
-
+      axios
+        .post("/api/login", {
+          email: this.email,
+          password: this.password,
+        })
+        .then((response) => {
+          const token = response.data.access_token;
+          localStorage.setItem("access_token", token);
+          this.$store.dispatch("updateUserRole", token);
+          localStorage.setItem("expires_at", response.data.expires_at);
+          this.$router.push("/dashboard");
         })
         .catch((error) => {
           if (error.response.status === 422) {
@@ -152,17 +186,14 @@ export default {
             console.log(this.errors);
           } else {
             this.errors = { general: ["Something went wrong. Please try again later."] };
-
           }
           this.isLoading = false;
         });
-
     },
-  }
-}
+  },
+};
 </script>
 
-
 <style lang="scss">
-@import '~@resources/sass/preset/pages/auth.scss';
+@import "~@resources/sass/preset/pages/auth.scss";
 </style>

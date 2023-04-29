@@ -13,10 +13,17 @@ class KeuanganController extends Controller
         $keuangan = DB::table('schedules')
             ->select(DB::raw('DATE(schedules.tanggal) as tanggal'), DB::raw('SUM(schedules.harga) as total'))
             ->join('bookings', 'bookings.schedules_id', '=', 'schedules.id')
+            // ->select(DB::raw('DATE(schedules.tanggal) as tanggal'), DB::raw('COUNT(*) as jumlah'))
             ->groupBy(DB::raw('DATE(schedules.tanggal)'))
             ->get();
 
-        return response()->json(['data' => $keuangan]);
+            $total = DB::table('schedules')
+            ->select(DB::raw('DATE(schedules.tanggal) as tanggal'), DB::raw('COUNT(*) as jumlah'))
+            ->groupBy(DB::raw('DATE(schedules.tanggal)'))
+            ->get();
+
+
+        return response()->json(['data' => $keuangan, 'total' => $total]);
     }
 
     public function getByTanggal(Request $request, $tanggal)

@@ -1,17 +1,15 @@
 <template>
   <v-card>
     <v-tabs v-model="tab" fixed-tabs>
-      <v-tab color="primary">
-        Ekonomi
-      </v-tab>
-      <v-tab>
-        Eksekutif
-      </v-tab>
+      <v-tab color="primary"> Ekonomi </v-tab>
+      <v-tab> Eksekutif </v-tab>
     </v-tabs>
     <v-container>
       <v-row>
-        <v-col> <v-select v-model="dateFilter" label="Tanggal" clearable></v-select></v-col>
-        <v-col><v-select v-model="routeFilter" label="Rute" clearable></v-select></v-col>
+        <v-col>
+          <v-select v-model="dateFilter" label="Tanggal" clearable></v-select
+        ></v-col>
+        <v-col><v-select v-model="routeFilter" label="Rute"></v-select></v-col>
       </v-row>
     </v-container>
     <v-tabs-items v-model="tab">
@@ -21,38 +19,66 @@
             <v-row no-gutters>
               <v-col cols="auto">
                 <v-avatar size="40" class="mt-2 ml-2">
-                  <img :src="require('@/assets/images/logos/logo-KBT.png').default" max-height="50px" max-width="100px"
-                    alt="avatar">
+                  <img
+                    :src="require('@/assets/images/logos/logo-KBT.png').default"
+                    max-height="50px"
+                    max-width="100px"
+                    alt="avatar"
+                  />
                 </v-avatar>
               </v-col>
               <v-col>
                 <div class="d-flex justify-content-between">
-                  <v-card-title class="text-h6">{{ eco.derpature }} - {{ eco.arrival }}</v-card-title>
-                  <div class="text-h6 mt-4 mr-5 harga" style="color:#FF4C51;">
+                  <v-card-title class="text-h6"
+                    >{{ eco.derpature }} - {{ eco.arrival }}</v-card-title
+                  >
+                  <div class="text-h6 mt-4 mr-5 harga" style="color: #ff4c51">
                     Rp.{{ eco.harga }}
                   </div>
                 </div>
                 <div class="d-flex justify-content-between ml-5">
-                  <h6>{{ eco.nomor_pintu }} </h6>
-                  <h6 class="text--primary ml-5">{{ eco.type }} </h6>
+                  <h6>{{ eco.nomor_pintu }}</h6>
+                  <h6 class="text--primary ml-5">{{ eco.type }}</h6>
                 </div>
                 <v-row no-gutters class="my-3">
                   <v-col cols="12" class="detail">
                     <div class="row">
-                      <div class="col-md-3"><v-icon left>{{ icons.mdiCalendarClock }}</v-icon> {{ formatDate(eco.tanggal)
-                      }}</div>
-                      <div class="col-md-2"><v-icon left>{{ icons.mdiAccount }}</v-icon> {{ eco.name }}</div>
-                      <div class="col-md-2" v-for="(count, id) in bookingCounts" :key="id" v-if="eco.schedule_id == id">
-                        <small color="secondary">Tersedia : {{ eco.number_of_seats - count - 1 }} Kursi </small>
+                      <div class="col-md-3">
+                        <v-icon left>{{ icons.mdiCalendarClock }}</v-icon>
+                        {{ formatDate(eco.tanggal) }}
                       </div>
-                      <div class="col-md-2" v-if="!Object.keys(bookingCounts).includes(String(eco.schedule_id))">
-                        <small color="secondary">Tersedia : {{ eco.number_of_seats - 1 }} Kursi </small>
+                      <div class="col-md-2">
+                        <v-icon left>{{ icons.mdiAccount }}</v-icon> {{ eco.name }}
+                      </div>
+                      <div
+                        class="col-md-2"
+                        v-for="(count, id) in bookingCounts"
+                        :key="id"
+                        v-if="eco.schedule_id == id"
+                      >
+                        <small color="secondary"
+                          >Tersedia : {{ eco.number_of_seats - count - 1 }} Kursi
+                        </small>
+                      </div>
+                      <div
+                        class="col-md-2"
+                        v-if="
+                          !Object.keys(bookingCounts).includes(String(eco.schedule_id))
+                        "
+                      >
+                        <small color="secondary"
+                          >Tersedia : {{ eco.number_of_seats - 1 }} Kursi
+                        </small>
                       </div>
 
                       <v-row class="col-md-2 d-flex justify-space-around">
                         <div class="col-md-2">
-                          <v-btn color="secondary" @click="selectBus(eco.schedule_id, eco.harga)" class="ml-3"
-                            style="color: white; font-weight:bold;">
+                          <v-btn
+                            color="secondary"
+                            @click="selectBus(eco.schedule_id, eco.harga)"
+                            class="ml-3"
+                            style="color: white; font-weight: bold"
+                          >
                             Pesan
                           </v-btn>
                         </div>
@@ -71,38 +97,66 @@
             <v-row no-gutters>
               <v-col cols="auto">
                 <v-avatar size="40" class="mt-2 ml-2">
-                  <img :src="require('@/assets/images/logos/logo-KBT.png').default" max-height="50px" max-width="100px"
-                    alt="avatar">
+                  <img
+                    :src="require('@/assets/images/logos/logo-KBT.png').default"
+                    max-height="50px"
+                    max-width="100px"
+                    alt="avatar"
+                  />
                 </v-avatar>
               </v-col>
               <v-col>
                 <div class="d-flex justify-content-between">
-                  <v-card-title class="text-h6">{{ exe.derpature }} - {{ exe.arrival }}</v-card-title>
-                  <div class="text-h6 mt-4 mr-5 harga" style="color:#FF4C51;">
+                  <v-card-title class="text-h6"
+                    >{{ exe.derpature }} - {{ exe.arrival }}</v-card-title
+                  >
+                  <div class="text-h6 mt-4 mr-5 harga" style="color: #ff4c51">
                     Rp.{{ exe.harga }}
                   </div>
                 </div>
                 <div class="d-flex justify-content-between ml-5">
-                  <h6>{{ exe.nomor_pintu }} </h6>
-                  <h6 class="text--primary ml-5">{{ exe.type }} </h6>
+                  <h6>{{ exe.nomor_pintu }}</h6>
+                  <h6 class="text--primary ml-5">{{ exe.type }}</h6>
                 </div>
                 <v-row no-gutters class="my-3">
                   <v-col cols="12" class="detail">
                     <div class="row">
-                      <div class="col-md-3"><v-icon left>{{ icons.mdiCalendarClock }}</v-icon> {{ formatDate(exe.tanggal)
-                      }}</div>
-                      <div class="col-md-2"><v-icon left>{{ icons.mdiAccount }}</v-icon> {{ exe.name }}</div>
-                      <div class="col-md-2" v-for="(count, id) in bookingCountsExe" :key="id" v-if="exe.schedule_id == id">
-                        <small color="secondary">Tersedia : {{ exe.number_of_seats - count - 1 }} Kursi </small>
+                      <div class="col-md-3">
+                        <v-icon left>{{ icons.mdiCalendarClock }}</v-icon>
+                        {{ formatDate(exe.tanggal) }}
                       </div>
-                      <div class="col-md-2" v-if="!Object.keys(bookingCountsExe).includes(String(exe.schedule_id))">
-                        <small color="secondary">Tersedia : {{ exe.number_of_seats - 1 }} Kursi </small>
+                      <div class="col-md-2">
+                        <v-icon left>{{ icons.mdiAccount }}</v-icon> {{ exe.name }}
+                      </div>
+                      <div
+                        class="col-md-2"
+                        v-for="(count, id) in bookingCountsExe"
+                        :key="id"
+                        v-if="exe.schedule_id == id"
+                      >
+                        <small color="secondary"
+                          >Tersedia : {{ exe.number_of_seats - count - 1 }} Kursi
+                        </small>
+                      </div>
+                      <div
+                        class="col-md-2"
+                        v-if="
+                          !Object.keys(bookingCountsExe).includes(String(exe.schedule_id))
+                        "
+                      >
+                        <small color="secondary"
+                          >Tersedia : {{ exe.number_of_seats - 1 }} Kursi
+                        </small>
                       </div>
 
                       <v-row class="col-md-2 d-flex justify-space-around">
                         <div class="col-md-2">
-                          <v-btn color="secondary" @click="selectBus(exe.schedule_id, exe.harga)" class="ml-3"
-                            style="color: white; font-weight:bold;">
+                          <v-btn
+                            color="secondary"
+                            @click="selectBus(exe.schedule_id, exe.harga)"
+                            class="ml-3"
+                            style="color: white; font-weight: bold"
+                          >
                             Pesan
                           </v-btn>
                         </div>
@@ -119,22 +173,21 @@
   </v-card>
 </template>
 <script>
-import axios from 'axios';
-import moment from 'moment';
-import 'moment/locale/id';
-import { mapActions } from 'vuex';
+import axios from "axios";
+import moment from "moment";
+import "moment/locale/id";
+import { mapActions } from "vuex";
 
-
-import { mdiCalendarClock, mdiAccountGroup, mdiAccount } from '@mdi/js';
+import { mdiCalendarClock, mdiAccountGroup, mdiAccount } from "@mdi/js";
 export default {
   setup() {
     return {
       icons: {
         mdiCalendarClock,
         mdiAccountGroup,
-        mdiAccount
-      }
-    }
+        mdiAccount,
+      },
+    };
   },
 
   data() {
@@ -144,31 +197,29 @@ export default {
       executive: [],
       bookingCounts: {},
       bookingCountsExe: {},
-      hasbookedEco: '',
-      hasbookedExe: '',
+      hasbookedEco: "",
+      hasbookedExe: "",
       dateFilter: null,
       routeFilter: null,
-    }
+    };
   },
-  computed: {
-
-  },
+  computed: {},
   methods: {
-    ...mapActions(['setSelectedSeat']),
+    ...mapActions(["setSelectedSeat"]),
     selectBus(id_schedule, harga) {
       // set data bus yang dipilih ke state Vuex
-      this.$store.dispatch('setBusData', { id_schedule, harga })
+      this.$store.dispatch("setBusData", { id_schedule, harga });
 
       // pindah ke komponen selanjutnya (pilih tempat duduk)
-      this.$router.push('/costumize-pemesanan')
+      this.$router.push("/costumize-pemesanan");
     },
     isSelected(seatNumber) {
       // check apakah tempat duduk sudah dipilih sebelumnya
-      return this.$store.state.selectedSeat === seatNumber
+      return this.$store.state.selectedSeat === seatNumber;
     },
     formatDate(date) {
-      moment.locale('id');
-      return moment(date).format('dddd, Do MMMM YYYY, hh:mm:ss');
+      moment.locale("id");
+      return moment(date).format("dddd, Do MMMM YYYY, hh:mm:ss");
     },
     countBookings(bookings) {
       const counts = {};
@@ -195,29 +246,35 @@ export default {
   },
 
   mounted() {
-    const access_token = localStorage.getItem('access_token');
+    const access_token = localStorage.getItem("access_token");
 
-    axios.get('/api/schedule/type/economi', {
-      headers: {
-        'Authorization': `Bearer ${access_token}`
-      }
-    }).then(response => {
-      this.economi = response.data.data;
-      this.bookingCounts = this.countBookings(response.data.total);
-    }).catch(error => {
-      console.log(error);
-    });
+    axios
+      .get("/api/schedule/type/economi", {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+      .then((response) => {
+        this.economi = response.data.data;
+        this.bookingCounts = this.countBookings(response.data.total);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
-    axios.get('/api/schedule/type/executive', {
-      headers: {
-        'Authorization': `Bearer ${access_token}`
-      }
-    }).then(response => {
-      this.executive = response.data.data;
-      this.bookingCountsExe = this.countBookingsExe(response.data.total);
-    }).catch(error => {
-      console.log(error);
-    });
-  }
-}
+    axios
+      .get("/api/schedule/type/executive", {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+      .then((response) => {
+        this.executive = response.data.data;
+        this.bookingCountsExe = this.countBookingsExe(response.data.total);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+};
 </script>

@@ -117,7 +117,7 @@ const routes = [{
     component: () => import('@/views/pages/Pesanan/e-Ticket.vue'),
   },
   {
-    path: '/tracking',
+    path: '/tracking/:schedule_id',
     name: 'tracking',
     component: () => import('@/views/pages/Tracking/tracking.vue'),
   },

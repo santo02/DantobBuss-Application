@@ -100,7 +100,7 @@ class BookingController extends BaseController
             ->join('users', 'buses.supir_id', 'users.id')
             ->join('routes', 'schedules.route_id', 'routes.id')
             ->where('bookings.user_id', $user->id)
-            ->select('bookings.id as bookings_id','schedules.id','routes.derpature','routes.arrival', 'buses.nomor_pintu', 'buses.type', 'buses.number_of_seats', 'schedules.tanggal', 'users.name', 'schedules.harga', 'schedules.status')
+            ->select('bookings.id as bookings_id','schedules.id as schedule_id','routes.derpature','routes.arrival', 'buses.nomor_pintu', 'buses.type', 'buses.number_of_seats', 'schedules.tanggal', 'users.name', 'schedules.harga', 'schedules.status')
             ->get();
         // $booking = Bookings::with('schedules', 'user', 'buss')->where('user_id', $user->id)->get();
         if ($booking) {

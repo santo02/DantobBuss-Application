@@ -62,6 +62,9 @@ Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver,passenger']
     Route::get('/bookings/show/{id}', [BookingController::class, 'getOne']);
     Route::get('/pesanan/ticket/{id}', [TicketController::class, 'index']);
     Route::get('/bookings/my', [BookingController::class, 'getByUserId']);
+
+    Route::get('/routes/show/all', [RoutesController::class, 'index']);
+
 });
 
 
@@ -91,7 +94,6 @@ Route::middleware(['auth:api', 'role:admin_kantor'])->group(function () {
 
     Route::post('/routes/add', [RoutesController::class, 'store']);
     Route::put('/routes/update/{id}', [RoutesController::class, 'update']);
-    Route::get('/routes/show/all', [RoutesController::class, 'index']);
     Route::delete('/routes/destroy/{id}', [RoutesController::class, 'destroy']);
 
     Route::post('/schedule/add', [ScheduleController::class, 'store']);

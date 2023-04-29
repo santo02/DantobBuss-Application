@@ -8,18 +8,19 @@
         {{ formatDate(item.tanggal) }}
       </template>
       <template #item.Detail="{ item }">
-        <router-link :to="{ name: 'detail-keuangan-by-penumpang', params: { id: item.schedule_id } }">Detail</router-link>
+        <router-link
+          :to="{ name: 'detail-keuangan-by-penumpang', params: { id: item.schedule_id } }"
+          >Detail</router-link
+        >
       </template>
-      <template #item.total="{ item }">
-        Rp.{{ item.total }}
-      </template>
+      <template #item.total="{ item }"> Rp.{{ item.total }} </template>
       <template v-slot:body.append>
         <tr>
           <td>
             <h2>Total</h2>
           </td>
-          <td colspan="8" style="text-align: right;">
-            <h3 style="color: red;">Rp.{{ totalSemua }}</h3>
+          <td colspan="8" style="text-align: right">
+            <h3 style="color: red">Rp.{{ totalSemua }}</h3>
           </td>
         </tr>
       </template>
@@ -28,8 +29,7 @@
       <v-simple-table class="mt-4 table-primary">
         <template v-slot:default>
           <thead>
-            <tr>
-            </tr>
+            <tr></tr>
           </thead>
           <tbody>
             <tr>
@@ -39,14 +39,13 @@
             </tr>
             <tr>
               <td class="judul">Kantor</td>
-              <td>{{ jumlahSchedule }} * Rp.53.0000</td>
+              <td>{{ jumlahSchedule }} * Rp.53.000</td>
               <td>Rp.{{ kantor }}</td>
-
             </tr>
             <tr>
               <td class="judul">Administrasi</td>
-              <td> {{ jumlahSchedule }} * Rp.5.0000 </td>
-              <td> Rp.{{ admin }} </td>
+              <td>{{ jumlahSchedule }} * Rp.5.000</td>
+              <td>Rp.{{ admin }}</td>
             </tr>
             <tr>
               <td>Total Setoran admin loket</td>
@@ -62,8 +61,7 @@
       <v-simple-table class="mt-4 table-primary">
         <template v-slot:default>
           <thead>
-            <tr>
-            </tr>
+            <tr></tr>
           </thead>
           <tbody>
             <tr>
@@ -73,7 +71,7 @@
             </tr>
             <tr>
               <td class="judul">Admin/Agen</td>
-              <td> 40% * Rp.{{komisi}}</td>
+              <td>40% * Rp.{{ komisi }}</td>
               <td>Rp.{{ AdminAgen }}</td>
             </tr>
           </tbody>
@@ -84,56 +82,58 @@
 </template>
 
 <script>
-import moment from 'moment'
-import axios from 'axios';
-import 'moment/locale/id';
+import moment from "moment";
+import axios from "axios";
+import "moment/locale/id";
 
 export default {
-
   data() {
     return {
       tanggal: this.$route.params.tanggal,
       ListByDate: [],
-      jumlahSchedule: '',
+      jumlahSchedule: "",
       headers: [
         {
-          text: 'Tanggal',
-          align: 'start',
-          value: 'tanggal',
+          text: "Tanggal",
+          align: "start",
+          value: "tanggal",
         },
-        { text: 'Nomor Polisi', value: 'police_number' },
-        { text: 'Nomor Pintu', value: 'nomor_pintu' },
-        { text: 'Kedatangan', value: 'arrival' },
-        { text: 'Keberangkatan', value: 'derpature' },
-        { text: 'Tipe', value: 'type' },
-        { text: 'Nama Supir', value: 'name' },
-        { text: 'Detail', value: 'Detail', sortable: false, },
-        { text: 'Total', value: 'total' },
+        { text: "Nomor Polisi", value: "police_number" },
+        { text: "Nomor Pintu", value: "nomor_pintu" },
+        { text: "Kedatangan", value: "arrival" },
+        { text: "Keberangkatan", value: "derpature" },
+        { text: "Tipe", value: "type" },
+        { text: "Nama Supir", value: "name" },
+        { text: "Detail", value: "Detail", sortable: false },
+        { text: "Total", value: "total" },
       ],
-      selectedDate: ''
-    }
+      selectedDate: "",
+    };
   },
   mounted() {
-    const access_token = localStorage.getItem('access_token');
+    const access_token = localStorage.getItem("access_token");
 
-    axios.get(`/api/Detail-keuangan-Bydate/${this.tanggal}`, {
-      headers: {
-        'Authorization': `Bearer ${access_token}`
-      }
-    }).then(response => {
-      this.ListByDate = response.data.data;
-      this.jumlahSchedule = this.ListByDate.length;
-      this.ListByDate.forEach(item => {
-        item.total = item.jumlah_booking * item.harga;
+    axios
+      .get(`/api/Detail-keuangan-Bydate/${this.tanggal}`, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+      .then((response) => {
+        this.ListByDate = response.data.data;
+        this.jumlahSchedule = this.ListByDate.length;
+        this.ListByDate.forEach((item) => {
+          item.total = item.jumlah_booking * item.harga;
+        });
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    }).catch(error => {
-      console.log(error);
-    });
   },
   methods: {
-    formatDate(date, format = 'dddd, Do MMMM YYYY') {
+    formatDate(date, format = "dddd, Do MMMM YYYY") {
       return moment(date).format(format);
-    }
+    },
   },
   computed: {
     komisi() {
@@ -153,26 +153,29 @@ export default {
     },
     perusahaan() {
       let perusahaan = 0;
-      perusahaan = (60 / 100 * +this.komisi) + +this.kantor + +this.admin
+      perusahaan = (60 / 100) * +this.komisi + +this.kantor + +this.admin;
       return perusahaan;
     },
     AdminAgen() {
       let AdminAgen = 0;
-      AdminAgen = (40/ 100 * +this.komisi)
+      AdminAgen = (40 / 100) * +this.komisi;
       return AdminAgen;
     },
     filteredList() {
-      return this.ListByDate.filter(item => {
-        return moment(item.tanggal).format('YYYY-MM-DD') === moment(this.selectedDate).format('YYYY-MM-DD');
+      return this.ListByDate.filter((item) => {
+        return (
+          moment(item.tanggal).format("YYYY-MM-DD") ===
+          moment(this.selectedDate).format("YYYY-MM-DD")
+        );
       });
     },
     totalSemua() {
       return this.ListByDate.reduce((acc, item) => {
         return acc + item.total;
       }, 0);
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style scope>
 .table-primary tr .judul {

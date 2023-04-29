@@ -3,7 +3,7 @@
     <h3 pa-3 ma-3>Konfirmasi Data Penumpang</h3>
     <v-card v-for="item in schedule" :key="item.id">
       <div class="container mt-3">
-        <div class=" text-center">
+        <div class="text-center">
           <h2>{{ item.derpature }} -> {{ item.arrival }}</h2>
           <h5>{{ formatHour(item.tanggal) }}</h5>
           <h5>{{ formatDate(item.tanggal) }}</h5>
@@ -38,8 +38,16 @@
           </v-col>
 
           <v-col>
-            <v-text-field id="loket" v-model="passengerData.alamatJemput"  outlined dense placeholder="Umur" required
-              hide-details readonly></v-text-field>
+            <v-text-field
+              id="loket"
+              v-model="passengerData.alamatJemput"
+              outlined
+              dense
+              placeholder="Loket Jemput"
+              required
+              hide-details
+              readonly
+            ></v-text-field>
           </v-col>
         </div>
       </div>
@@ -84,17 +92,23 @@
           </v-card>
         </v-container>
       </div>
-
     </v-card>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import moment from 'moment';
-import 'moment/locale/id';
-import { mapState, mapActions } from 'vuex'
-import { mdiCalendarClock, mdiAccountGroup, mdiAccount, mdiSofaSingleOutline, mdiSofaSingle, mdiChevronRight } from '@mdi/js';
+import axios from "axios";
+import moment from "moment";
+import "moment/locale/id";
+import { mapState, mapActions } from "vuex";
+import {
+  mdiCalendarClock,
+  mdiAccountGroup,
+  mdiAccount,
+  mdiSofaSingleOutline,
+  mdiSofaSingle,
+  mdiChevronRight,
+} from "@mdi/js";
 
 export default {
   setup() {
@@ -105,28 +119,28 @@ export default {
         mdiAccount,
         mdiSofaSingleOutline,
         mdiSofaSingle,
-        mdiChevronRight
-      }
-    }
+        mdiChevronRight,
+      },
+    };
   },
   data() {
     return {
-      schedule: {}
-    }
+      schedule: {},
+    };
   },
   computed: {
-    ...mapState(['selectedSeat']),
+    ...mapState(["selectedSeat"]),
     passengerData() {
-      return this.$store.state.passengerData
+      return this.$store.state.passengerData;
     },
     id_schedule() {
-      return this.$store.state.busData.id_schedule
+      return this.$store.state.busData.id_schedule;
     },
     harga() {
-      return this.$store.state.busData.harga
+      return this.$store.state.busData.harga;
     },
     userRole() {
-      return this.$store.state.userRole
+      return this.$store.state.userRole;
     },
   },
   mounted() {
@@ -135,33 +149,35 @@ export default {
 
   methods: {
     formatDate(date) {
-      moment.locale('id');
-      return moment(date).format('dddd, Do MMMM YYYY');
+      moment.locale("id");
+      return moment(date).format("dddd, Do MMMM YYYY");
     },
     formatHour(date) {
-      moment.locale('id');
-      return moment(date).format('hh:mm');
+      moment.locale("id");
+      return moment(date).format("hh:mm");
     },
     getSchedule() {
-      const access_token = localStorage.getItem('access_token');
+      const access_token = localStorage.getItem("access_token");
       let uri = `/api/schedule/show/${this.id_schedule}`;
-      axios.get(uri, {
-        headers: {
-          'Authorization': `Bearer ${access_token}`
-        }
-      }).then(response => {
-        this.schedule = response.data.data;
-        console.log(this.schedule);
-      }).catch(error => {
-        console.log(error);
-      });
+      axios
+        .get(uri, {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        })
+        .then((response) => {
+          this.schedule = response.data.data;
+          console.log(this.schedule);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
-    ...mapActions(['setPassengerData']),
+    ...mapActions(["setPassengerData"]),
     submitData() {
       // redirect ke halaman berhasil
-      this.$router.push('/pembayaran-method')
-    }
-
+      this.$router.push("/pembayaran-method");
+    },
   },
-}
+};
 </script>
