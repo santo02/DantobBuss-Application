@@ -2,14 +2,17 @@
   <div>
     <h2>Catatan Keuangan</h2>
     <!-- <v-text-field label="Pilih tanggal" placeholder="Pilih Tanggal" v-model="selectedDate" solo /> -->
-    <v-data-table  :headers="headers" :items="ListPenumpang">
+    <v-data-table :headers="headers" :items="ListPenumpang">
+      <template #item.harga="{ item }">
+        {{ item.harga | toRupiah }}
+      </template>
       <template v-slot:body.append>
         <tr>
           <td>
             <h2>Total</h2>
           </td>
-          <td colspan="8" style="text-align: right;">
-            <h3 style="color: red;">Rp.{{ totalSemua }}</h3>
+          <td colspan="8" style="text-align: right">
+            <h3 style="color: red">{{ totalSemua | toRupiah }}</h3>
           </td>
         </tr>
       </template>
@@ -18,30 +21,30 @@
       <v-simple-table class="mt-4 table-primary">
         <template v-slot:default>
           <thead>
-            <tr>
-            </tr>
+            <tr></tr>
           </thead>
           <tbody>
             <tr>
               <td class="judul">Komisi</td>
-              <td>10% * Rp.{{ totalSemua }}</td>
-              <td>Rp.{{ komisi }}</td>
+              <td>10% * {{ totalSemua | toRupiah }}</td>
+              <td>{{ komisi | toRupiah }}</td>
             </tr>
             <tr>
               <td class="judul">Kantor</td>
               <td>1 * Rp.53.0000</td>
-              <td>Rp.{{ kantor }}</td>
-
+              <td>{{ kantor | toRupiah }}</td>
             </tr>
             <tr>
               <td class="judul">Administrasi</td>
-              <td> 1 * Rp.5.0000 </td>
-              <td> Rp.{{ admin }} </td>
+              <td>1 * Rp.5.0000</td>
+              <td>{{ admin | toRupiah }}</td>
             </tr>
             <tr>
               <td>Total Setoran admin loket</td>
               <td></td>
-              <td><h4>Rp.{{ totalSemua - (komisi + kantor + admin) }}</h4></td>
+              <td>
+                <h4>{{ (totalSemua - (komisi + kantor + admin)) | toRupiah }}</h4>
+              </td>
             </tr>
           </tbody>
         </template>
@@ -51,12 +54,11 @@
 </template>
 
 <script>
-import moment from 'moment'
-import axios from 'axios';
-import 'moment/locale/id';
+import moment from "moment";
+import axios from "axios";
+import "moment/locale/id";
 
 export default {
-
   data() {
     return {
       schedule_id: this.$route.params.id,
@@ -64,39 +66,52 @@ export default {
       harga: 0,
       headers: [
         {
-          text: 'Nama',
-          align: 'start',
-          value: 'name',
+          text: "Nama",
+          align: "start",
+          value: "name",
         },
-        { text: 'Bangku', value: 'num_seats' },
-        { text: 'Umur', value: 'age' },
-        { text: 'No Telepon', value: 'phone_number' },
-        { text: 'Penjumputan', value: 'alamatJemput' },
-        { text: 'Metode', value: 'method' },
-        { text: 'Harga', value: 'harga' },
+        { text: "Bangku", value: "num_seats" },
+        { text: "Umur", value: "age" },
+        { text: "No Telepon", value: "phone_number" },
+        { text: "Penjumputan", value: "alamatJemput" },
+        { text: "Metode", value: "method" },
+        { text: "Harga", value: "harga" },
       ],
-      selectedDate: ''
-    }
+      selectedDate: "",
+    };
   },
   mounted() {
-    const access_token = localStorage.getItem('access_token');
+    const access_token = localStorage.getItem("access_token");
 
-    axios.get(`/api/Detail-keuangan-ByPassenger/${this.schedule_id}`, {
-      headers: {
-        'Authorization': `Bearer ${access_token}`
-      }
-    }).then(response => {
-      this.ListPenumpang = response.data.data;
+    axios
+      .get(`/api/Detail-keuangan-ByPassenger/${this.schedule_id}`, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+      .then((response) => {
+        this.ListPenumpang = response.data.data;
 
-      this.harga = +this.ListPenumpang[0].harga;
-    }).catch(error => {
-      console.log(error);
-    });
+        this.harga = +this.ListPenumpang[0].harga;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
   methods: {
-    formatDate(date, format = 'dddd, Do MMMM YYYY') {
+    formatDate(date, format = "dddd, Do MMMM YYYY") {
       return moment(date).format(format);
-    }
+    },
+  },
+  filters: {
+    toRupiah(value) {
+      const formatter = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+      return formatter.format(value);
+    },
   },
   computed: {
     totalSemua() {
@@ -120,12 +135,15 @@ export default {
       return admin;
     },
     filteredList() {
-      return this.ListByDate.filter(item => {
-        return moment(item.tanggal).format('YYYY-MM-DD') === moment(this.selectedDate).format('YYYY-MM-DD');
+      return this.ListByDate.filter((item) => {
+        return (
+          moment(item.tanggal).format("YYYY-MM-DD") ===
+          moment(this.selectedDate).format("YYYY-MM-DD")
+        );
       });
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style scope>
 .table-primary tr .judul {

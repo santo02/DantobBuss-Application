@@ -13,14 +13,14 @@
           >Detail</router-link
         >
       </template>
-      <template #item.total="{ item }"> Rp.{{ item.total }} </template>
+      <template #item.total="{ item }"> {{ item.total | toRupiah }} </template>
       <template v-slot:body.append>
         <tr>
           <td>
             <h2>Total</h2>
           </td>
           <td colspan="8" style="text-align: right">
-            <h3 style="color: red">Rp.{{ totalSemua }}</h3>
+            <h3 style="color: red">{{ totalSemua | toRupiah }}</h3>
           </td>
         </tr>
       </template>
@@ -34,24 +34,24 @@
           <tbody>
             <tr>
               <td class="judul">Komisi</td>
-              <td>10% * Rp.{{ totalSemua }}</td>
-              <td>Rp.{{ komisi }}</td>
+              <td>10% * {{ totalSemua | toRupiah }}</td>
+              <td>{{ komisi | toRupiah }}</td>
             </tr>
             <tr>
               <td class="judul">Kantor</td>
               <td>{{ jumlahSchedule }} * Rp.53.000</td>
-              <td>Rp.{{ kantor }}</td>
+              <td>{{ kantor | toRupiah }}</td>
             </tr>
             <tr>
               <td class="judul">Administrasi</td>
               <td>{{ jumlahSchedule }} * Rp.5.000</td>
-              <td>Rp.{{ admin }}</td>
+              <td>{{ admin | toRupiah }}</td>
             </tr>
             <tr>
               <td>Total Setoran admin loket</td>
               <td></td>
               <td>
-                <h4>Rp.{{ totalSemua - (komisi + kantor + admin) }}</h4>
+                <h4>{{ (totalSemua - (komisi + kantor + admin)) | toRupiah }}</h4>
               </td>
             </tr>
           </tbody>
@@ -66,13 +66,16 @@
           <tbody>
             <tr>
               <td class="judul">Perusahaan</td>
-              <td>(60% * Rp.{{ komisi }}) + {{ kantor }} + {{ admin }}</td>
-              <td>RP.{{ perusahaan }}</td>
+              <td>
+                (60% * {{ komisi | toRupiah }}) + {{ kantor | toRupiah }} +
+                {{ admin | toRupiah }}
+              </td>
+              <td>{{ perusahaan | toRupiah }}</td>
             </tr>
             <tr>
               <td class="judul">Admin/Agen</td>
-              <td>40% * Rp.{{ komisi }}</td>
-              <td>Rp.{{ AdminAgen }}</td>
+              <td>40% * {{ komisi | toRupiah }}</td>
+              <td>{{ AdminAgen | toRupiah }}</td>
             </tr>
           </tbody>
         </template>
@@ -129,6 +132,16 @@ export default {
       .catch((error) => {
         console.log(error);
       });
+  },
+  filters: {
+    toRupiah(value) {
+      const formatter = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+      return formatter.format(value);
+    },
   },
   methods: {
     formatDate(date, format = "dddd, Do MMMM YYYY") {

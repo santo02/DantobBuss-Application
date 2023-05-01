@@ -58,7 +58,7 @@ export default {
         };
         this.centerOptions = {
           position: this.center,
-          label: "Current Location.",
+          label: "Posisi Anda",
           title: "ME",
         };
       },
@@ -92,11 +92,12 @@ export default {
               console.log(message);
               this.carOptions = {
                 position: message.data.location.center,
-                label: "DRIVER MU",
+                label: `${this.schedule.nomor_pintu}`,
                 title: "DRIVER",
                 icon: {
-                  url: "https://picsum.photos/200/300?grayscale",
-                  scaledSize: { width: 28, height: 28 },
+                  url:
+                    "https://www.clipartmax.com/png/middle/198-1986353_google-map-car-icon.png",
+                  scaledSize: { width: 40, height: 40 },
                   labelOrigin: { x: 16, y: -10 },
                 },
               };

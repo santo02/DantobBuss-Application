@@ -2,93 +2,110 @@
   <div>
     <h2>Catatan Keuangan</h2>
     <!-- <v-text-field label="Pilih tanggal" placeholder="Pilih Tanggal" v-model="selectedDate" style="width: 300px;" solo /> -->
-    <h5 align="right" class="mb-2" >Tanggal : {{ formatDate(tanggal) }}</h5>
-    <v-data-table  :headers="headers" :items="ListByDate">
+    <h5 align="right" class="mb-2">Tanggal : {{ formatDate(tanggal) }}</h5>
+    <v-data-table :headers="headers" :items="ListByDate">
       <template #item.tanggal="{ item }">
         {{ formatDate(item.tanggal) }}
       </template>
       <template #item.Detail="{ item }">
-        <router-link :to="{ name: 'detail-keuangan-by-penumpang', params: { id: item.schedule_id } }">Detail</router-link>
+        <router-link
+          :to="{ name: 'detail-keuangan-by-penumpang', params: { id: item.schedule_id } }"
+          >Detail</router-link
+        >
       </template>
       <template #item.total="{ item }">
-        Rp.{{ item.total }}
+        {{ item.total | toRupiah }}
       </template>
       <template v-slot:body.append>
         <tr>
           <td>
             <h2>Total</h2>
           </td>
-          <td colspan="8" style="text-align: right;">
-            <h3 style="color: red;">Rp.{{ totalSemua }}</h3>
+          <td colspan="8" style="text-align: right">
+            <h3 style="color: red">{{ totalSemua | toRupiah }}</h3>
           </td>
         </tr>
       </template>
     </v-data-table>
-
   </div>
 </template>
 
 <script>
-import moment from 'moment'
-import axios from 'axios';
-import 'moment/locale/id';
+import moment from "moment";
+import axios from "axios";
+import "moment/locale/id";
 
 export default {
-
   data() {
     return {
       tanggal: this.$route.params.tanggal,
       ListByDate: [],
       headers: [
         {
-          text: 'Tanggal',
-          align: 'start',
-          value: 'tanggal',
+          text: "Tanggal",
+          align: "start",
+          value: "tanggal",
         },
-        { text: 'Nomor Polisi', value: 'police_number' },
-        { text: 'Nomor Pintu', value: 'nomor_pintu' },
-        { text: 'Kedatangan', value: 'arrival' },
-        { text: 'Keberangkatan', value: 'derpature' },
-        { text: 'Tipe', value: 'type' },
-        { text: 'Nama Supir', value: 'name' },
-        { text: 'Detail', value: 'Detail', sortable: false, },
-        { text: 'Total', value: 'total' },
+        { text: "Nomor Polisi", value: "police_number" },
+        { text: "Nomor Pintu", value: "nomor_pintu" },
+        { text: "Kedatangan", value: "arrival" },
+        { text: "Keberangkatan", value: "derpature" },
+        { text: "Tipe", value: "type" },
+        { text: "Nama Supir", value: "name" },
+        { text: "Detail", value: "Detail", sortable: false },
+        { text: "Total", value: "total" },
       ],
-      selectedDate: ''
-    }
+      selectedDate: "",
+    };
   },
   mounted() {
-    const access_token = localStorage.getItem('access_token');
+    const access_token = localStorage.getItem("access_token");
 
-    axios.get(`/api/Detail-keuangan-Bydate/${this.tanggal}`, {
-      headers: {
-        'Authorization': `Bearer ${access_token}`
-      }
-    }).then(response => {
-      this.ListByDate = response.data.data;
-      this.ListByDate.forEach(item => {
-        item.total = item.jumlah_booking * item.harga;
+    axios
+      .get(`/api/Detail-keuangan-Bydate/${this.tanggal}`, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+      .then((response) => {
+        this.ListByDate = response.data.data;
+        this.ListByDate.forEach((item) => {
+          item.total = item.jumlah_booking * item.harga;
+        });
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    }).catch(error => {
-      console.log(error);
-    });
   },
   methods: {
-    formatDate(date, format = 'dddd, Do MMMM YYYY') {
+    formatDate(date, format = "dddd, Do MMMM YYYY") {
       return moment(date).format(format);
-    }
+    },
+  },
+  filters: {
+    toRupiah(value) {
+      const formatter = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+      return formatter.format(value);
+    },
   },
   computed: {
     filteredList() {
-      return this.ListByDate.filter(item => {
-        return moment(item.tanggal).format('YYYY-MM-DD') === moment(this.selectedDate).format('YYYY-MM-DD');
+      return this.ListByDate.filter((item) => {
+        return (
+          moment(item.tanggal).format("YYYY-MM-DD") ===
+          moment(this.selectedDate).format("YYYY-MM-DD")
+        );
       });
     },
     totalSemua() {
       return this.ListByDate.reduce((acc, item) => {
         return acc + item.total;
       }, 0);
-    }
-  }
-}
+    },
+  },
+};
 </script>

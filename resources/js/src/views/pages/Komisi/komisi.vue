@@ -36,7 +36,14 @@
       <template #item.Tanggal="{ item }">
         {{ formatDate(item.tanggal) }}
       </template>
-      <template #item.total="{ item }"> Rp.{{ item.total }} </template>
+      <template #item.total="{ item }"> {{ item.total | toRupiah }} </template>
+      <template #item.jumlah="{ item }">
+        {{ JumlahSetoran(item.total, item.jumlah) | toRupiah }}
+      </template>
+      <template #item.perusahaan="{ item }">
+        {{ perusahaan(item.total, item.jumlah) | toRupiah }}
+      </template>
+      <template #item.adm="{ item }"> {{ Adm(item.total) | toRupiah }} </template>
       <template #item.Detail="{ item }">
         <router-link :to="{ name: 'detail-komisi', params: { tanggal: item.tanggal } }">
           Detail
@@ -63,9 +70,9 @@ export default {
           value: "Tanggal",
         },
         { text: "Total Pemasukan", value: "total" },
-        // { text: 'Total Setoran Admin Loket', value: 0 },
-        // { text: 'Komisi Adm/agen', value: 'total' },
-        // { text: 'Komisi Perusahaan', value: 'total' },
+        { text: "Total Setoran Admin Loket", value: "jumlah" },
+        { text: "Komisi Adm/agen", value: "adm" },
+        { text: "Komisi Perusahaan", value: "perusahaan" },
         { text: "Detail", value: "Detail", sortable: false },
       ],
       filteredItemsList: [],
@@ -73,7 +80,7 @@ export default {
   },
   mounted() {
     const access_token = localStorage.getItem("access_token");
-
+    // console.log(combinedDat);
     axios
       .get("/api/Keuangan/index", {
         headers: {
@@ -82,40 +89,56 @@ export default {
       })
       .then((response) => {
         this.ListByDate = response.data.data;
+        this.JumlahTanggal = response.data.total;
       })
       .catch((error) => {
         console.log(error);
       });
   },
+  filters: {
+    toRupiah(value) {
+      const formatter = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+      return formatter.format(value);
+    },
+  },
   methods: {
     formatDate(date) {
       return moment(date).format("dddd, Do MMMM YYYY");
+    },
+
+    JumlahSetoran(total, jlhTgl) {
+      return total - ((10 / 100) * total + jlhTgl * 53000 + jlhTgl * 5000);
+    },
+
+    perusahaan(total, jlhTgl) {
+      return (60 / 100) * (10 / 100) * total + jlhTgl * 53000 + jlhTgl * 5000;
+    },
+    Adm(total) {
+      return (40 / 100) * ((10 / 100) * total);
     },
   },
   computed: {
     filteredItems() {
       if (!this.selectedDate) {
-        return this.ListByDate;
+        return this.combinedData;
       } else {
-        return this.ListByDate.filter(
+        return this.combinedData.filter(
           (item) => moment(item.tanggal).format("YYYY-MM-DD") === this.selectedDate
         );
       }
     },
-    komisi() {
-      let komisi = 0;
-      komisi = (10 / 100) * +this.ListByDate.total;
-      return komisi;
-    },
-    kantor() {
-      let kantor = 0;
-      kantor = 1 * 53000;
-      return kantor;
-    },
-    admin() {
-      let admin = 0;
-      admin = 1 * 5000;
-      return admin;
+    combinedData() {
+      return this.ListByDate.map((item) => {
+        const match = this.JumlahTanggal.find((t) => t.tanggal === item.tanggal);
+        return {
+          ...item,
+          jumlah: match ? match.jumlah : 0,
+        };
+      });
     },
   },
   watch: {

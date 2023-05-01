@@ -52,16 +52,15 @@
             Request Penjemputan maka penumpang akan diarahkan kelokasi rekomendasi sistem
             dengan posisi terdekat dari sekitaran alamat yang dicantumkan sistem.
           </p>
-          <v-switch v-model="jemput" color="primary"></v-switch>
-          <v-col v-if="jemput" cols="12">
-            <v-autocomplete
-              filled
-              solo
-              clearable
-              v-model="passenger.alamatJemput"
-              :items="loket"
-              label="Pilih Lokasi Penjemputan"
-            ></v-autocomplete>
+          <v-switch v-model="jemput" color="primary" disabled></v-switch>
+          <v-col v-if="!jemput" cols="12">
+            <v-text-field
+              v-model="item.derpature"
+              outlined
+              dense
+              readonly
+              hide-details
+            ></v-text-field>
           </v-col>
         </div>
         <div v-if="userRole == 'passenger'">
@@ -177,14 +176,12 @@ export default {
   },
   data() {
     return {
-      schedule: {
-        derpature: "",
-      },
+      schedule: {},
       jemput: false,
       passenger: {
         name: "",
         age: "",
-        alamatJemput: "not request",
+        alamatJemput: "",
       },
       snackbar: false,
       items: ["Balige", "Tambunan", "Tampubolon", "Laguboti"],
@@ -236,7 +233,11 @@ export default {
         return;
       }
       // set data penumpang ke state Vuex
-      this.$store.dispatch("setPassengerData", this.passenger);
+      this.$store.dispatch("setPassengerData", {
+        name: this.passenger.name,
+        age: this.passenger.age,
+        alamatJemput: this.schedule[0].derpature,
+      });
 
       // redirect ke halaman berhasil
       this.$router.push("/pembayaran");

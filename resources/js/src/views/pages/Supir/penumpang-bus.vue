@@ -9,28 +9,28 @@
           rounded
           small
           color="warning"
-          class="ml-3 status text-capitalize"
+          class="my-2 status text-capitalize"
           style="color: white; font-weight: bold"
           @click="updateBusStatus(bus.schedules_id)"
         >
-          Sdang berjalan
+          Sedang berjalan
         </v-btn>
         <v-btn
           v-if="bus.status == 'complete'"
           rounded
           small
           color="primary"
-          class="ml-3 status text-capitalize"
+          class="my-2 status text-capitalize"
           style="color: white; font-weight: bold"
           @click="updateBusStatus(bus.schedules_id)"
         >
-          Selesai
+          Perjalanan Selesai
         </v-btn>
         <v-btn
           v-if="bus.status == 'not_started'"
           rounded
           small
-          color="info"
+          color="presecondary"
           class="my-2 status text-capitalize"
           style="color: white; font-weight: bold"
           @click="updateBusStatus(bus.schedules_id)"
