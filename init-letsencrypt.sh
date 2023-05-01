@@ -8,8 +8,8 @@ fi
 domains=(ta8.d4trpl19.net www.ta8.d4trpl19.net)
 rsa_key_size=4096
 data_path="./docker-compose/certbot"
-email="" # Adding a valid address is strongly recommended
-staging=0 # Set to 1 if you're testing your setup to avoid hitting request limits
+email="panjaitanandree@gmail.com" # Adding a valid address is strongly recommended
+staging=1 # Set to 1 if you're testing your setup to avoid hitting request limits
 
 if [ -d "$data_path" ]; then
   read -p "Existing data found for $domains. Continue and replace existing certificate? (y/N) " decision
@@ -34,7 +34,7 @@ docker-compose run --rm --entrypoint "\
   openssl req -x509 -nodes -newkey rsa:$rsa_key_size -days 1\
     -keyout '$path/privkey.pem' \
     -out '$path/fullchain.pem' \
-    -subj '/CN=localhost'" certbot
+    -subj '/CN=localhost'" myapp-certbot
 echo
 
 
@@ -46,7 +46,7 @@ echo "### Deleting dummy certificate for $domains ..."
 docker-compose run --rm --entrypoint "\
   rm -Rf /etc/letsencrypt/live/$domains && \
   rm -Rf /etc/letsencrypt/archive/$domains && \
-  rm -Rf /etc/letsencrypt/renewal/$domains.conf" certbot
+  rm -Rf /etc/letsencrypt/renewal/$domains.conf" myapp-certbot
 echo
 
 
@@ -73,7 +73,7 @@ docker-compose run --rm --entrypoint "\
     $domain_args \
     --rsa-key-size $rsa_key_size \
     --agree-tos \
-    --force-renewal" certbot
+    --force-renewal" myapp-certbot
 echo
 
 echo "### Reloading nginx ..."
