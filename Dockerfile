@@ -20,9 +20,9 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-RUN curl -sL https://deb.nodesource.com/setup_16.x -o /tmp/nodesource_setup.sh
-RUN sudo bash /tmp/nodesource_setup.sh -y
-RUN sudo apt install nodejs -y
+RUN curl -sL https://deb.nodesource.com/setup_18.x -o /tmp/nodesource_setup.sh
+RUN bash /tmp/nodesource_setup.sh -y
+RUN apt install nodejs -y
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
