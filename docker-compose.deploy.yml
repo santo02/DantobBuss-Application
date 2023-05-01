@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      args:
+        user: naldo
+        uid: 1000
+      context: .
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+        - ./laravel-app:/var/www
+    networks:
+      - ta8network
+
+  proxy:
+    image: nginx:alpine
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - 8000:80
+    volumes:
+      - ./laravel-app:/var/www
+      - certbot-certs:/etc/letsencrypt/
+      - ./docker/proxy/nginx:/etc/nginx/conf.d/
+    networks:
+      - ta8network
+
+  certbot:
+    build:
+      context: ./docker/certbot
+    command: echo "Skipping..."
+    environment:
+      - EMAIL=${ACME_DEFAULT_EMAIL}
+      - DOMAIN=${DOMAIN}
+    volumes:
+      - certbot-web:/vol/www
+      - certbot-certs:/etc/letsencrypt/
+    depends_on:
+      - proxy
+
+volumes:
+  certbot-web:
+  proxy-dhparams:
+  certbot-certs:
+
+networks:
+  ta8network:
+    driver: bridge
