@@ -53,6 +53,13 @@
 
       </div>
 
+      <div v-if="userRole == 'direksi'">
+        <nav-menu-link title="Catatan Keuangan" :to="{ name: 'catatan-keuangan' }"
+          :icon="icons.mdiCashMultiple"></nav-menu-link>
+        <nav-menu-link title="Komisi" :to="{ name: 'komisi' }" :icon="icons.mdiCreditCardOutline"></nav-menu-link>
+
+      </div>
+
 
       <!-- <nav-menu-group title="Pages" :icon="icons.mdiFileOutline">
         <nav-menu-link title="Login" :to="{ name: 'pages-login' }" ></nav-menu-link>
@@ -94,7 +101,9 @@ import {
   mdiCar,
   mdiCarCog,
   mdiMapMarkerDistance,
-  mdiHistory
+  mdiHistory,
+  mdiCashMultiple
+
 } from '@mdi/js'
 import NavMenuSectionTitle from './components/NavMenuSectionTitle.vue'
 import NavMenuGroup from './components/NavMenuGroup.vue'
@@ -127,7 +136,8 @@ export default {
         mdiCar,
         mdiMapMarkerDistance,
         mdiCarCog,
-        mdiHistory
+        mdiHistory,
+        mdiCashMultiple
         // mdiCarClock
       },
     }

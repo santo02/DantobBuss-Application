@@ -31,7 +31,7 @@
                 rounded
                 small
                 color="warning"
-                class="ml-3 status text-capitalize"
+                class=" status text-capitalize"
                 style="color: white; font-weight: bold"
               >
                 sedang berjalan

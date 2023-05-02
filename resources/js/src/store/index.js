@@ -83,6 +83,9 @@ export default new Vuex.Store({
     isAdminKantor(state) {
       return state.userRole === 'admin_kantor'
     },
+    isDireksi(state) {
+      return state.userRole === 'direksi'
+    },
   },
 
   plugins: [

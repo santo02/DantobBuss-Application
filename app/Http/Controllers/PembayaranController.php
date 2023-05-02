@@ -136,7 +136,7 @@ class PembayaranController extends Controller
         $pembayaran->schedules_id = $request->schedules_id;
         $pembayaran->bookings_id = $booking->id;
         $pembayaran->method = 'noncash';
-        $pembayaran->status = 'menunggu';
+        $pembayaran->status = 'berhasil';
         $pembayaran->date = Carbon::now();
         $pembayaran->original_request_id = random_int(999, 99999);
         $pembayaran->transaksi_id = $booking->id + 100000;

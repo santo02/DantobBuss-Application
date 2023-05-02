@@ -3,6 +3,7 @@
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BusController;
 use App\Http\Controllers\ConfirmPembayaran;
+use App\Http\Controllers\DashboardDireksiController;
 use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PembayaranController;
@@ -45,7 +46,7 @@ Route::post('login', [LoginController::class, 'login']);
 // Route::post('logout', [LoginController::class, 'logout']th);
 Route::get('/schedule/show/all', [ScheduleController::class, 'index']);
 
-Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver,passenger'])->group(function () {
+Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver,passenger,direksi'])->group(function () {
     Route::post('logout', [LoginController::class, 'logout']);
     Route::get('/user/profile', [UserController::class, 'user']);
 });
@@ -68,7 +69,7 @@ Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver,passenger']
 });
 
 
-Route::middleware(['auth:api', 'role:admin_loket'])->group(function () {
+Route::middleware(['auth:api', 'role:admin_loket,direksi'])->group(function () {
     Route::get('/Keuangan/index', [KeuanganController::class, 'index']);
     Route::get('/Detail-keuangan-Bydate/{tanggal}', [KeuanganController::class, 'getByTanggal']);
     Route::get('/Detail-keuangan-ByPassenger/{id}', [KeuanganController::class, 'getPassenger']);
@@ -102,6 +103,10 @@ Route::middleware(['auth:api', 'role:admin_kantor'])->group(function () {
 Route::middleware(['auth:api', 'role:driver'])->group(function () {
     Route::get('/schedules/driver', [ScheduleController::class, 'getForSupir']);
     Route::get('/confirmasi-pembayaran', [ConfirmPembayaran::class, 'index']);
+});
+
+Route::middleware(['auth:api', 'role:direksi,admin_kantor'])->group(function () {
+    Route::get('/Dashboard/direksi', [DashboardDireksiController::class, 'CountAll']);
 });
 
 Route::put('/update-status/{id}', [ScheduleController::class, 'UpdateStatusBus']);

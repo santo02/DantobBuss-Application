@@ -20,7 +20,7 @@
         </div>
       </div>
 
-      <v-divider></v-divider>
+      <!-- <v-divider></v-divider> -->
 
       <!-- Profile -->
       <v-list-item link>
@@ -35,7 +35,7 @@
       </v-list-item>
 
       <!-- Email -->
-      <v-list-item link>
+      <!-- <v-list-item link>
         <v-list-item-icon class="me-2">
           <v-icon size="22">
             {{ icons.mdiEmailOutline }}
@@ -44,10 +44,10 @@
         <v-list-item-content>
           <v-list-item-title>Inbox</v-list-item-title>
         </v-list-item-content>
-      </v-list-item>
+      </v-list-item> -->
 
       <!-- Chat -->
-      <v-list-item link>
+      <!-- <v-list-item link>
         <v-list-item-icon class="me-2">
           <v-icon size="22">
             {{ icons.mdiChatOutline }}
@@ -60,12 +60,12 @@
         <v-list-item-action>
           <v-badge inline color="error" content="2"> </v-badge>
         </v-list-item-action>
-      </v-list-item>
+      </v-list-item> -->
 
-      <v-divider class="my-2"></v-divider>
+      <!-- <v-divider class="my-2"></v-divider> -->
 
       <!-- Settings -->
-      <v-list-item link>
+      <!-- <v-list-item link>
         <v-list-item-icon class="me-2">
           <v-icon size="22">
             {{ icons.mdiCogOutline }}
@@ -74,10 +74,10 @@
         <v-list-item-content>
           <v-list-item-title>Settings</v-list-item-title>
         </v-list-item-content>
-      </v-list-item>
+      </v-list-item> -->
 
       <!-- Pricing -->
-      <v-list-item link>
+      <!-- <v-list-item link>
         <v-list-item-icon class="me-2">
           <v-icon size="22">
             {{ icons.mdiCurrencyUsd }}
@@ -86,10 +86,10 @@
         <v-list-item-content>
           <v-list-item-title>Pricing</v-list-item-title>
         </v-list-item-content>
-      </v-list-item>
+      </v-list-item> -->
 
       <!-- FAQ -->
-      <v-list-item link>
+      <!-- <v-list-item link>
         <v-list-item-icon class="me-2">
           <v-icon size="22">
             {{ icons.mdiHelpCircleOutline }}
@@ -98,19 +98,19 @@
         <v-list-item-content>
           <v-list-item-title>FAQ</v-list-item-title>
         </v-list-item-content>
-      </v-list-item>
+      </v-list-item> -->
 
       <v-divider class="my-2"></v-divider>
 
       <!-- Logout -->
-      <v-list-item link>
+      <v-list-item link @click.prevent="logout">
         <v-list-item-icon class="me-2">
           <v-icon size="22">
             {{ icons.mdiLogoutVariant }}
           </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title @click.prevent="logout">Logout</v-list-item-title>
+          <v-list-item-title >Logout</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>

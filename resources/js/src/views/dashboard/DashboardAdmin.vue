@@ -1,186 +1,310 @@
 <template>
-  <v-row>
-    <!-- <v-col
-      cols="12"
-      md="4"
-    >
-      <dashboard-congratulation-john></dashboard-congratulation-john>
-    </v-col> -->
-    <v-col
-      cols="12"
-      md="12"
-    >
-      <dashboard-statistics-card></dashboard-statistics-card>
-    </v-col>
-
-    <!-- <v-col
-      cols="12"
-      sm="6"
-      md="4"
-    >
-      <dashboard-weekly-overview></dashboard-weekly-overview>
-    </v-col> -->
-<!--
-    <v-col
-      cols="12"
-      md="4"
-      sm="6"
-    >
-      <dashboard-card-total-earning></dashboard-card-total-earning>
-    </v-col>
-
-    <v-col
-      cols="12"
-      md="4"
-    >
-      <v-row class="match-height">
-        <v-col
-          cols="12"
-          sm="6"
-        >
-          <statistics-card-vertical
-            :change="totalProfit.change"
-            :color="totalProfit.color"
-            :icon="totalProfit.icon"
-            :statistics="totalProfit.statistics"
-            :stat-title="totalProfit.statTitle"
-            :subtitle="totalProfit.subtitle"
-          ></statistics-card-vertical>
+  <v-app>
+    <v-container>
+      <v-row>
+        <v-col>
+          <v-text-field
+            v-model="selectedDate"
+            type="date"
+            label="Pilih tanggal"
+            placeholder="Pilih Tanggal"
+            clearable
+            hide-details
+          />
         </v-col>
         <v-col
-          cols="12"
-          sm="6"
-        >
-          <statistics-card-vertical
-            :change="totalSales.change"
-            :color="totalSales.color"
-            :icon="totalSales.icon"
-            :statistics="totalSales.statistics"
-            :stat-title="totalSales.statTitle"
-            :subtitle="totalSales.subtitle"
-          ></statistics-card-vertical>
-        </v-col>
+          ><v-select
+            v-model="selectedRoute"
+            :items="route"
+            id="id"
+            item-value="id"
+            item-text="derpatures"
+            placeholder="Pilih Rute"
+            clearable
+            hide-details
+          ></v-select
+        ></v-col>
         <v-col
-          cols="12"
-          sm="6"
-        >
-          <statistics-card-vertical
-            :change="newProject.change"
-            :color="newProject.color"
-            :icon="newProject.icon"
-            :statistics="newProject.statistics"
-            :stat-title="newProject.statTitle"
-            :subtitle="newProject.subtitle"
-          ></statistics-card-vertical>
+          ><v-select
+            v-model="selectedType"
+            :items="['Economi', 'Executive']"
+            placeholder="Pilih Type"
+            clearable
+            hide-details
+          ></v-select
+        ></v-col>
+      </v-row>
+    </v-container>
+    <h3 class="my-4">
+      Pesan Tiket Mobil Bus Online di
+      <h3 text-color="primary">DantobBus</h3>
+    </h3>
+    <v-card v-if="filterSchedules().length < 1">
+      <h3 class="text-center py-4">Maaf, tidak ada jadwal yang tersedia saat ini.</h3>
+    </v-card>
+    <v-card v-for="item in filterSchedules()" :key="item.schedule_id" class="mb-2">
+      <v-row no-gutters>
+        <v-col cols="auto">
+          <v-avatar size="40" class="mt-2 ml-2">
+            <img
+              :src="require('@/assets/images/logos/logo-KBT.png').default"
+              max-height="50px"
+              max-width="100px"
+              alt="avatar"
+            />
+          </v-avatar>
         </v-col>
+        <v-col>
+          <div class="d-flex justify-content-between">
+            <v-card-title class="text-h6"
+              >{{ item.derpature }} - {{ item.arrival }}</v-card-title
+            >
+            <div class="text-h6 mt-4 mr-5 harga" style="color: #ff4c51">
+              Rp.{{ item.harga }}
+            </div>
+          </div>
+          <div class="d-flex justify-content-between ml-5">
+            <h6>{{ item.nomor_pintu }}</h6>
+            <h6 class="text--primary ml-5">{{ item.type }}</h6>
+          </div>
+          <v-row no-gutters class="my-3">
+            <v-col cols="12" class="detail">
+              <div class="row">
+                <div class="col-md-3">
+                  <v-icon left>{{ icons.mdiCalendarClock }}</v-icon>
+                  {{ formatDate(item.tanggal) }}
+                </div>
+                <div class="col-md-2">
+                  <v-icon left>{{ icons.mdiAccount }}</v-icon> {{ item.name }}
+                </div>
+                <div
+                  class="col-md-2"
+                  v-for="(count, id) in bookingCounts"
+                  :key="id"
+                  v-if="item.schedule_id == id"
+                >
+                  <small color="secondary"
+                    >Tersedia : {{ item.number_of_seats - count - 1 }} Kursi
+                  </small>
+                </div>
+                <div
+                  class="col-md-2"
+                  v-if="!Object.keys(bookingCounts).includes(String(item.schedule_id))"
+                >
+                  <small color="secondary"
+                    >Tersedia : {{ item.number_of_seats - 1 }} Kursi
+                  </small>
+                </div>
 
-        <v-col
-          cols="12"
-          sm="6"
-        >
-          <statistics-card-vertical
-            :change="salesQueries.change"
-            :color="salesQueries.color"
-            :icon="salesQueries.icon"
-            :statistics="salesQueries.statistics"
-            :stat-title="salesQueries.statTitle"
-            :subtitle="salesQueries.subtitle"
-          ></statistics-card-vertical>
+                <v-row class="col-md-2 d-flex justify-space-around">
+                  <div class="col-md-2">
+                    <v-btn
+                      color="secondary"
+                      @click="selectBus(item.schedule_id, item.harga)"
+                      class="ml-3"
+                      style="color: white; font-weight: bold"
+                    >
+                      Pesan
+                    </v-btn>
+                  </div>
+                </v-row>
+              </div>
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
-    </v-col>
-
-    <v-col
-      cols="12"
-      md="4"
-    >
-      <dashboard-card-sales-by-countries></dashboard-card-sales-by-countries>
-    </v-col>
-    <v-col
-      cols="12"
-      md="8"
-    >
-      <dashboard-card-deposit-and-withdraw></dashboard-card-deposit-and-withdraw>
-    </v-col> -->
-    <!-- <v-col cols="12">
-      <dashboard-datatable></dashboard-datatable>
-    </v-col> -->
-  </v-row>
+    </v-card>
+    <v-pagination
+      v-model="currentPage"
+      :length="totalPages"
+      @input="changePage"
+      class="my-4"
+      circle
+    ></v-pagination>
+  </v-app>
 </template>
-
 <script>
-// eslint-disable-next-line object-curly-newline
-import { mdiPoll, mdiLabelVariantOutline, mdiCurrencyUsd, mdiHelpCircleOutline } from '@mdi/js'
-import StatisticsCardVertical from '@/components/statistics-card/StatisticsCardVertical.vue'
-
-// demos
-import DashboardCongratulationJohn from './DashboardCongratulationJohn.vue'
-import DashboardStatisticsCard from './DashboardStatisticsCard.vue'
-import DashboardCardTotalEarning from './DashboardCardTotalEarning.vue'
-import DashboardCardDepositAndWithdraw from './DashboardCardDepositAndWithdraw.vue'
-import DashboardCardSalesByCountries from './DashboardCardSalesByCountries.vue'
-import DashboardWeeklyOverview from './DashboardWeeklyOverview.vue'
-import DashboardDatatable from './DashboardDatatable.vue'
-
+import axios from "axios";
+import moment from "moment";
+import "moment/locale/id";
+import { mapActions } from "vuex";
+import { mdiCalendarClock, mdiAccountGroup, mdiAccount } from "@mdi/js";
 export default {
-  components: {
-    StatisticsCardVertical,
-    DashboardCongratulationJohn,
-    DashboardStatisticsCard,
-    DashboardCardTotalEarning,
-    DashboardCardDepositAndWithdraw,
-    DashboardCardSalesByCountries,
-    DashboardWeeklyOverview,
-    DashboardDatatable,
-  },
-
   setup() {
-    const totalProfit = {
-      statTitle: 'Total Profit',
-      icon: mdiPoll,
-      color: 'success',
-      subtitle: 'Weekly Project',
-      statistics: '$25.6k',
-      change: '+42%',
-    }
-
-    const totalSales = {
-      statTitle: 'Refunds',
-      icon: mdiCurrencyUsd,
-      color: 'secondary',
-      subtitle: 'Past Month',
-      statistics: '$78',
-      change: '-15%',
-    }
-
-    // vertical card options
-    const newProject = {
-      statTitle: 'New Project',
-      icon: mdiLabelVariantOutline,
-      color: 'primary',
-      subtitle: 'Yearly Project',
-      statistics: '862',
-      change: '-18%',
-    }
-
-    const salesQueries = {
-      statTitle: 'Sales Quries',
-      icon: mdiHelpCircleOutline,
-      color: 'warning',
-      subtitle: 'Last week',
-      statistics: '15',
-      change: '-18%',
-    }
-
     return {
-      totalProfit,
-      totalSales,
-      newProject,
-      salesQueries,
-    }
+      icons: {
+        mdiCalendarClock,
+        mdiAccountGroup,
+        mdiAccount,
+      },
+    };
   },
-  mounted(){
-    console.log(this.$store.state.userRole)
+  data() {
+    return {
+      schedules: [],
+      itemsPerPage: 5, // jumlah item per halaman
+      currentPage: 1,
+      route: [],
+      bookingCounts: {},
+      busData: {
+        id_schedule: "",
+        harga: "",
+      },
+      selectedDate: null,
+      selectedRoute: null,
+      selectedType: null,
+    };
+  },
+  computed: {
+    paginatedSchedules() {
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+      const endIndex = startIndex + this.itemsPerPage;
+      return this.schedules.slice(startIndex, endIndex);
+    },
+    totalPages() {
+      return Math.ceil(this.schedules.length / this.itemsPerPage);
+    },
+  },
+  methods: {
+    ...mapActions(["setSelectedSeat"]),
+    selectBus(id_schedule, harga) {
+      // set data bus yang dipilih ke state Vuex
+      this.$store.dispatch("setBusData", { id_schedule, harga });
+
+      // pindah ke komponen selanjutnya (pilih tempat duduk)
+      this.$router.push("/costumize-pemesanan");
+    },
+    isSelected(seatNumber) {
+      // check apakah tempat duduk sudah dipilih sebelumnya
+      return this.$store.state.selectedSeat === seatNumber;
+    },
+    formatDate(date) {
+      moment.locale("id");
+      return moment(date).format("dddd, Do MMMM YYYY, hh:mm");
+    },
+    changePage(page) {
+      this.currentPage = page;
+    },
+    filterSchedules() {
+      let filteredSchedules = this.paginatedSchedules;
+
+      if (this.selectedDate) {
+        filteredSchedules = filteredSchedules.filter(
+          (schedule) =>
+            moment(schedule.tanggal).format("YYYY-MM-DD") ===
+            moment(this.selectedDate).format("YYYY-MM-DD")
+        );
+      }
+
+      if (this.selectedRoute) {
+        console.selectedRoute;
+        filteredSchedules = filteredSchedules.filter(
+          (schedule) => schedule.id === this.selectedRoute
+        );
+      }
+      if (this.selectedType) {
+        console.log(this.selectedType);
+        filteredSchedules = filteredSchedules.filter(
+          (schedule) => schedule.type === this.selectedType
+        );
+      }
+
+      return filteredSchedules;
+    },
+    getSchedule() {
+      const access_token = localStorage.getItem("access_token");
+
+      axios
+        .get("/api/schedule/show/all", {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        })
+        .then((response) => {
+          this.schedules = response.data.data;
+          this.st = response.data.total;
+          this.bookingCounts = this.countBookings(response.data.total);
+
+          console.log(this.schedules);
+          console.log(this.st);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    countBookings(bookings) {
+      const count = {};
+      bookings.forEach((booking) => {
+        if (count[booking.schedules_id]) {
+          count[booking.schedules_id]++;
+        } else {
+          count[booking.schedules_id] = 1;
+        }
+      });
+      return count;
+    },
+  },
+  mounted() {
+    const access_token = localStorage.getItem("access_token");
+
+    this.getSchedule();
+    axios
+      .get("api/routes/show/all", {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+      .then((response) => {
+        this.route = response.data.data.map((item) => {
+          return {
+            id: item.id,
+            derpatures: item.derpature + " - " + item.arrival,
+            derpature: item.derpature + " - " + item.arrival,
+            // derpature: item.derpature,
+            // arrival: item.arrival,
+          };
+        });
+        // console.log(this.route)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+};
+</script>
+<style>
+@media only screen and (max-width: 480px) {
+  .btn-pesan {
+    margin-top: 160px;
+    height: 15px;
+    padding-left: 30px;
+    width: 120px;
+    font-size: 10px;
+    height: 50px;
+  }
+
+  .text-title {
+    position: absolute;
+    text-align: center;
   }
 }
-</script>
+
+@media only screen and (min-width: 481px) {
+  .btn-pesan {
+    margin-top: 160px;
+    height: 15px;
+    padding-left: 30px;
+    width: 240px;
+    height: 50px;
+  }
+
+  .text-title {
+    position: absolute;
+    margin-left: 60%;
+  }
+
+  .detail {
+    font-size: 12px;
+  }
+}
+</style>
