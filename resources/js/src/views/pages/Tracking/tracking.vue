@@ -78,7 +78,7 @@ export default {
       })
       .then((response) => {
         this.schedule = response.data.data[0];
-        this.socket = io("ws://localhost:8081", {
+        this.socket = io("wss://socket08.d4trpl19.net", {
           query: `id=${crypto.randomUUID()}`,
         });
 
