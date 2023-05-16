@@ -28,6 +28,11 @@
         <!-- <nav-menu-link title="Account Settings" :to="{ name: 'pages-account-settings' }"
         :icon="icons.mdiAccountCogOutline"></nav-menu-link> -->
         <nav-menu-group title="Kelola" :icon="icons.mdiCarCog">
+          <nav-menu-group title="Loket" :icon="icons.mdiCarCog">
+            <nav-menu-link title="Admin Loket" :to="{ name: 'pages-admin-loket' }"
+              :icon="icons.mdiCardAccountDetailsOutline"></nav-menu-link>
+            <nav-menu-link title="Loket" :to="{ name: 'pages-loket' }" :icon="icons.mdiCar"></nav-menu-link>
+          </nav-menu-group>
           <nav-menu-link title="Supir" :to="{ name: 'pages-supir' }"
             :icon="icons.mdiCardAccountDetailsOutline"></nav-menu-link>
           <nav-menu-link title="Mobil" :to="{ name: 'pages-mobil' }" :icon="icons.mdiCar"></nav-menu-link>

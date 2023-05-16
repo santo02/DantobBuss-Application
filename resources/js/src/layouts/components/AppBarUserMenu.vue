@@ -16,7 +16,7 @@
         </v-badge>
         <div class="d-inline-flex flex-column justify-center ms-3" style="vertical-align: middle">
           <span class="text--primary text-capitalize font-weight-semibold mb-n1"> {{ user.name }}</span>
-          <small class="text--disabled text-capitalize">{{user.email}}</small>
+          <small class="text--disabled text-capitalize">{{ user.email }}</small>
         </div>
       </div>
 
@@ -110,7 +110,7 @@
           </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title >Logout</v-list-item-title>
+          <v-list-item-title>Logout</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -132,6 +132,7 @@ import {
 
 } from '@mdi/js'
 import axios from 'axios';
+import Swal from 'sweetalert2'
 export default {
   setup() {
     return {
@@ -155,19 +156,33 @@ export default {
   },
   methods: {
     logout() {
-      axios.post('/api/logout', null, {
-        headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('access_token')
+      Swal.fire({
+        icon: 'question',
+        title: 'Apakah anda ingin membatalkan pesanan?',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Tidak',
+        confirmButtonColor: '#307475',
+
+
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          axios.post('/api/logout', null, {
+            headers: {
+              Authorization: 'Bearer ' + localStorage.getItem('access_token')
+            }
+          })
+            .then(response => {
+              localStorage.removeItem('access_token');
+              localStorage.removeItem('expires_at');
+              this.$router.push('/');
+            })
+            .catch(error => {
+              console.log(error.response.data.message);
+            });
         }
       })
-        .then(response => {
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('expires_at');
-          this.$router.push('/');
-        })
-        .catch(error => {
-          console.log(error.response.data.message);
-        });
     }
   },
   mounted() {

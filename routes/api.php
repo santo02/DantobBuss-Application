@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\AdminLoketController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BusController;
 use App\Http\Controllers\ConfirmPembayaran;
 use App\Http\Controllers\DashboardDireksiController;
 use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\LoketController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\RoutesController;
@@ -87,6 +89,11 @@ Route::middleware(['auth:api', 'role:admin_kantor'])->group(function () {
     Route::post('/registrasi/supir', [RegisterUserController::class, 'RegistrasiSupir']);
     Route::get('/supir/all', [SupirController::class, 'index']);
     Route::get('/supir/name/all', [SupirController::class, 'getOne']);
+    
+    Route::post('/registrasi/adminLoket', [AdminLoketController::class, 'store']);
+    Route::get('/admin-loket/all', [AdminLoketController::class, 'index']);
+    Route::post('/loket/add', [LoketController::class, 'store']);
+    Route::get('/loket/all', [LoketController::class, 'show']);
 
     Route::post('/buss/add', [BusController::class, 'store']);
     Route::get('/buss/show/all', [BusController::class, 'show']);

@@ -2,7 +2,7 @@
   <v-card>
     <v-card-title>
       <v-btn class="mb-3" :to="{ name: 'pages-add-route' }" color="primary">
-        Tambah Mobil
+        Tambah Rute
       </v-btn>
       <v-spacer></v-spacer>
       <v-text-field v-model="search" append-icon="mdi-magnify" label="Cari" hide-details></v-text-field>

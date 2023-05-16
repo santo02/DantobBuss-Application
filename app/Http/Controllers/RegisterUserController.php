@@ -30,6 +30,7 @@ class RegisterUserController extends BaseController
         $input['password'] = bcrypt($fields['password']);
         $input['photo'] = "null";
         $input['role_id'] = '2';
+        $input['status'] = 1;
         $user = User::create($input);
 
         $success['token'] =  $user->createToken('MyApp')->accessToken;
@@ -59,6 +60,7 @@ class RegisterUserController extends BaseController
         $input['password'] = bcrypt('supir123');
         $input['photo'] = "null";
         $input['role_id'] = '3';
+        $input['status'] = 1;
         $user = User::create($input);
 
         $success['token'] =  $user->createToken('MyApp')->accessToken;

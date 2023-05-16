@@ -39,12 +39,11 @@
           <v-col cols="12" md="9">
             <v-select
               v-model="mobil.type"
-              :items="['Economi', 'Executive']"
+              :items="['Ekonomi', 'Eksekutif']"
               outlined
               dense
               placeholder="Type"
-              hide
-              details
+              hide details
             ></v-select>
             <!-- <v-text-field id="type" v-model="mobil.type" outlined dense placeholder="type" hide-details></v-text-field> -->
           </v-col>
@@ -63,6 +62,26 @@
               dense
               placeholder="Pilih supir"
               @change="saveSelectedItemId"
+              hide-details
+
+            ></v-select>
+          </v-col>
+
+          <v-col cols="12" md="3">
+            <label for="mobile">Loket</label>
+          </v-col>
+
+          <v-col cols="12" md="9">
+            <v-select
+              v-model="mobil.loket"
+              :items="loket"
+              item-value="id"
+              item-text="name"
+              outlined
+              dense
+              placeholder="Pilih Loket"
+              @change="saveSelectedItemId"
+              hide-details
             ></v-select>
           </v-col>
 
@@ -136,6 +155,7 @@ export default {
     return {
       supir: [],
       driver: null,
+      loket: null,
       mobil: [],
     };
   },
@@ -159,6 +179,26 @@ export default {
       .catch((error) => {
         console.log(error);
       });
+
+      // Loket Get
+    axios
+      .get("/api/loket/all", {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+      .then((response) => {
+        this.loket = response.data.map((item) => {
+          return {
+            name: item.nama_loket,
+            id: item.id,
+          };
+        });
+        console.log("ini", this.loket);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
   methods: {
     AddMobil() {
@@ -175,6 +215,7 @@ export default {
             nomor_pintu: this.mobil.nomor_pintu,
             merk: "KBT",
             status: this.mobil.status,
+            loket_id: this.mobil.loket
           },
           {
             headers: {

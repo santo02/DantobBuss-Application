@@ -53,7 +53,8 @@ export default {
         { text: 'Supir', value: 'name' },
         { text: 'Jumlah Seat', value: 'number_of_seats' },
         { text: 'Type', value: 'type' },
-        { text: 'status', value: 'status' },
+        { text: 'Status', value: 'status' },
+        { text: 'Loket', value: 'nama_loket' },
         { text: 'Action', value: 'action', align: 'center', sortable: false }
       ],
     }

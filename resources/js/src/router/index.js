@@ -17,6 +17,26 @@ const routes = [{
     component: () => import('@/views/pages/supir/list-supir.vue'),
   },
   {
+    path: '/admin-loket',
+    name: 'pages-admin-loket',
+    component: () => import('@/views/pages/Admin Loket/list-admin-loket.vue'),
+  },
+  {
+    path: '/add-admin-loket',
+    name: 'pages-add-admin-loket',
+    component: () => import('@/views/pages/Admin Loket/add-admin-loket.vue'),
+  },
+  {
+    path: '/loket',
+    name: 'pages-loket',
+    component: () => import('@/views/pages/Loket/list-loket.vue'),
+  },
+  {
+    path: '/add-loket',
+    name: 'pages-add-loket',
+    component: () => import('@/views/pages/Loket/add-loket.vue'),
+  },
+  {
     path: '/add-supir',
     name: 'pages-add-supir',
     component: () => import('@/views/pages/supir/add-supir.vue'),

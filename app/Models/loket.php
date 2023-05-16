@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class loket extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'nama_loket',
+        'lokasi_loket',
+        'admin_id',
+    ];
 }
