@@ -9,7 +9,7 @@
     </v-card-title>
     <v-data-table :headers="headers" :items="schedule" :search="search">
       <template #item.edit="{ item }">
-        <v-btn small color="primary" :to="{ name: 'pages-edit-schedule', params: { id: item.id } }"><v-icon center>{{
+        <v-btn small color="primary" :to="{ name: 'pages-edit-schedule', params: { id: item.schedule_id } }"><v-icon center>{{
           icons.mdiPencil }}</v-icon></v-btn>
       </template>
       <template #item.delete="{ item }">
@@ -55,7 +55,7 @@ export default {
         { text: 'Tujuan', value: 'derpature' },
         { text: 'Tanggal', value: 'tanggal' },
         { text: 'Harga', value: 'harga' },
-        { text: 'Status', value: 'status' },
+        // { text: 'Status', value: 'status' },
         { text: 'Edit', value: 'edit', align: 'center', sortable: false },
         { text: 'Delete', value: 'delete', align: 'center', sortable: false }
       ],
@@ -68,15 +68,10 @@ export default {
       return moment(date).format('dddd, Do MMMM YYYY');
     }
   },
-  getColor(status) {
-    if (status == "Avaliable") return 'red'
-    // else if (calories > 200) return 'orange'
-    else return 'green'
-  },
   mounted() {
     const access_token = localStorage.getItem('access_token');
 
-    axios.get('/api/schedule/show/all', {
+    axios.get('/api/schedule/admin/show/all', {
       headers: {
         'Authorization': `Bearer ${access_token}`
       }

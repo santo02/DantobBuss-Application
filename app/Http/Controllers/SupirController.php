@@ -14,7 +14,7 @@ class SupirController extends Controller
         return response()->json($user);
     }
     public function getOne(){
-        $user = DB::table('users')->where('role_id', 3)->select('name', 'id')->get();
+        $user = DB::table('users')->where('role_id', 3)->select('name', 'id' ,'status')->get();
 
         return response($user);
     }

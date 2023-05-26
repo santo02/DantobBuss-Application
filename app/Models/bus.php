@@ -17,7 +17,7 @@ class bus extends Model
         'merk',
         'status',
         'supir_id',
-        'loket_id'
+        'loket_id',
     ];
 
     public function driver()

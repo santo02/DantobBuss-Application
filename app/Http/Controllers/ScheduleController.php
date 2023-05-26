@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\carbon;
+use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends BaseController
 {
@@ -26,7 +27,19 @@ class ScheduleController extends BaseController
 
         return $this->sendResponse($input, 'Schedule Created Successfully');
     }
+    public function ShowALl()
+    {
+        $schedule = DB::table('schedules')
+            ->join('buses', 'buses.id', '=', 'schedules.bus_id')
+            ->join('users', 'buses.supir_id', '=', 'users.id')
+            ->join('routes', 'schedules.route_id', '=', 'routes.id')
+            // ->where('schedules.status', "!=", 'complete')
+            ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'buses.status as status_bus', 'buses.nomor_pintu', 'buses.police_number', 'routes.status as routes_status', 'routes.derpature', 'routes.arrival', 'users.name')
+            ->orderBy('schedules.tanggal', 'DESC')
+            ->get();
 
+        return response()->json(['data' => $schedule]);
+    }
     public function index()
     {
         // $schedule = Schedule::with('buses.driver', 'routes')
@@ -59,7 +72,7 @@ class ScheduleController extends BaseController
             ->join('routes', 'schedules.route_id', '=', 'routes.id')
             ->where('buses.type', '=', 'Executive')
             ->where('schedules.status', "!=", 'complete')
-            ->select('schedules.id as schedule_id', 'schedules.tanggal','schedules.status as status_bus', 'schedules.harga', 'buses.*', 'routes.*', 'users.name')
+            ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.status as status_bus', 'schedules.harga', 'buses.*', 'routes.*', 'users.name')
             ->get();
 
         $hasBooked = DB::table('schedules')
@@ -101,7 +114,7 @@ class ScheduleController extends BaseController
             ->join('routes', 'schedules.route_id', '=', 'routes.id')
             // ->where('buses.type', '=', 'Ekonomi')
             ->where('schedules.id', '=', $id)
-            ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'buses.*', 'routes.*', 'users.name')
+            ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'schedules.bus_id', 'schedules.route_id', 'buses.*', 'routes.*', 'users.name')
             ->get();
 
         return $this->sendResponse($schedule, 'Schedule Retrieved Successfully');
@@ -124,12 +137,31 @@ class ScheduleController extends BaseController
             ->join('users', 'buses.supir_id', '=', 'users.id')
             ->join('routes', 'schedules.route_id', '=', 'routes.id')
             ->where('users.role_id', '=', 3)
-            ->where('users.id', '=', $user->id)
+            ->where('users.status', '=', 1)
+            ->where('buses.status', '=', 1)
+            ->where('routes.status', '=', 1)
             // ->where('schedules.status', 'complete')
             ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'schedules.status as schedules_status', 'buses.*', 'routes.*', 'users.name')
             ->get();
 
         return response()->json(['total' => $hasBooked, 'data' => $schedule]);
+    }
+    public function update($id)
+    {
+        $schedule = Schedule::find($id);
+        if (!$schedule) {
+            return response()->json(['message' => 'Route not found.'], 404);
+        }
+        $input = $this->validate(request(), [
+            'tanggal' => 'required|numeric|min:0',
+            'harga' => 'required|numeric|min:0',
+            'bus_id' => 'required|numeric|exists:buses,id',
+            'route_id' => 'required|numeric|exists:routes,id',
+            'status' => 'required|numeric|exists:schedules,status',
+        ]);
+        $schedule->update($input);
+        return $this->sendResponse($schedule, 'Schedule Updated Successfully');
+        
     }
 
     public function UpdateStatusBus($id)

@@ -15,11 +15,19 @@ const routes = [{
     path: '/supir',
     name: 'pages-supir',
     component: () => import('@/views/pages/supir/list-supir.vue'),
+    meta: {
+      // requiresAuth: true,
+      // requiresRole: 'admin'
+    }
   },
   {
     path: '/admin-loket',
     name: 'pages-admin-loket',
     component: () => import('@/views/pages/Admin Loket/list-admin-loket.vue'),
+    meta: {
+      // requiresAuth: true,
+      // requiresRole: 'admin'
+    }
   },
   {
     path: '/add-admin-loket',
@@ -37,6 +45,16 @@ const routes = [{
     component: () => import('@/views/pages/Loket/add-loket.vue'),
   },
   {
+    path: '/edit-loket/:id',
+    name: 'pages-edit-lokets',
+    component: () => import('@/views/pages/Loket/edit-loket.vue'),
+  },
+  {
+    path: '/  -user/:id',
+    name: 'pages-edit-user',
+    component: () => import('@/views/pages/edit-user.vue'),
+  },
+  {
     path: '/add-supir',
     name: 'pages-add-supir',
     component: () => import('@/views/pages/supir/add-supir.vue'),
@@ -52,6 +70,11 @@ const routes = [{
     component: () => import('@/views/pages/Mobil/add-mobil.vue'),
   },
   {
+    path: '/edit-mobil/:id',
+    name: 'pages-edit-mobil',
+    component: () => import('@/views/pages/Mobil/edit-mobil.vue'),
+  },
+  {
     path: '/route',
     name: 'pages-routes',
     component: () => import('@/views/pages/Rute/list-route.vue'),
@@ -62,6 +85,11 @@ const routes = [{
     component: () => import('@/views/pages/Rute/add-route.vue'),
   },
   {
+    path: '/edit-route/:id',
+    name: 'pages-edit-route',
+    component: () => import('@/views/pages/Rute/edit-route.vue'),
+  },
+  {
     path: '/schedule',
     name: 'pages-schedule',
     component: () => import('@/views/pages/Schedule/list-schedule.vue'),
@@ -70,6 +98,11 @@ const routes = [{
     path: '/add-schedule',
     name: 'pages-add-schedule',
     component: () => import('@/views/pages/Schedule/add-schedule.vue'),
+  },
+  {
+    path: '/edit-schedule/:id',
+    name: 'pages-edit-schedule',
+    component: () => import('@/views/pages/Schedule/edit-schedule.vue'),
   },
   {
     path: '/pemesanan',
@@ -117,7 +150,7 @@ const routes = [{
     component: () => import('@/views/pages/Supir/riwayat-perjalanan-supir.vue'),
   },
   {
-    path: '/riwayat-pe',
+    path: '/riwayat-perjalanan',
     name: 'riwayat-perjalanan',
     component: () => import('@/views/pages/Pesanan/riwayat-perjalanan.vue'),
   },
@@ -239,4 +272,29 @@ const router = new VueRouter({
   routes,
 })
 
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth && !store.state.isAuthenticated) {
+    next({
+      path: '/login'
+    });
+  } else if (to.meta.requiresRole && (store.state.isAdmin || store.state.isDireksi)) {
+    next({
+      path: '/home'
+    });
+  } else if (to.meta.requiresRole && store.state.isAdminKantor) {
+    next({
+      path: '/admin'
+    });
+  } else if (to.meta.requiresRole && store.state.isDriver) {
+    next({
+      path: '/drivers'
+    });
+  } else if (to.meta.requiresRole && store.state.isPassenger) {
+    next({
+      path: '/passengers'
+    });
+  } else {
+    next();
+  }
+});
 export default router

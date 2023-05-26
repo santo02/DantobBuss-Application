@@ -27,7 +27,6 @@
       <div v-if="userRole == 'admin_kantor'">
         <!-- <nav-menu-link title="Account Settings" :to="{ name: 'pages-account-settings' }"
         :icon="icons.mdiAccountCogOutline"></nav-menu-link> -->
-        <nav-menu-group title="Kelola" :icon="icons.mdiCarCog">
           <nav-menu-group title="Loket" :icon="icons.mdiCarCog">
             <nav-menu-link title="Admin Loket" :to="{ name: 'pages-admin-loket' }"
               :icon="icons.mdiCardAccountDetailsOutline"></nav-menu-link>
@@ -39,7 +38,6 @@
           <nav-menu-link title="Rute" :to="{ name: 'pages-routes' }" :icon="icons.mdiMapMarkerDistance"></nav-menu-link>
           <nav-menu-link title="Jadwal " :to="{ name: 'pages-schedule' }"
             :icon="icons.mdiCreditCardOutline"></nav-menu-link>
-        </nav-menu-group>
       </div>
       <div v-if="userRole == 'passenger'">
         <nav-menu-link title="Pesan E-ticket" :to="{ name: 'all-bus' }"

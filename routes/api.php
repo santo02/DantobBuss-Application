@@ -14,6 +14,7 @@ use App\Http\Controllers\RoutesController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SupirController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\UpdateStatusUserController;
 use App\Http\Controllers\UserController;
 use App\Models\Bookings;
 use App\Models\bus;
@@ -67,7 +68,6 @@ Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver,passenger']
     Route::get('/bookings/my', [BookingController::class, 'getByUserId']);
 
     Route::get('/routes/show/all', [RoutesController::class, 'index']);
-
 });
 
 
@@ -86,25 +86,44 @@ Route::middleware(['auth:api', 'role:passenger'])->group(function () {
 
 
 Route::middleware(['auth:api', 'role:admin_kantor'])->group(function () {
+    Route::put('/account/update/status/{id}', [UpdateStatusUserController::class, 'update']);
+    Route::put('/bus/update/status/{id}', [BusController::class, 'updateStatus']);
+
+    Route::put('user/update/{id}', [UserController::class, 'update']);
+    Route::get('user/get/{id}', [UserController::class, 'getUser']);
+    Route::get('bus/get/{id}', [BusController::class, 'SelectOneBus']);
+
     Route::post('/registrasi/supir', [RegisterUserController::class, 'RegistrasiSupir']);
     Route::get('/supir/all', [SupirController::class, 'index']);
     Route::get('/supir/name/all', [SupirController::class, 'getOne']);
-    
+
     Route::post('/registrasi/adminLoket', [AdminLoketController::class, 'store']);
     Route::get('/admin-loket/all', [AdminLoketController::class, 'index']);
     Route::post('/loket/add', [LoketController::class, 'store']);
     Route::get('/loket/all', [LoketController::class, 'show']);
+    Route::get('/admin-loket/all/notAssociated', [LoketController::class, 'notAssociated']);
+
+
+    Route::put('/update/status/loket/{id}', [LoketController::class, 'UpdateStatus']);
+    Route::get('/loket/get/{id}', [LoketController::class, 'getOne']);
+    Route::put('/loket/update/{id}', [LoketController::class, 'update']);
 
     Route::post('/buss/add', [BusController::class, 'store']);
     Route::get('/buss/show/all', [BusController::class, 'show']);
+    Route::get('/buss/show/notAssociated', [BusController::class, 'notAssociated']);
     Route::put('/buss/update/{id}', [BusController::class, 'update']);
     Route::delete('/buss/delete/{id}', [BusController::class, 'delete']);
 
     Route::post('/routes/add', [RoutesController::class, 'store']);
     Route::put('/routes/update/{id}', [RoutesController::class, 'update']);
     Route::delete('/routes/destroy/{id}', [RoutesController::class, 'destroy']);
+    Route::put('/routes/update/status/{id}', [RoutesController::class, 'UpdateStatusRoute']);
+    Route::get('/routes/get/{id}', [RoutesController::class, 'getOneRoute']);
 
     Route::post('/schedule/add', [ScheduleController::class, 'store']);
+    Route::get('/schedule/admin/show/all', [ScheduleController::class, 'ShowAll']);
+
+    
 });
 
 Route::middleware(['auth:api', 'role:driver'])->group(function () {

@@ -4,39 +4,57 @@ namespace App\Http\Controllers;
 
 use App\Models\Schedule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class KeuanganController extends Controller
 {
     public function index()
     {
+        $user = Auth::user()->id;
         $keuangan = DB::table('schedules')
-            ->select(DB::raw('DATE(schedules.tanggal) as tanggal'), DB::raw('SUM(schedules.harga) as total'))
             ->join('bookings', 'bookings.schedules_id', '=', 'schedules.id')
+            ->join('buses', 'buses.id', '=', 'schedules.bus_id')
+            ->join('users', 'buses.supir_id', '=', 'users.id')
+            ->join('lokets', 'buses.loket_id', '=', 'lokets.id')
+            ->where('lokets.admin_id', $user)
+            ->select(DB::raw('DATE(schedules.tanggal) as tanggal'), DB::raw('SUM(schedules.harga) as total'), 'lokets.admin_id')
+
             // ->select(DB::raw('DATE(schedules.tanggal) as tanggal'), DB::raw('COUNT(*) as jumlah'))
-            ->groupBy(DB::raw('DATE(schedules.tanggal)'))
+            ->groupBy(DB::raw('DATE(schedules.tanggal)'), 'lokets.admin_id')
             ->get();
 
-            $total = DB::table('schedules')
-            ->select(DB::raw('DATE(schedules.tanggal) as tanggal'), DB::raw('COUNT(*) as jumlah'))
-            ->groupBy(DB::raw('DATE(schedules.tanggal)'))
+        $total = DB::table('schedules')
+            ->join('bookings', 'bookings.schedules_id', '=', 'schedules.id')
+            ->join('buses', 'buses.id', '=', 'schedules.bus_id')
+            ->join('users', 'buses.supir_id', '=', 'users.id')
+            ->join('lokets', 'buses.loket_id', '=', 'lokets.id')
+            ->where('lokets.admin_id', $user)
+            ->select(DB::raw('DATE(schedules.tanggal) as tanggal'), DB::raw('COUNT(*) as jumlah'), 'lokets.admin_id')
+            ->groupBy(DB::raw('DATE(schedules.tanggal)'), 'lokets.admin_id')
             ->get();
 
 
         return response()->json(['data' => $keuangan, 'total' => $total]);
     }
 
-    public function getByTanggal(Request $request, $tanggal)
+    public function getByTanggal($tanggal)
     {
+        $user = Auth::user()->id;
+
         $schedule = DB::table('schedules')
             ->join('buses', 'buses.id', '=', 'schedules.bus_id')
             ->join('users', 'buses.supir_id', '=', 'users.id')
+            ->join('lokets', 'buses.loket_id', '=', 'lokets.id')
+            ->join('users AS AdmLokets', 'lokets.admin_id', '=', 'AdmLokets.id')
             ->join('routes', 'schedules.route_id', '=', 'routes.id')
             ->leftJoin('bookings', 'bookings.schedules_id', '=', 'schedules.id')
-            ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'buses.police_number', 'buses.nomor_pintu',  'routes.arrival', 'routes.derpature', 'routes.type', 'users.name', DB::raw('COUNT(bookings.schedules_id) as jumlah_booking'))
+            ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'buses.police_number', 'buses.nomor_pintu',  'routes.arrival', 'routes.derpature', 'routes.type', 'lokets.admin_id', 'users.name', 'AdmLokets.name as admin', DB::raw('COUNT(bookings.schedules_id) as jumlah_booking'))
+            ->where('lokets.admin_id', $user)
             ->whereDate('schedules.tanggal', '=', date('Y-m-d', strtotime($tanggal)))
-            ->groupBy('schedules.id', 'schedules.tanggal', 'schedules.harga', 'buses.police_number', 'buses.nomor_pintu',  'routes.arrival', 'routes.derpature', 'routes.type', 'users.name',)
+            ->groupBy('schedules.id', 'schedules.tanggal', 'schedules.harga', 'buses.police_number', 'buses.nomor_pintu',  'routes.arrival', 'routes.derpature', 'routes.type', 'users.name', 'lokets.admin_id', 'AdmLokets.name')
             ->get();
+
 
         return response()->json(['data' => $schedule]);
     }

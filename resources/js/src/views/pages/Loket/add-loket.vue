@@ -56,13 +56,15 @@ export default {
   mounted() {
     const access_token = localStorage.getItem("access_token");
     axios
-      .get("api/admin-loket/all", {
+      .get("api/admin-loket/all/notAssociated", {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
       })
       .then((response) => {
-        this.adminloket = response.data.map((item) => {
+        this.adminloket = response.data
+        .filter((item) => item.status == 1) // Filter dengan supir.status = 1
+        .map((item) => {
           return {
             name: item.name,
             id: item.id,

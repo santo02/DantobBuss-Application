@@ -158,7 +158,7 @@ export default {
     logout() {
       Swal.fire({
         icon: 'question',
-        title: 'Apakah anda ingin membatalkan pesanan?',
+        title: 'Apakah anda ingin keluar dari aplikasi?',
         showCancelButton: true,
         confirmButtonText: 'Ya',
         cancelButtonText: 'Tidak',

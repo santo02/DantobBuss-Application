@@ -27,7 +27,7 @@
         <v-col
           ><v-select
             v-model="selectedType"
-            :items="['Economi', 'Executive']"
+            :items="['Ekonomi', 'Eksekutif']"
             placeholder="Pilih Type"
             clearable
             hide-details
@@ -260,7 +260,9 @@ export default {
         },
       })
       .then((response) => {
-        this.route = response.data.data.map((item) => {
+        this.route = response.data.data
+        .filter((item) => item.status == 1)
+        .map((item) => {
           return {
             id: item.id,
             derpatures: item.derpature + " - " + item.arrival,
