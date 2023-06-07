@@ -27,20 +27,20 @@
         </div>
         <div>
           <v-col cols="12" md="3">
-            <label for="umur">Umur</label>
+            <label for="Nomor Handphone">Nomor Handphone</label>
           </v-col>
 
           <v-col>
             <v-text-field
-              id="umur"
-              v-model="passenger.age"
+              id="Nomor Handphone"
+              v-model="passenger.number_phone"
               type="number"
               outlined
               dense
-              placeholder="Umur"
+              placeholder="Nomor Handphone"
               required
               hide-details
-              :rules="[(v) => !!v || 'Umur harus diisi']"
+              :rules="[(v) => !!v || 'Nomor Handphone harus diisi']"
             ></v-text-field>
           </v-col>
         </div>
@@ -227,7 +227,7 @@ export default {
     },
     ...mapActions(["setPassengerData"]),
     submitData() {
-      if (!this.passenger.name || !this.passenger.age) {
+      if (!this.passenger.name || !this.passenger.number_phone) {
         // Tampilkan pesan error menggunakan Vuetify Snackbar
         this.snackbar = true;
         return;
@@ -235,7 +235,7 @@ export default {
       // set data penumpang ke state Vuex
       this.$store.dispatch("setPassengerData", {
         name: this.passenger.name,
-        age: this.passenger.age,
+        number_phone: this.passenger.number_phone,
         alamatJemput: this.schedule[0].derpature,
       });
 

@@ -8,10 +8,7 @@
         {{ formatDate(item.tanggal) }}
       </template>
       <template #item.Detail="{ item }">
-        <router-link
-          :to="{ name: 'detail-keuangan-by-penumpang', params: { id: item.schedule_id } }"
-          >Detail</router-link
-        >
+        <router-link :to="{ name: 'detail-keuangan-by-penumpang', params: { id: item.schedule_id } }">Detail</router-link>
       </template>
       <template #item.total="{ item }"> {{ item.total | toRupiah }} </template>
       <template v-slot:body.append>
@@ -116,8 +113,16 @@ export default {
   mounted() {
     const access_token = localStorage.getItem("access_token");
 
+    let url = '';
+
+    if (this.userRole === "direksi") {
+      url = `/api/Detail-keuangan-Bydate/all/${this.tanggal}`;
+    } else if (this.userRole === "admin_loket") {
+      url = `/api/Detail-keuangan-Bydate/${this.tanggal}`;
+    }
+
     axios
-      .get(`/api/Detail-keuangan-Bydate/${this.tanggal}`, {
+      .get(url, {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
@@ -149,6 +154,9 @@ export default {
     },
   },
   computed: {
+    userRole() {
+      return this.$store.state.userRole
+    },
     komisi() {
       let komisi = 0;
       komisi = (10 / 100) * this.totalSemua;

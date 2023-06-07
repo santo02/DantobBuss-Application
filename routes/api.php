@@ -5,6 +5,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BusController;
 use App\Http\Controllers\ConfirmPembayaran;
 use App\Http\Controllers\DashboardDireksiController;
+use App\Http\Controllers\DireksiController;
 use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LoketController;
@@ -103,7 +104,6 @@ Route::middleware(['auth:api', 'role:admin_kantor'])->group(function () {
     Route::get('/loket/all', [LoketController::class, 'show']);
     Route::get('/admin-loket/all/notAssociated', [LoketController::class, 'notAssociated']);
 
-
     Route::put('/update/status/loket/{id}', [LoketController::class, 'UpdateStatus']);
     Route::get('/loket/get/{id}', [LoketController::class, 'getOne']);
     Route::put('/loket/update/{id}', [LoketController::class, 'update']);
@@ -122,17 +122,18 @@ Route::middleware(['auth:api', 'role:admin_kantor'])->group(function () {
 
     Route::post('/schedule/add', [ScheduleController::class, 'store']);
     Route::get('/schedule/admin/show/all', [ScheduleController::class, 'ShowAll']);
-
-    
 });
 
 Route::middleware(['auth:api', 'role:driver'])->group(function () {
     Route::get('/schedules/driver', [ScheduleController::class, 'getForSupir']);
     Route::get('/confirmasi-pembayaran', [ConfirmPembayaran::class, 'index']);
+    Route::put('/update-status/{id}', [ScheduleController::class, 'UpdateStatusBus']);
 });
 
 Route::middleware(['auth:api', 'role:direksi,admin_kantor'])->group(function () {
     Route::get('/Dashboard/direksi', [DashboardDireksiController::class, 'CountAll']);
-});
 
-Route::put('/update-status/{id}', [ScheduleController::class, 'UpdateStatusBus']);
+    Route::get('/Keuangan/all/index', [DireksiController::class, 'index']);
+    Route::get('/Detail-keuangan-Bydate/all/{tanggal}', [DireksiController::class, 'getByTanggal']);
+    Route::get('/Detail-keuangan-ByPassenger/all/{id}', [DireksiController::class, 'getPassenger']);
+});

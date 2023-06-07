@@ -10,13 +10,19 @@ class DireksiController extends Controller
     public function index()
     {
         $keuangan = DB::table('schedules')
-            ->select(DB::raw('DATE(schedules.tanggal) as tanggal'), DB::raw('SUM(schedules.harga) as total'))
             ->join('bookings', 'bookings.schedules_id', '=', 'schedules.id')
-            // ->select(DB::raw('DATE(schedules.tanggal) as tanggal'), DB::raw('COUNT(*) as jumlah'))
+            ->join('buses', 'buses.id', '=', 'schedules.bus_id')
+            ->join('users', 'buses.supir_id', '=', 'users.id')
+            ->join('lokets', 'buses.loket_id', '=', 'lokets.id')
+            ->select(DB::raw('DATE(schedules.tanggal) as tanggal'), DB::raw('SUM(schedules.harga) as total'))
             ->groupBy(DB::raw('DATE(schedules.tanggal)'))
             ->get();
 
         $total = DB::table('schedules')
+            ->join('bookings', 'bookings.schedules_id', '=', 'schedules.id')
+            ->join('buses', 'buses.id', '=', 'schedules.bus_id')
+            ->join('users', 'buses.supir_id', '=', 'users.id')
+            ->join('lokets', 'buses.loket_id', '=', 'lokets.id')
             ->select(DB::raw('DATE(schedules.tanggal) as tanggal'), DB::raw('COUNT(*) as jumlah'))
             ->groupBy(DB::raw('DATE(schedules.tanggal)'))
             ->get();

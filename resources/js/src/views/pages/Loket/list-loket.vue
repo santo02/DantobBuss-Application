@@ -1,120 +1,113 @@
 <template>
-  <v-card>
-    <v-card-title>
-      <v-btn class="mb-3" :to="{ name: 'pages-add-loket' }" color="primary">
-        Tambah Loket
-      </v-btn>
-      <v-spacer></v-spacer>
-      <v-text-field v-model="search" append-icon="mdi-magnify" label="Cari" hide-details></v-text-field>
-    </v-card-title>
-    <v-data-table :headers="headers" :items="loket" :search="search">
-      <template #item.edit="{ item }">
-        <v-btn small color="primary" :to="{ name: 'pages-edit-lokets', params: { id: item.id } }"><v-icon center>{{
-          icons.mdiPencil }}</v-icon></v-btn>
-      </template>
-      <template #item.status="{ item }">
-        <v-switch v-model="item.status" @click="showConfirmation(item.id)" color="secondary" inset></v-switch>
-      </template>
-    </v-data-table>
-  </v-card>
+  <div class="payment-gateway">
+    <h2 class="title">How to Pay</h2>
+    <div class="payment-details">
+      <p class="detail">
+        <strong>Virtual Account Number:</strong>
+        <span class="virtual-account-number">{{ paymentInstructions.virtual_account_info.virtual_account_number }}</span>
+        <v-btn class="copy-button" @click="copyVirtualAccountNumber" icon>
+          <v-icon>mdi-content-copy</v-icon>
+        </v-btn>
+      </p>
+      <p class="detail"><strong>Amount:</strong> {{ paymentInstructions.order.amount }}</p>
+      <p class="detail"><strong>Status:</strong> {{ paymentInstructions.virtual_account_info.status }}</p>
+    </div>
+
+    <v-expansion-panels>
+      <v-expansion-panel v-for="instruction in paymentInstructions.payment_instruction" :key="instruction.channel">
+        <v-expansion-panel-header>{{ instruction.channel }}</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <ol class="instruction-list">
+            <li v-for="step in instruction.step" :key="step">{{ step }}</li>
+          </ol>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
+  </div>
 </template>
+
+<style scoped>
+.payment-gateway {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.payment-details {
+  margin-bottom: 20px;
+}
+
+.detail {
+  margin-bottom: 5px;
+}
+
+.virtual-account-number {
+  font-weight: bold;
+  padding: 2px 5px;
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.copy-button {
+  margin-left: 10px;
+  min-width: 36px;
+  height: 36px;
+  color: #757575;
+}
+
+.instruction-list {
+  margin-top: 10px;
+  padding-left: 20px;
+}
+
+/* Additional styles for Vuetify components */
+.v-expansion-panels {
+  margin-top: 20px;
+}
+
+</style>
+
 <script>
 import axios from 'axios';
-import { mdiPencil, mdiTrashCanOutline } from '@mdi/js';
-import Swal from 'sweetalert2';
+
 export default {
-  setup() {
-    return {
-      loket: [
-        'nama_loket',
-        'lokasi_loket',
-        'admin loket',
-        'email',
-      ],
-      icons: {
-        mdiPencil,
-        mdiTrashCanOutline
-      }
-    }
-  },
   data() {
     return {
-      loket: [],
-      search: '',
-      headers: [
-        {
-          text: 'Nama Loket',
-          align: '',
-          sortable: false,
-          value: 'nama_loket',
-
-        },
-        { text: 'Lokasi Loket', value: 'lokasi_loket' },
-        { text: 'Admin loket', value: 'name' },
-        { text: 'email', value: 'email' },
-        { text: 'Edit', value: 'edit', align: 'center', sortable: false },
-        { text: 'Status', value: 'status', sortable: false }
-
-      ],
-    }
-  },
-  methods: {
-    async updateStatus(id) {
-      const access_token = localStorage.getItem("access_token");
-
-      try {
-        const response = await axios.put(
-          `/api/update/status/loket/${id}`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${access_token}`,
-            },
-          }
-        );
-        this.loket.find((loket) => loket.id === id).status = response.data.data.status;
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    showConfirmation(id) {
-      Swal.fire({
-        title: "Konfirmasi",
-        text: "Apakah anda ingin mengubah status?",
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonColor: "primary",
-        cancelButtonColor: "danger",
-        confirmButtonText: "Ya",
-        cancelButtonText: "Batal",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.updateStatus(id);
-          Swal.fire("Berhasil!", "Status Telah diubah", "success");
-        } else {
-          // Revert the v-switch value back to its original state
-          const loket = this.loket.find((loket) => loket.id === id);
-          if (loket) {
-            loket.status = !loket.status;
-          }
-        }
-      });
-    },
+      paymentInstructions: []
+    };
   },
   mounted() {
     const access_token = localStorage.getItem('access_token');
-
-    axios.get('/api/loket/all', {
+    let url = this.$route.params.howToPayApi
+    axios.get(url, {
       headers: {
         'Authorization': `Bearer ${access_token}`
       }
     }).then(response => {
-      this.loket = response.data;
-      console.log(this.loket)
+      this.paymentInstructions = response.data;
     }).catch(error => {
       console.log(error);
     });
+  },
+  methods: {
+    copyVirtualAccountNumber() {
+      const virtualAccountNumber = this.paymentInstructions.virtual_account_info.virtual_account_number;
+      const tempInput = document.createElement('input');
+      tempInput.value = virtualAccountNumber;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+    }
   }
 }
 </script>

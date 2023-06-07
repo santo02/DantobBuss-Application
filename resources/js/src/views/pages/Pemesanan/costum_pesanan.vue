@@ -3,28 +3,49 @@
     <h3 pa-3 ma-3>Pilih Nomor Kursi </h3>
     <v-card>
       <div v-for="item in schedule" :key="item.id">
-        <v-container class="grey text-center">
-          <v-row no-gutters>
-            <v-col v-for="n in +item.number_of_seats" :key="n" cols="2" sm="4">
-              <div v-if="n !== 3" :class="['pa- text-center  text-no-wrap rounded', {
+        <div class="chair" style="width: 400px; margin: 100 auto;">
+          <v-container v-if="item.type === 'Ekonomi'" class="grey text-center">
+            <v-row no-gutters>
+              <v-col v-for="n in +item.number_of_seats" :key="n" cols="2" sm="4">
+                <div v-if="n !== 3" :class="['pa- text-center  text-no-wrap rounded', {
                   'style': selectedChair === (n > 3 ? n - 1 : n),
                   'booked': bookingsChair.some(chair => chair.num_seats === (n > 3 ? n - 1 : n))
                 }]" @click="selectedChair = (n > 3 ? n - 1 : n)">
-                <v-icon x-large>{{ selectedChair === (n > 3 ? n - 1 : n) ? icons.mdiSofaSingle :
-                  icons.mdiSofaSingleOutline
-                }}</v-icon>
-                <h4>{{ n > 3 ? n - 1 : n }}</h4>
-              </div>
-              <div v-else>
-                <h4>
+                  <v-icon x-large>{{ selectedChair === (n > 3 ? n - 1 : n) ? icons.mdiSofaSingle :
+                    icons.mdiSofaSingleOutline
+                  }}</v-icon>
+                  <h4>{{ n > 3 ? n - 1 : n }}</h4>
+                </div>
+                <div v-else>
+                  <h4>
+                    <v-icon x-large>{{ icons.mdiSteering }}</v-icon>
+                  </h4>
+                </div>
+              </v-col>
+            </v-row>
+          </v-container>
+          <v-container v-else class="grey text-center">
+            <v-row no-gutters>
+              <v-col v-for="n in +item.number_of_seats + 4" :key="n" :cols="getColSize(n)">
+                <div v-if="n === 3">
                   <v-icon x-large>{{ icons.mdiSteering }}</v-icon>
-                </h4>
-              </div>
-            </v-col>
-          </v-row>
-        </v-container>
+                </div>
+                <div v-else-if="n === 2 || n === 4 || n === 9 || n === 13">
 
-
+                </div>
+                <div v-else
+                  :class="['pa-', 'text-center', 'text-no-wrap', 'rounded', { 'style': selectedChair === (n >= 4 && n <= 8 ? n - 3 : n >= 10 && n <= 12 ? n - 4 : n >= 13 ? n - 5 : n), 'booked': bookingsChair.some(chair => chair.num_seats === (n > 2 ? n - 1 : n)) }]"
+                  @click="selectedChair = (n >= 4 && n <= 8 ? n - 3 : n >= 10 && n <= 12 ? n - 4 : n >= 13 ? n - 5 : n)">
+                  <v-icon x-large>{{ selectedChair === ( n >= 5 && n <= 8 ? n - 3 : n >= 10 && n <= 12 ? n - 4 : n >= 13 ? n - 5 : n ) ?
+                    icons.mdiSofaSingle :
+                    icons.mdiSofaSingleOutline }}</v-icon>
+                  <h4>{{ n >= 5 && n <= 8 ? n - 3 : n >= 10 && n <= 12 ? n - 4 : n >= 13 ? n - 5 : n }}</h4>
+                </div>
+              </v-col>
+            </v-row>
+          </v-container>
+        </div>
+        
         <div class="check" v-if="selectedChair !== null">
           <v-container class="grey text-center">
             <v-card class="mb-3">
@@ -132,6 +153,26 @@ export default {
   },
 
   methods: {
+    getColSize(n) {
+      if (n <= 3) {
+        return 4; // Lebar kolom untuk bagian depan (2 kursi)
+      } else if (n <= 5) {
+        return 3; // Lebar kolom untuk baris kedua (4 kursi dengan spasi)
+      } else if (n <= 9) {
+        return 3; // Lebar kolom untuk baris ketiga (4 kursi dengan spasi)
+      } else if (n <= 12) {
+        return 3; // Lebar kolom untuk baris keempat (4 kursi dengan spasi)
+      } else {
+        return 3; // Lebar kolom untuk baris kelima (4 kursi rapat)
+      }
+    },
+    getDisplayedSeatNumber(n) {
+      // if (n === 2 || n === 6 || n === 9) {
+      //   return ' '; // Mengembalikan spasi untuk kursi yang ingin ditampilkan sebagai spasi
+      // } else {
+      return n; // Mengembalikan nomor kursi asli
+      // }
+    },
     formatDate(date) {
       moment.locale('id');
       return moment(date).format('dddd, Do MMMM YYYY, hh:mm:ss');

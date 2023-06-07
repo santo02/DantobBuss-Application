@@ -130,6 +130,12 @@ const routes = [{
     component: () => import('@/views/pages/Pembayaran/pembayaran-method.vue'),
   },
   {
+    path: '/pembayaran-instruction/:howToPayApi',
+    name: 'pembayaran-instruction',
+    component: () => import('@/views/pages/Pembayaran/pembayaran-instruction.vue'),
+    props: true
+  },
+  {
     path: '/all-bus',
     name: 'all-bus',
     component: () => import('@/views/pages/Pemesanan/pemesanan-by-penumpang.vue'),

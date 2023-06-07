@@ -19,8 +19,8 @@
               </v-col>
               <v-col cols="12" sm="4">
                 <v-card class="pa-2" outlined tile>
-                  <h5>Umur</h5>
-                  <h6>{{ passengerData.age }}</h6>
+                  <h5>Nmor Handphone</h5>
+                  <h6>{{ passengerData.number_phone }}</h6>
                 </v-card>
               </v-col>
               <v-col cols="12" sm="4">

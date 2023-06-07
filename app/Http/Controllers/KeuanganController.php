@@ -17,11 +17,10 @@ class KeuanganController extends Controller
             ->join('buses', 'buses.id', '=', 'schedules.bus_id')
             ->join('users', 'buses.supir_id', '=', 'users.id')
             ->join('lokets', 'buses.loket_id', '=', 'lokets.id')
-            ->where('lokets.admin_id', $user)
-            ->select(DB::raw('DATE(schedules.tanggal) as tanggal'), DB::raw('SUM(schedules.harga) as total'), 'lokets.admin_id')
-
-            // ->select(DB::raw('DATE(schedules.tanggal) as tanggal'), DB::raw('COUNT(*) as jumlah'))
-            ->groupBy(DB::raw('DATE(schedules.tanggal)'), 'lokets.admin_id')
+            // ->where('lokets.admin_id', $user)
+            ->where('bookings.user_id', $user)
+            ->select(DB::raw('DATE(schedules.tanggal) as tanggal'), DB::raw('SUM(schedules.harga) as total'))
+            ->groupBy(DB::raw('DATE(schedules.tanggal)'))
             ->get();
 
         $total = DB::table('schedules')
@@ -29,9 +28,11 @@ class KeuanganController extends Controller
             ->join('buses', 'buses.id', '=', 'schedules.bus_id')
             ->join('users', 'buses.supir_id', '=', 'users.id')
             ->join('lokets', 'buses.loket_id', '=', 'lokets.id')
-            ->where('lokets.admin_id', $user)
-            ->select(DB::raw('DATE(schedules.tanggal) as tanggal'), DB::raw('COUNT(*) as jumlah'), 'lokets.admin_id')
-            ->groupBy(DB::raw('DATE(schedules.tanggal)'), 'lokets.admin_id')
+            // ->where('lokets.admin_id', $user)
+            ->select(DB::raw('DATE(schedules.tanggal) as tanggal'), DB::raw('COUNT(*) as jumlah'))
+            ->groupBy(DB::raw('DATE(schedules.tanggal)'))
+            // ->where('bookings.user_id', $user)   
+            // ->select('users.id')
             ->get();
 
 
@@ -50,7 +51,7 @@ class KeuanganController extends Controller
             ->join('routes', 'schedules.route_id', '=', 'routes.id')
             ->leftJoin('bookings', 'bookings.schedules_id', '=', 'schedules.id')
             ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'buses.police_number', 'buses.nomor_pintu',  'routes.arrival', 'routes.derpature', 'routes.type', 'lokets.admin_id', 'users.name', 'AdmLokets.name as admin', DB::raw('COUNT(bookings.schedules_id) as jumlah_booking'))
-            ->where('lokets.admin_id', $user)
+            ->where('bookings.user_id', $user)
             ->whereDate('schedules.tanggal', '=', date('Y-m-d', strtotime($tanggal)))
             ->groupBy('schedules.id', 'schedules.tanggal', 'schedules.harga', 'buses.police_number', 'buses.nomor_pintu',  'routes.arrival', 'routes.derpature', 'routes.type', 'users.name', 'lokets.admin_id', 'AdmLokets.name')
             ->get();
@@ -61,6 +62,8 @@ class KeuanganController extends Controller
 
     public function getPassenger($id)
     {
+        $user = Auth::user()->id;
+
         $penumpang = DB::table('bookings')
             ->join('users', 'bookings.user_id', '=', 'users.id')
             ->join('schedules', 'bookings.schedules_id', '=', 'schedules.id')
@@ -68,6 +71,8 @@ class KeuanganController extends Controller
             ->join('routes', 'schedules.route_id', '=', 'routes.id')
             ->select('bookings.name', 'bookings.num_seats', 'bookings.age', 'bookings.alamatJemput', 'pembayarans.method', 'routes.harga', 'users.phone_number')
             ->where('bookings.schedules_id', '=', $id)
+            ->where('bookings.user_id', $user)
+
             ->get();
 
         return response()->json(['data' => $penumpang]);

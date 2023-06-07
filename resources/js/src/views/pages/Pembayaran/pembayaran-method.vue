@@ -9,7 +9,6 @@
           <h5>{{ formatDate(item.tanggal) }}</h5>
           <h5>{{ item.harga }}</h5>
         </div>
-
         <template class="text-center">
           <v-container class="grey lighten-5">
             <v-row no-gutters>
@@ -21,9 +20,9 @@
               </v-col>
               <v-col cols="12" sm="4">
                 <v-card class="pa-2" outlined tile>
-                  <h5>Umur</h5>
-                  <h6>{{ passengerData.age }}</h6>
-                </v-card>
+                  <h5>Nmor Handphone</h5>
+                  <h6>{{ passengerData.number_phone }}</h6>
+                </v-card>n
               </v-col>
               <v-col cols="12" sm="4">
                 <v-card class="pa-2" outlined tile>
@@ -128,6 +127,7 @@ export default {
       showPaymentNoncash: false,
       selectedMethod: null,
       amount: null,
+      howtoPayStep: {},
       schedule: {},
       icons: {
         mdiChevronRight,
@@ -268,14 +268,21 @@ export default {
           'Authorization': `Bearer ${access_token}`
         }
       }).then(response => {
-        console.log(response.data);
-        const { payment: { url } } = response.data.data.response;
+        const data = response.data;
+        console.log(data);
+        if (data.code === 200 && data.data.virtual_account_info.how_to_pay_api) {
+          const howToPayApi = data.data.virtual_account_info.how_to_pay_api;
+          this.$router.push({
+            name: 'pembayaran-instruction',
+            params: { howToPayApi: howToPayApi }
+          });
 
-        window.open(url, "_blank");
+        } else {
+          console.error("Invalid response or missing how_to_pay_page XML");
+        }
       }).catch((error) => {
-        console.log(error)
-        // console.log("Gagal")
-      })
+        console.error(error);
+      });
     }
     ,
   },
