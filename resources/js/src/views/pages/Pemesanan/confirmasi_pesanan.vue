@@ -3,26 +3,25 @@
     <h3 pa-3 ma-3>Konfirmasi Pesanan</h3>
     <v-card v-for="item in schedule" :key="item.id">
       <div class="container mt-3">
+
         <div class="text-center">
           <h2>{{ item.derpature }} -> {{ item.arrival }}</h2>
           <h5>{{ formatHour(item.tanggal) }}</h5>
           <h5>{{ formatDate(item.tanggal) }}</h5>
+        </div>
+        <div class="d-flex justify-end">
+          <div v-if="userRole == 'passenger'" class="d-flex justify-start align-center">
+            <label for="pesan-orang-lain" class="mr-2">Pesan untuk orang lain</label>
+            <v-switch v-model="autoFill" inset color="primary" id="pesan-orang-lain"></v-switch>
+          </div>
         </div>
         <div>
           <v-col cols="12" md="3">
             <label for="name">Nama Lengkap</label>
           </v-col>
           <v-col>
-            <v-text-field
-              id="name"
-              v-model="passenger.name"
-              outlined
-              dense
-              placeholder="Nama Lengkap"
-              required
-              hide-details
-              :rules="[(v) => !!v || 'Nama harus diisi']"
-            ></v-text-field>
+            <v-text-field id="name" v-model="passenger.name" outlined dense placeholder="Nama Lengkap" required
+              hide-details :rules="[(v) => !!v || 'Nama harus diisi']"></v-text-field>
           </v-col>
         </div>
         <div>
@@ -31,19 +30,12 @@
           </v-col>
 
           <v-col>
-            <v-text-field
-              id="Nomor Handphone"
-              v-model="passenger.number_phone"
-              type="number"
-              outlined
-              dense
-              placeholder="Nomor Handphone"
-              required
-              hide-details
-              :rules="[(v) => !!v || 'Nomor Handphone harus diisi']"
-            ></v-text-field>
+            <v-text-field id="Nomor Handphone" v-model="passenger.number_phone" type="number" outlined dense
+              placeholder="Nomor Handphone" required hide-details
+              :rules="[(v) => !!v || 'Nomor Handphone harus diisi']"></v-text-field>
           </v-col>
         </div>
+
         <div v-if="userRole == 'admin_loket'">
           <h4>Dijemput</h4>
           <p>
@@ -52,15 +44,8 @@
             Request Penjemputan maka penumpang akan diarahkan kelokasi rekomendasi sistem
             dengan posisi terdekat dari sekitaran alamat yang dicantumkan sistem.
           </p>
-          <v-switch v-model="jemput" color="primary" disabled></v-switch>
           <v-col v-if="!jemput" cols="12">
-            <v-text-field
-              v-model="item.derpature"
-              outlined
-              dense
-              readonly
-              hide-details
-            ></v-text-field>
+            <v-text-field v-model="item.derpature" outlined dense readonly hide-details></v-text-field>
           </v-col>
         </div>
         <div v-if="userRole == 'passenger'">
@@ -71,14 +56,8 @@
           </p>
           <v-switch v-model="jemput" color="primary"></v-switch>
           <v-col v-if="jemput" cols="12">
-            <v-autocomplete
-              filled
-              solo
-              clearable
-              v-model="passenger.alamatJemput"
-              :items="items"
-              label="Pilih Lokasi Penjemputan"
-            ></v-autocomplete>
+            <v-autocomplete filled solo clearable v-model="passenger.alamatJemput" :items="items"
+              label="Pilih Lokasi Penjemputan"></v-autocomplete>
           </v-col>
         </div>
       </div>
@@ -192,13 +171,53 @@ export default {
         "Loket Porsea",
         "Loket Medan",
       ],
+      autoFill: false,
+      user: {}
     };
   },
 
   mounted() {
     this.getSchedule();
-  },
+    console.log(this.autoFill)
+    // Mengisi data nama dan nomor hp jika autoFill bernilai true
+    if (!this.autoFill) {
+      console.log("hiiiii");
+      const access_token = localStorage.getItem("access_token");
 
+      axios
+        .get("api/user/profile", {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        })
+        .then((response) => {
+          this.user = response.data;
+          this.passenger.name = this.user.name;
+          this.passenger.number_phone = this.user.phone_number;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    else {
+      //user will filled manual the input text
+
+
+    }
+  },
+  watch: {
+    autoFill: function (val) {
+      if (val) {
+        this.passenger.name = "";
+        this.passenger.number_phone = "";
+      }
+      else {
+        this.passenger.name = this.user.name;
+        this.passenger.number_phone = this.user.phone_number;
+      }
+    }
+
+  },
   methods: {
     formatDate(date) {
       moment.locale("id");
@@ -227,18 +246,31 @@ export default {
     },
     ...mapActions(["setPassengerData"]),
     submitData() {
-      if (!this.passenger.name || !this.passenger.number_phone) {
-        // Tampilkan pesan error menggunakan Vuetify Snackbar
-        this.snackbar = true;
-        return;
+      if (this.jemput) {
+        if (!this.passenger.name || !this.passenger.number_phone) {
+          // Tampilkan pesan error menggunakan Vuetify Snackbar
+          this.snackbar = true;
+          return;
+        }
+        // set data penumpang ke state Vuex
+        this.$store.dispatch("setPassengerData", {
+          name: this.passenger.name,
+          number_phone: this.passenger.number_phone,
+          alamatJemput: this.passenger.alamatJemput,
+        });
+      } else {
+        if (!this.passenger.name || !this.passenger.number_phone) {
+          // Tampilkan pesan error menggunakan Vuetify Snackbar
+          this.snackbar = true;
+          return;
+        }
+        // set data penumpang ke state Vuex
+        this.$store.dispatch("setPassengerData", {
+          name: this.passenger.name,
+          number_phone: this.passenger.number_phone,
+          alamatJemput: this.schedule[0].derpature,
+        });
       }
-      // set data penumpang ke state Vuex
-      this.$store.dispatch("setPassengerData", {
-        name: this.passenger.name,
-        number_phone: this.passenger.number_phone,
-        alamatJemput: this.schedule[0].derpature,
-      });
-
       // redirect ke halaman berhasil
       this.$router.push("/pembayaran");
     },

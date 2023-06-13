@@ -23,7 +23,7 @@ class BookingController extends BaseController
         $validator = Validator::make($request->all(), [
             'schedules_id' => 'required|exists:schedules,id',
             'name' => 'required|string',
-            'age' => 'required|string',
+            'number_phone' => 'required|string',
             'num_seats' => 'required|integer',
         ]);
 
@@ -35,7 +35,7 @@ class BookingController extends BaseController
         $booking->user_id = $user->id;
         $booking->schedules_id = $request->schedules_id;
         $booking->name = $request->name;
-        $booking->age = $request->age;
+        $booking->number_phone = $request->number_phone;
         $booking->alamatJemput = $request->alamatJemput;
         $booking->num_seats = $request->num_seats;
         $booking->status = "menunggu";

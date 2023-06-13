@@ -1,28 +1,42 @@
 <template>
   <div class="payment-gateway">
-    <h2>How to Pay</h2>
-    <div class="payment-details">
-      <p>
-        <strong>Virtual Account Number:</strong>
-        <span class="virtual-account-number">{{ paymentInstructions.virtual_account_info.virtual_account_number }}</span>
-        <button class="copy-button" @click="copyVirtualAccountNumber">
-          Copy
-        </button>
-      </p>
-      <p><strong>Amount:</strong> {{ paymentInstructions.order.amount }}</p>
-      <p><strong>Status:</strong> {{ paymentInstructions.virtual_account_info.status }}</p>
-    </div>
+    <div v-if="paymentInstructions.virtual_account_info.status == 'OPEN'">
+      <h2>How to Pay</h2>
+      <div v-if="paymentInstructions.virtual_account_info.status == 'OPEN'">
+        <div class="payment-details">
+          <p>
+            <strong>Virtual Account Number:</strong>
+            <span class="virtual-account-number">{{ paymentInstructions.virtual_account_info.virtual_account_number
+            }}</span>
+            <button class="copy-button" @click="copyVirtualAccountNumber">
+              Copy
+            </button>
+          </p>
+          <p><strong>Amount:</strong> {{ paymentInstructions.order.amount }}</p>
+          <p><strong>Status:</strong> {{ paymentInstructions.virtual_account_info.status }}</p>
+        </div>
 
-    <v-expansion-panels>
-      <v-expansion-panel v-for="instruction in paymentInstructions.payment_instruction" :key="instruction.channel">
-        <v-expansion-panel-header>{{ instruction.channel }}</v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <ol>
-            <li v-for="step in instruction.step" :key="step">{{ step }}</li>
-          </ol>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
+        <v-expansion-panels>
+          <v-expansion-panel v-for="instruction in paymentInstructions.payment_instruction" :key="instruction.channel">
+            <v-expansion-panel-header>{{ instruction.channel }}</v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <ol>
+                <li v-for="step in instruction.step" :key="step">{{ step }}</li>
+              </ol>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </div>
+    </div>
+    <div>
+      <div v-if="paymentInstructions.virtual_account_info.status == 'PAID'">
+        <h1>Pembayaran Berhasil</h1>
+        <p><strong>Invoice Number:</strong> {{ paymentInstructions.order.invoice_number }}</p>
+        <p><strong>Amount:</strong> {{ paymentInstructions.order.amount }}</p>
+        <p><strong>Status:</strong> {{ paymentInstructions.virtual_account_info.status }}</p>
+        <p><strong>Expired in:</strong> {{ paymentInstructions.virtual_account_info.expired_in }}</p>
+      </div>
+    </div>
   </div>
 </template>
 

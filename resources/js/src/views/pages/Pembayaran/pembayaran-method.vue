@@ -22,7 +22,7 @@
                 <v-card class="pa-2" outlined tile>
                   <h5>Nmor Handphone</h5>
                   <h6>{{ passengerData.number_phone }}</h6>
-                </v-card>n
+                </v-card>
               </v-col>
               <v-col cols="12" sm="4">
                 <v-card class="pa-2" outlined tile>
@@ -45,6 +45,7 @@
         </div>
         <v-container>
           <div v-if="userRole == 'admin_loket'">
+
             <div class="text-center">
               <v-row justify="center">
                 <v-col class="col">
@@ -74,6 +75,9 @@
             <!-- <v-radio-group v-model="selectedMethod"> -->
             <!-- nontunai -->
             <div v-if="userRole == 'passenger'">
+              <div v-if="loading" class="loading-overlay">
+                <div class="loading-spinner"></div>
+              </div>
               <v-banner>
                 <v-row>
                   <v-col cols="auto">
@@ -106,6 +110,7 @@
         </v-container>
       </div>
     </v-card>
+
   </div>
 </template>
 
@@ -129,6 +134,7 @@ export default {
       amount: null,
       howtoPayStep: {},
       schedule: {},
+      loading: false,
       icons: {
         mdiChevronRight,
         mdiCreditCard,
@@ -139,7 +145,7 @@ export default {
       bookings: [
         'schedules_id',
         'name',
-        'age',
+        'number_phone ',
         'num_seats',
         'alamat_jemput',
         'status',
@@ -203,7 +209,7 @@ export default {
       axios.post('api/bookings', {
         schedules_id: this.id_schedule,
         name: this.passengerData.name,
-        age: this.passengerData.age,
+        number_phone: this.passengerData.number_phone,
         num_seats: this.selectedSeat,
         alamatJemput: this.passengerData.alamatJemput,
         harga: this.harga,
@@ -255,35 +261,44 @@ export default {
     },
     BayarNontunai() {
       const access_token = localStorage.getItem('access_token');
+      try {
 
-      axios.post('api/bookings/nontunai', {
-        schedules_id: this.id_schedule,
-        name: this.passengerData.name,
-        age: this.passengerData.age,
-        num_seats: this.selectedSeat,
-        alamatJemput: this.passengerData.alamatJemput,
-        harga: this.harga,
-      }, {
-        headers: {
-          'Authorization': `Bearer ${access_token}`
-        }
-      }).then(response => {
-        const data = response.data;
-        console.log(data);
-        if (data.code === 200 && data.data.virtual_account_info.how_to_pay_api) {
-          const howToPayApi = data.data.virtual_account_info.how_to_pay_api;
-          this.$router.push({
-            name: 'pembayaran-instruction',
-            params: { howToPayApi: howToPayApi }
-          });
+        axios.post('api/bookings/nontunai', {
+          schedules_id: this.id_schedule,
+          name: this.passengerData.name,
+          number_phone: this.passengerData.number_phone,
+          num_seats: this.selectedSeat,
+          alamatJemput: this.passengerData.alamatJemput,
+          harga: this.harga,
+        }, {
+          headers: {
+            'Authorization': `Bearer ${access_token}`
+          }
 
-        } else {
-          console.error("Invalid response or missing how_to_pay_page XML");
-        }
-      }).catch((error) => {
+        }).then(response => {
+          this.loading = true; // hidupkan animasi loading
+          const data = response.data;
+          console.log(data);
+          if (data.code === 200 && data.data.virtual_account_info.how_to_pay_api) {
+            const howToPayApi = data.data.virtual_account_info.how_to_pay_api;
+            this.$router.push({
+              name: 'pembayaran-instruction',
+              params: { howToPayApi: howToPayApi }
+            });
+
+          } else {
+            console.error("Invalid response or missing how_to_pay_page XML");
+          }
+        })
+      }
+      catch (error) {
         console.error(error);
-      });
+      }
+      finally {
+        this.loading = false;
+      }
     }
+
     ,
   },
 
@@ -294,5 +309,37 @@ export default {
 <style scoped>
 .custom-button {
   width: 80%;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
