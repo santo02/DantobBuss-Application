@@ -16,11 +16,11 @@
         </v-badge>
         <div class="d-inline-flex flex-column justify-center ms-3" style="vertical-align: middle">
           <span class="text--primary text-capitalize font-weight-semibold mb-n1"> {{ user.name }}</span>
-          <small class="text--disabled text-capitalize">{{user.email}}</small>
+          <small class="text--disabled text-capitalize">{{ user.email }}</small>
         </div>
       </div>
 
-      <v-divider></v-divider>
+      <!-- <v-divider></v-divider> -->
 
       <!-- Profile -->
       <v-list-item link>
@@ -35,7 +35,7 @@
       </v-list-item>
 
       <!-- Email -->
-      <v-list-item link>
+      <!-- <v-list-item link>
         <v-list-item-icon class="me-2">
           <v-icon size="22">
             {{ icons.mdiEmailOutline }}
@@ -44,10 +44,10 @@
         <v-list-item-content>
           <v-list-item-title>Inbox</v-list-item-title>
         </v-list-item-content>
-      </v-list-item>
+      </v-list-item> -->
 
       <!-- Chat -->
-      <v-list-item link>
+      <!-- <v-list-item link>
         <v-list-item-icon class="me-2">
           <v-icon size="22">
             {{ icons.mdiChatOutline }}
@@ -60,12 +60,12 @@
         <v-list-item-action>
           <v-badge inline color="error" content="2"> </v-badge>
         </v-list-item-action>
-      </v-list-item>
+      </v-list-item> -->
 
-      <v-divider class="my-2"></v-divider>
+      <!-- <v-divider class="my-2"></v-divider> -->
 
       <!-- Settings -->
-      <v-list-item link>
+      <!-- <v-list-item link>
         <v-list-item-icon class="me-2">
           <v-icon size="22">
             {{ icons.mdiCogOutline }}
@@ -74,10 +74,10 @@
         <v-list-item-content>
           <v-list-item-title>Settings</v-list-item-title>
         </v-list-item-content>
-      </v-list-item>
+      </v-list-item> -->
 
       <!-- Pricing -->
-      <v-list-item link>
+      <!-- <v-list-item link>
         <v-list-item-icon class="me-2">
           <v-icon size="22">
             {{ icons.mdiCurrencyUsd }}
@@ -86,10 +86,10 @@
         <v-list-item-content>
           <v-list-item-title>Pricing</v-list-item-title>
         </v-list-item-content>
-      </v-list-item>
+      </v-list-item> -->
 
       <!-- FAQ -->
-      <v-list-item link>
+      <!-- <v-list-item link>
         <v-list-item-icon class="me-2">
           <v-icon size="22">
             {{ icons.mdiHelpCircleOutline }}
@@ -98,19 +98,19 @@
         <v-list-item-content>
           <v-list-item-title>FAQ</v-list-item-title>
         </v-list-item-content>
-      </v-list-item>
+      </v-list-item> -->
 
       <v-divider class="my-2"></v-divider>
 
       <!-- Logout -->
-      <v-list-item link>
+      <v-list-item link @click.prevent="logout">
         <v-list-item-icon class="me-2">
           <v-icon size="22">
             {{ icons.mdiLogoutVariant }}
           </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title @click.prevent="logout">Logout</v-list-item-title>
+          <v-list-item-title>Logout</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -132,6 +132,7 @@ import {
 
 } from '@mdi/js'
 import axios from 'axios';
+import Swal from 'sweetalert2'
 export default {
   setup() {
     return {
@@ -155,19 +156,33 @@ export default {
   },
   methods: {
     logout() {
-      axios.post('/api/logout', null, {
-        headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('access_token')
+      Swal.fire({
+        icon: 'question',
+        title: 'Apakah anda ingin keluar dari aplikasi?',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Tidak',
+        confirmButtonColor: '#307475',
+
+
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          axios.post('/api/logout', null, {
+            headers: {
+              Authorization: 'Bearer ' + localStorage.getItem('access_token')
+            }
+          })
+            .then(response => {
+              localStorage.removeItem('access_token');
+              localStorage.removeItem('expires_at');
+              this.$router.push('/');
+            })
+            .catch(error => {
+              console.log(error.response.data.message);
+            });
         }
       })
-        .then(response => {
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('expires_at');
-          this.$router.push('/');
-        })
-        .catch(error => {
-          console.log(error.response.data.message);
-        });
     }
   },
   mounted() {

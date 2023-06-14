@@ -8,48 +8,24 @@
             <label for="bus">Bus</label>
           </v-col>
           <v-col cols="12" md="9">
-            <v-select
-              v-model="schedule.bus_id"
-              :items="bus"
-              item-value="id"
-              item-text="police_number"
-              outlined
-              dense
-              hide-details
-              placeholder="Pilih Bus"
-              @change="saveSelectBus"
-            ></v-select>
+            <v-autocomplete v-model="schedule.bus_id" :items="bus" item-value="id" item-text="police_number" outlined
+              dense hide-details placeholder="Pilih Bus" @change="saveSelectBus"></v-autocomplete>
           </v-col>
 
           <v-col cols="12" md="3">
             <label for="rute">Rute</label>
           </v-col>
           <v-col cols="12" md="9">
-            <v-select
-              v-model="schedule.route_id"
-              :items="route.filter((route) => route.type === selectedBusType)"
-              item-value="id"
-              item-text="derpature"
-              outlined
-              dense
-              placeholder="Pilih Rute"
-              hide-details
-              @change="saveSelectRoute"
-            ></v-select>
+            <v-autocomplete v-model="schedule.route_id" :items="route.filter((route) => route.type === selectedBusType)"
+              item-value="id" item-text="derpature" outlined dense search placeholder="Pilih Rute" hide-details
+              @change="saveSelectRoute"></v-autocomplete>
           </v-col>
           <v-col cols="12" md="3">
             <label for="rute">Tanggal</label>
           </v-col>
           <v-col cols="12" md="9">
-            <v-text-field
-              id="rute"
-              v-model="schedule.tanggal"
-              type="datetime-local"
-              outlined
-              dense
-              placeholder="Tanggal"
-              hide-details
-            ></v-text-field>
+            <v-text-field id="rute" v-model="schedule.tanggal" type="datetime-local" outlined dense placeholder="Tanggal"
+              hide-details></v-text-field>
           </v-col>
 
           <v-col cols="12" md="3">
@@ -60,15 +36,8 @@
             <v-row>
               <v-col cols="12" md="1" class="text-right mt-2"><b>Rp</b></v-col>
               <v-col cols="12" md="11">
-                <v-text-field
-                  id="rute"
-                  v-model="schedule.harga"
-                  type="number"
-                  outlined
-                  dense
-                  placeholder="Harga"
-                  readonly
-                ></v-text-field>
+                <v-text-field id="rute" v-model="schedule.harga" type="number" outlined dense placeholder="Harga" readonly
+                  hide-details></v-text-field>
               </v-col>
             </v-row>
           </v-col>
@@ -112,15 +81,17 @@ export default {
         },
       })
       .then((response) => {
-        this.route = response.data.data.map((item) => {
-          return {
-            id: item.id,
-            derpature: item.derpature + " - " + item.arrival,
-            arrival: item.arrival,
-            type: item.type,
-            harga: item.harga,
-          };
-        });
+        this.route = response.data.data
+          .filter((item) => item.status == 1) // Filter dengan supir.status = 1
+          .map((item) => {
+            return {
+              id: item.id,
+              derpature: item.derpature + " - " + item.arrival,
+              arrival: item.arrival,
+              type: item.type,
+              harga: item.harga,
+            };
+          });
         // console.log(this.route)
       })
       .catch((error) => {
@@ -134,13 +105,15 @@ export default {
         },
       })
       .then((response) => {
-        this.bus = response.data.data.map((item) => {
-          return {
-            id: item.id,
-            police_number: item.police_number + "(" + item.nomor_pintu + ")",
-            type: item.type,
-          };
-        });
+        this.bus = response.data.data
+          .filter((item) => item.status == 1) // Filter dengan supir.status = 1
+          .map((item) => {
+            return {
+              id: item.id,
+              police_number: item.police_number + "(" + item.nomor_pintu + ")",
+              type: item.type,
+            };
+          });
         console.log(this.bus);
       })
       .catch((error) => {

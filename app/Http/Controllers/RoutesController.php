@@ -5,14 +5,22 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\API\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\r;
 use App\Models\Routes;
 
 class RoutesController extends BaseController
 {
-    public function index(Request $request){
+    public function index()
+    {
         $routes = Routes::all();
         return $this->sendResponse($routes, 'Routes Retrieved Successfully');
-
+    }
+    public function getOneRoute($id)
+    {
+        $routes = Routes::find($id);
+        return response()->json([
+            'data' => $routes,
+        ], 200);
     }
     public function store(Request $request)
     {
@@ -22,7 +30,7 @@ class RoutesController extends BaseController
             'harga' => 'required|string',
             'type' => 'required|string'
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['message' => $validator->errors()], 400);
         }
@@ -47,17 +55,22 @@ class RoutesController extends BaseController
         $validator = Validator::make($request->all(), [
             'derpature' => 'required|string',
             'arrival' => 'required|string',
+            'harga' => 'required|string',
+            'type' => 'required|string',
         ]);
         if ($validator->fails()) {
             return response()->json(['message' => $validator->errors()], 400);
         }
         $routes->derpature = $request->derpature;
         $routes->arrival = $request->arrival;
+        $routes->harga = $request->harga;
+        $routes->type = $request->type;
         $routes->save();
         return $this->sendResponse($routes, 'Routes Created Successfully');
     }
 
-    public function destroy($id){
+    public function destroy($id)
+    {
         $routes = Routes::find($id);
 
         if (!$routes) {
@@ -65,6 +78,18 @@ class RoutesController extends BaseController
         }
 
         $routes->delete();
-        return $this->sendResponse($routes,'Bus Deleted Successfully');
+        return $this->sendResponse($routes, 'Bus Deleted Successfully');
+    }
+
+    public function UpdateStatusRoute($id)
+    {
+        $routes = Routes::find($id);
+
+        if (!$routes) {
+            return response()->json(['message' => 'Route not found.'], 404);
+        }
+        $routes->status = ($routes->status == 1) ? 0 : 1;
+        $routes->save();
+        return response()->json(['data' => $routes, 'message' => 'Status Bus Updated Successfully']);
     }
 }

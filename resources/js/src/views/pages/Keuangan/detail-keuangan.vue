@@ -82,9 +82,15 @@ export default {
   },
   mounted() {
     const access_token = localStorage.getItem("access_token");
+    let url = '';
 
+    if (this.userRole === "direksi") {
+      url = `/api/Detail-keuangan-ByPassenger/all/${this.schedule_id}`;
+    } else if (this.userRole === "admin_loket") {
+      url = `/api/Detail-keuangan-ByPassenger/${this.schedule_id}`;
+    }
     axios
-      .get(`/api/Detail-keuangan-ByPassenger/${this.schedule_id}`, {
+      .get(url, {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
@@ -114,6 +120,9 @@ export default {
     },
   },
   computed: {
+    userRole() {
+      return this.$store.state.userRole
+    },
     totalSemua() {
       let total = 0;
       total = this.ListPenumpang.length * this.harga;

@@ -61,8 +61,16 @@ export default {
   mounted() {
     const access_token = localStorage.getItem("access_token");
 
+    let url = '';
+
+    if (this.userRole === "direksi") {
+      url = `/api/Detail-keuangan-Bydate/all/${this.tanggal}`;
+    } else if (this.userRole === "admin_loket") {
+      url = `/api/Detail-keuangan-Bydate/${this.tanggal}`;
+    }
+
     axios
-      .get(`/api/Detail-keuangan-Bydate/${this.tanggal}`, {
+      .get(url, {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
@@ -93,6 +101,9 @@ export default {
     },
   },
   computed: {
+    userRole() {
+      return this.$store.state.userRole
+    },
     filteredList() {
       return this.ListByDate.filter((item) => {
         return (

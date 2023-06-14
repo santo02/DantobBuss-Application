@@ -6,6 +6,7 @@ use App\Models\bus;
 use Illuminate\Http\Request;
 use App\Http\Resources\Bus as BusResource;
 use App\Http\Controllers\API\BaseController;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -18,13 +19,13 @@ class BusController extends BaseController
             'type' => 'required|string|max:20',
             'police_number' => 'required|string|unique:buses',
             'number_of_seats' => 'required|string',
-            'status' => 'required|string',
             'merk' => 'required|string',
             'nomor_pintu' => 'required|string',
-            'supir_id' => 'required:uniqe:users'
+            'supir_id' => 'required:uniqe:users',
+            'loket_id' => 'required'
         ]);
-
-
+        $input = $request->all();
+        $input['status'] = 1;
         bus::create($input);
 
         return $this->sendResponse($input, 'Bus Created Successfully');
@@ -33,8 +34,9 @@ class BusController extends BaseController
     public function show()
     {
         $bus = DB::table('buses')
+            ->join('lokets', 'buses.loket_id', '=', 'lokets.id')
             ->join('users', 'users.id', '=', 'buses.supir_id')
-            ->select('buses.*', 'users.name', 'users.email')
+            ->select('buses.*', 'lokets.nama_loket', 'users.name', 'users.email')
             ->get();
 
         return $this->sendResponse(new BusResource($bus), 'Bus Retrieved Successfully');
@@ -43,35 +45,74 @@ class BusController extends BaseController
     public function update(Request $request, $id)
     {
         $input = $request->all();
-        $validator = Validator($input, [
+        $validator = Validator::make($input, [
             'type' => 'required|string',
-            'police_number' => 'required|string|unique:buses',
+            'police_number' => 'required|string|unique:buses,police_number,' . $id,
             'number_of_seats' => 'required|string',
             'merk' => 'required|string',
-            'status' => 'required|string',
-            'supir_id' => 'required:uniqe:users'
+            // 'supir_id' => 'required|unique:buses'
         ]);
 
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $bus = bus::find($id);
-        $bus->type = $request['type'];
-        $bus->police_number = $request['police_number'];
-        $bus->number_of_seats = $request['number_of_seats'];
-        $bus->merk = $request['merk'];
-        $bus->status = $request['status'];
-        $bus->supir_id = $request['supir_id'];
+
+
+        $bus = Bus::find($id);
+        $bus->type = $request->input('type');
+        $bus->police_number = $request->input('police_number');
+        $bus->loket_id = $request->input('loket_id');
+        $bus->number_of_seats = $request->input('number_of_seats');
+        $bus->merk = $request->input('merk');
+        $bus->supir_id = $request->input('supir_id');
         $bus->save();
 
         return $this->sendResponse($bus, 'Bus Updated Successfully');
     }
+
 
     public function delete($id)
     {
         $bus = bus::find($id);
         $bus->delete();
         return $this->sendResponse($bus->police_number, 'Bus Deleted Successfully');
+    }
+
+    public function updateStatus($id)
+    {
+        $bus = bus::find($id);
+
+        if (!$bus) {
+            return response()->json(['message' => 'Bus not found.'], 404);
+        }
+        $bus->status = ($bus->status == 1) ? 0 : 1;
+        $bus->save();
+        return response()->json(['data' => $bus, 'message' => 'Status Bus Updated Successfully']);
+    }
+    public function SelectOneBus($id)
+    {
+        $bus = DB::table('buses')
+            ->join('lokets', 'buses.loket_id', '=', 'lokets.id')
+            ->join('users', 'users.id', '=', 'buses.supir_id')
+            ->where('buses.id', '=',  $id)
+            ->select('buses.*', 'lokets.nama_loket', 'users.name', 'users.email')
+            ->get();
+
+        return response()->json(['data' => $bus, 'message' => ' Bus Retrieved  Successfully']);
+    }
+
+
+    public function notAssociated()
+    {
+        $supir = DB::table('users')
+        ->leftJoin('buses', 'users.id', '=', 'buses.supir_id')
+        ->where('users.role_id', 3)
+        ->whereNull('buses.supir_id')
+        ->select('users.*')
+        ->get();
+
+
+        return response()->json($supir);
     }
 }

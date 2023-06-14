@@ -9,27 +9,15 @@
           </v-col>
 
           <v-col cols="12" md="9">
-            <v-text-field
-              id="police_number"
-              v-model="mobil.police_number"
-              outlined
-              dense
-              placeholder="Nomor Polisi"
-              hide-details
-            ></v-text-field>
+            <v-text-field id="police_number" v-model="mobil.police_number" outlined dense placeholder="Nomor Polisi"
+              hide-details></v-text-field>
           </v-col>
           <v-col cols="12" md="3">
             <label for="firstname">Nomor Pintu</label>
           </v-col>
           <v-col cols="12" md="9">
-            <v-text-field
-              id="nomor_pintu"
-              v-model="mobil.nomor_pintu"
-              outlined
-              dense
-              placeholder="Nomor Pintu"
-              hide-details
-            ></v-text-field>
+            <v-text-field id="nomor_pintu" v-model="mobil.nomor_pintu" outlined dense placeholder="Nomor Pintu"
+              hide-details></v-text-field>
           </v-col>
 
           <v-col cols="12" md="3">
@@ -37,15 +25,8 @@
           </v-col>
 
           <v-col cols="12" md="9">
-            <v-select
-              v-model="mobil.type"
-              :items="['Economi', 'Executive']"
-              outlined
-              dense
-              placeholder="Type"
-              hide
-              details
-            ></v-select>
+            <v-select v-model="mobil.type" :items="['Ekonomi', 'Eksekutif']" @change="selectType" outlined dense
+              placeholder="Type" hide details></v-select>
             <!-- <v-text-field id="type" v-model="mobil.type" outlined dense placeholder="type" hide-details></v-text-field> -->
           </v-col>
 
@@ -54,44 +35,17 @@
           </v-col>
 
           <v-col cols="12" md="9">
-            <v-select
-              v-model="mobil.driver"
-              :items="supir"
-              item-value="id"
-              item-text="name"
-              outlined
-              dense
-              placeholder="Pilih supir"
-              @change="saveSelectedItemId"
-            ></v-select>
+            <v-select v-model="mobil.driver" :items="supir" item-value="id" item-text="name" outlined dense
+              placeholder="Pilih supir" @change="saveSelectedItemId" hide-details></v-select>
           </v-col>
 
           <v-col cols="12" md="3">
-            <label for="mobile">Jumlah Seats</label>
-          </v-col>
-          <v-col cols="12" md="9">
-            <v-text-field
-              id="num_seats"
-              v-model="mobil.number_of_seats"
-              type="number"
-              outlined
-              dense
-              placeholder="Jumlah Seats"
-              hide-details
-            ></v-text-field>
+            <label for="mobile">Loket</label>
           </v-col>
 
-          <v-col cols="12" md="3">
-            <label for="mobile">Status</label>
-          </v-col>
           <v-col cols="12" md="9">
-            <v-select
-              v-model="mobil.status"
-              :items="['Avaliable', 'Unavaliable']"
-              outlined
-              dense
-              placeholder="Status"
-            ></v-select>
+            <v-select v-model="mobil.loket" :items="loket" item-value="id" item-text="name" outlined dense
+              placeholder="Pilih Loket" @change="saveSelectedItemId" hide-details></v-select>
           </v-col>
 
           <v-col offset-md="3" cols="12">
@@ -136,31 +90,63 @@ export default {
     return {
       supir: [],
       driver: null,
+      loket: null,
       mobil: [],
     };
   },
   mounted() {
     const access_token = localStorage.getItem("access_token");
     axios
-      .get("/api/supir/name/all", {
+      .get("/api/buss/show/notAssociated", {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
       })
       .then((response) => {
-        this.supir = response.data.map((item) => {
-          return {
-            name: item.name,
-            id: item.id,
-          };
-        });
+        this.supir = response.data
+          .filter((item) => item.status == 1) // Filter dengan supir.status = 1
+          .map((item) => {
+            return {
+              name: item.name,
+              id: item.id,
+            };
+          });
         console.log("ini", this.supir);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    // Loket Get
+    axios
+      .get("/api/loket/all", {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+      .then((response) => {
+        this.loket = response.data.
+          filter((item) => item.status == 1) // Filter dengan supir.status = 1
+          .map((item) => {
+            return {
+              name: item.nama_loket,
+              id: item.id,
+            };
+          });
+        console.log("ini", this.loket);
       })
       .catch((error) => {
         console.log(error);
       });
   },
   methods: {
+    selectType() {
+      if (this.mobil.type === 'Ekonomi') {
+        this.mobil.number_of_seats = '12';
+      } else if (this.mobil.type === 'Eksekutif') {
+        this.mobil.number_of_seats = '14';
+      }
+    },
     AddMobil() {
       const access_token = localStorage.getItem("access_token");
 
@@ -174,7 +160,7 @@ export default {
             number_of_seats: this.mobil.number_of_seats,
             nomor_pintu: this.mobil.nomor_pintu,
             merk: "KBT",
-            status: this.mobil.status,
+            loket_id: this.mobil.loket
           },
           {
             headers: {
@@ -192,6 +178,7 @@ export default {
           console.log(error.response.data.errors);
         });
     },
+
     saveSelectedItemId() {
       // Simpan selectedItem.id ke database di sini
       // console.log('Selected item id:', this.mobil.driver);

@@ -1,183 +1,138 @@
 <template>
-  <v-card>
-    <v-tabs v-model="tab" fixed-tabs>
-      <v-tab color="primary"> Ekonomi </v-tab>
-      <v-tab> Eksekutif </v-tab>
-    </v-tabs>
+  <v-app>
     <v-container>
       <v-row>
         <v-col>
-          <v-select v-model="dateFilter" label="Tanggal" clearable></v-select
+          <v-text-field
+            v-model="selectedDate"
+            type="date"
+            label="Pilih tanggal"
+            placeholder="Pilih Tanggal"
+            clearable
+            hide-details
+          />
+        </v-col>
+        <v-col
+          ><v-select
+            v-model="selectedRoute"
+            :items="route"
+            id="id"
+            item-value="id"
+            item-text="derpatures"
+            placeholder="Pilih Rute"
+            clearable
+            hide-details
+          ></v-select
         ></v-col>
-        <v-col><v-select v-model="routeFilter" label="Rute"></v-select></v-col>
+        <v-col
+          ><v-select
+            v-model="selectedType"
+            :items="['Economi', 'Executive']"
+            placeholder="Pilih Type"
+            clearable
+            hide-details
+          ></v-select
+        ></v-col>
       </v-row>
     </v-container>
-    <v-tabs-items v-model="tab">
-      <v-tab-item>
-        <v-card flat>
-          <v-card v-for="eco in economi" :key="eco.schedule_id" class="mb-2">
-            <v-row no-gutters>
-              <v-col cols="auto">
-                <v-avatar size="40" class="mt-2 ml-2">
-                  <img
-                    :src="require('@/assets/images/logos/logo-KBT.png').default"
-                    max-height="50px"
-                    max-width="100px"
-                    alt="avatar"
-                  />
-                </v-avatar>
-              </v-col>
-              <v-col>
-                <div class="d-flex justify-content-between">
-                  <v-card-title class="text-h6"
-                    >{{ eco.derpature }} - {{ eco.arrival }}</v-card-title
-                  >
-                  <div class="text-h6 mt-4 mr-5 harga" style="color: #ff4c51">
-                    Rp.{{ eco.harga }}
-                  </div>
+    <h3 class="my-4">
+      Pesan Tiket Mobil Bus Online di
+      <h3 text-color="primary">DantobBus</h3>
+    </h3>
+    <p>
+      Pesan tiket mobil bus online semudah belanja online tanpa perlu ke agen tiket mobil
+      bus. Jadwal bus travel, trayek, tempat keberangkatan,harga tiket, hingga pilih kursi
+      hanya di DanTobBus.
+    </p>
+    <v-card v-if="filterSchedules().length < 1">
+      <h3 class="text-center py-4">Maaf, tidak ada jadwal yang tersedia saat ini.</h3>
+    </v-card>
+    <v-card v-for="item in filterSchedules()" :key="item.schedule_id" class="mb-2">
+      <v-row no-gutters>
+        <v-col cols="auto">
+          <v-avatar size="40" class="mt-2 ml-2">
+            <img
+              :src="require('@/assets/images/logos/logo-KBT.png').default"
+              max-height="50px"
+              max-width="100px"
+              alt="avatar"
+            />
+          </v-avatar>
+        </v-col>
+        <v-col>
+          <div class="d-flex justify-content-between">
+            <v-card-title class="text-h6"
+              >{{ item.derpature }} - {{ item.arrival }}</v-card-title
+            >
+            <div class="text-h6 mt-4 mr-5 harga" style="color: #ff4c51">
+              Rp.{{ item.harga }}
+            </div>
+          </div>
+          <div class="d-flex justify-content-between ml-5">
+            <h6>{{ item.nomor_pintu }}</h6>
+            <h6 class="text--primary ml-5">{{ item.type }}</h6>
+          </div>
+          <v-row no-gutters class="my-3">
+            <v-col cols="12" class="detail">
+              <div class="row">
+                <div class="col-md-3">
+                  <v-icon left>{{ icons.mdiCalendarClock }}</v-icon>
+                  {{ formatDate(item.tanggal) }}
                 </div>
-                <div class="d-flex justify-content-between ml-5">
-                  <h6>{{ eco.nomor_pintu }}</h6>
-                  <h6 class="text--primary ml-5">{{ eco.type }}</h6>
+                <div class="col-md-2">
+                  <v-icon left>{{ icons.mdiAccount }}</v-icon> {{ item.name }}
                 </div>
-                <v-row no-gutters class="my-3">
-                  <v-col cols="12" class="detail">
-                    <div class="row">
-                      <div class="col-md-3">
-                        <v-icon left>{{ icons.mdiCalendarClock }}</v-icon>
-                        {{ formatDate(eco.tanggal) }}
-                      </div>
-                      <div class="col-md-2">
-                        <v-icon left>{{ icons.mdiAccount }}</v-icon> {{ eco.name }}
-                      </div>
-                      <div
-                        class="col-md-2"
-                        v-for="(count, id) in bookingCounts"
-                        :key="id"
-                        v-if="eco.schedule_id == id"
-                      >
-                        <small color="secondary"
-                          >Tersedia : {{ eco.number_of_seats - count - 1 }} Kursi
-                        </small>
-                      </div>
-                      <div
-                        class="col-md-2"
-                        v-if="
-                          !Object.keys(bookingCounts).includes(String(eco.schedule_id))
-                        "
-                      >
-                        <small color="secondary"
-                          >Tersedia : {{ eco.number_of_seats - 1 }} Kursi
-                        </small>
-                      </div>
+                <div
+                  class="col-md-2"
+                  v-for="(count, id) in bookingCounts"
+                  :key="id"
+                  v-if="item.schedule_id == id"
+                >
+                  <small color="secondary"
+                    >Tersedia : {{ item.number_of_seats - count - 1 }} Kursi
+                  </small>
+                </div>
+                <div
+                  class="col-md-2"
+                  v-if="!Object.keys(bookingCounts).includes(String(item.schedule_id))"
+                >
+                  <small color="secondary"
+                    >Tersedia : {{ item.number_of_seats - 1 }} Kursi
+                  </small>
+                </div>
 
-                      <v-row class="col-md-2 d-flex justify-space-around">
-                        <div class="col-md-2">
-                          <v-btn
-                            color="secondary"
-                            @click="selectBus(eco.schedule_id, eco.harga)"
-                            class="ml-3"
-                            style="color: white; font-weight: bold"
-                          >
-                            Pesan
-                          </v-btn>
-                        </div>
-                      </v-row>
-                    </div>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-card>
-      </v-tab-item>
-      <v-tab-item>
-        <v-card flat>
-          <v-card v-for="exe in executive" :key="exe.schedule_id" class="mb-2">
-            <v-row no-gutters>
-              <v-col cols="auto">
-                <v-avatar size="40" class="mt-2 ml-2">
-                  <img
-                    :src="require('@/assets/images/logos/logo-KBT.png').default"
-                    max-height="50px"
-                    max-width="100px"
-                    alt="avatar"
-                  />
-                </v-avatar>
-              </v-col>
-              <v-col>
-                <div class="d-flex justify-content-between">
-                  <v-card-title class="text-h6"
-                    >{{ exe.derpature }} - {{ exe.arrival }}</v-card-title
-                  >
-                  <div class="text-h6 mt-4 mr-5 harga" style="color: #ff4c51">
-                    Rp.{{ exe.harga }}
+                <v-row class="col-md-2 d-flex justify-space-around">
+                  <div class="col-md-2">
+                    <v-btn
+                      color="secondary"
+                      @click="selectBus(item.schedule_id, item.harga)"
+                      class="ml-3"
+                      style="color: white; font-weight: bold"
+                    >
+                      Pesan
+                    </v-btn>
                   </div>
-                </div>
-                <div class="d-flex justify-content-between ml-5">
-                  <h6>{{ exe.nomor_pintu }}</h6>
-                  <h6 class="text--primary ml-5">{{ exe.type }}</h6>
-                </div>
-                <v-row no-gutters class="my-3">
-                  <v-col cols="12" class="detail">
-                    <div class="row">
-                      <div class="col-md-3">
-                        <v-icon left>{{ icons.mdiCalendarClock }}</v-icon>
-                        {{ formatDate(exe.tanggal) }}
-                      </div>
-                      <div class="col-md-2">
-                        <v-icon left>{{ icons.mdiAccount }}</v-icon> {{ exe.name }}
-                      </div>
-                      <div
-                        class="col-md-2"
-                        v-for="(count, id) in bookingCountsExe"
-                        :key="id"
-                        v-if="exe.schedule_id == id"
-                      >
-                        <small color="secondary"
-                          >Tersedia : {{ exe.number_of_seats - count - 1 }} Kursi
-                        </small>
-                      </div>
-                      <div
-                        class="col-md-2"
-                        v-if="
-                          !Object.keys(bookingCountsExe).includes(String(exe.schedule_id))
-                        "
-                      >
-                        <small color="secondary"
-                          >Tersedia : {{ exe.number_of_seats - 1 }} Kursi
-                        </small>
-                      </div>
-
-                      <v-row class="col-md-2 d-flex justify-space-around">
-                        <div class="col-md-2">
-                          <v-btn
-                            color="secondary"
-                            @click="selectBus(exe.schedule_id, exe.harga)"
-                            class="ml-3"
-                            style="color: white; font-weight: bold"
-                          >
-                            Pesan
-                          </v-btn>
-                        </div>
-                      </v-row>
-                    </div>
-                  </v-col>
                 </v-row>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-card>
-      </v-tab-item>
-    </v-tabs-items>
-  </v-card>
+              </div>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-card>
+    <v-pagination
+      v-model="currentPage"
+      :length="totalPages"
+      @input="changePage"
+      class="my-4"
+      circle
+    ></v-pagination>
+  </v-app>
 </template>
 <script>
 import axios from "axios";
 import moment from "moment";
 import "moment/locale/id";
 import { mapActions } from "vuex";
-
 import { mdiCalendarClock, mdiAccountGroup, mdiAccount } from "@mdi/js";
 export default {
   setup() {
@@ -189,21 +144,32 @@ export default {
       },
     };
   },
-
   data() {
     return {
-      tab: null,
-      economi: [],
-      executive: [],
+      schedules: [],
+      itemsPerPage: 5, // jumlah item per halaman
+      currentPage: 1,
+      route: [],
       bookingCounts: {},
-      bookingCountsExe: {},
-      hasbookedEco: "",
-      hasbookedExe: "",
-      dateFilter: null,
-      routeFilter: null,
+      busData: {
+        id_schedule: "",
+        harga: "",
+      },
+      selectedDate: null,
+      selectedRoute: null,
+      selectedType: null,
     };
   },
-  computed: {},
+  computed: {
+    paginatedSchedules() {
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+      const endIndex = startIndex + this.itemsPerPage;
+      return this.schedules.slice(startIndex, endIndex);
+    },
+    totalPages() {
+      return Math.ceil(this.schedules.length / this.itemsPerPage);
+    },
+  },
   methods: {
     ...mapActions(["setSelectedSeat"]),
     selectBus(id_schedule, harga) {
@@ -219,58 +185,91 @@ export default {
     },
     formatDate(date) {
       moment.locale("id");
-      return moment(date).format("dddd, Do MMMM YYYY, hh:mm:ss");
+      return moment(date).format("dddd, Do MMMM YYYY, hh:mm");
+    },
+    changePage(page) {
+      this.currentPage = page;
+    },
+    filterSchedules() {
+      let filteredSchedules = this.paginatedSchedules;
+
+      if (this.selectedDate) {
+        filteredSchedules = filteredSchedules.filter(
+          (schedule) =>
+            moment(schedule.tanggal).format("YYYY-MM-DD") ===
+            moment(this.selectedDate).format("YYYY-MM-DD")
+        );
+      }
+
+      if (this.selectedRoute) {
+        console.selectedRoute;
+        filteredSchedules = filteredSchedules.filter(
+          (schedule) => schedule.id === this.selectedRoute
+        );
+      }
+      if (this.selectedType) {
+        console.log(this.selectedType);
+        filteredSchedules = filteredSchedules.filter(
+          (schedule) => schedule.type === this.selectedType
+        );
+      }
+
+      return filteredSchedules;
+    },
+    getSchedule() {
+      const access_token = localStorage.getItem("access_token");
+
+      axios
+        .get("/api/schedule/show/all", {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        })
+        .then((response) => {
+          this.schedules = response.data.data;
+          this.st = response.data.total;
+          this.bookingCounts = this.countBookings(response.data.total);
+
+          console.log(this.schedules);
+          console.log(this.st);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     countBookings(bookings) {
-      const counts = {};
+      const count = {};
       bookings.forEach((booking) => {
-        if (counts[booking.schedules_id]) {
-          counts[booking.schedules_id]++;
+        if (count[booking.schedules_id]) {
+          count[booking.schedules_id]++;
         } else {
-          counts[booking.schedules_id] = 1;
+          count[booking.schedules_id] = 1;
         }
       });
-      return counts;
-    },
-    countBookingsExe(bookings) {
-      const countsExe = {};
-      bookings.forEach((booking) => {
-        if (countsExe[booking.schedules_id]) {
-          countsExe[booking.schedules_id]++;
-        } else {
-          countsExe[booking.schedules_id] = 1;
-        }
-      });
-      return countsExe;
+      return count;
     },
   },
-
   mounted() {
     const access_token = localStorage.getItem("access_token");
 
+    this.getSchedule();
     axios
-      .get("/api/schedule/type/economi", {
+      .get("api/routes/show/all", {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
       })
       .then((response) => {
-        this.economi = response.data.data;
-        this.bookingCounts = this.countBookings(response.data.total);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    axios
-      .get("/api/schedule/type/executive", {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      })
-      .then((response) => {
-        this.executive = response.data.data;
-        this.bookingCountsExe = this.countBookingsExe(response.data.total);
+        this.route = response.data.data.map((item) => {
+          return {
+            id: item.id,
+            derpatures: item.derpature + " - " + item.arrival,
+            derpature: item.derpature + " - " + item.arrival,
+            // derpature: item.derpature,
+            // arrival: item.arrival,
+          };
+        });
+        // console.log(this.route)
       })
       .catch((error) => {
         console.log(error);
@@ -278,3 +277,39 @@ export default {
   },
 };
 </script>
+<style>
+@media only screen and (max-width: 480px) {
+  .btn-pesan {
+    margin-top: 160px;
+    height: 15px;
+    padding-left: 30px;
+    width: 120px;
+    font-size: 10px;
+    height: 50px;
+  }
+
+  .text-title {
+    position: absolute;
+    text-align: center;
+  }
+}
+
+@media only screen and (min-width: 481px) {
+  .btn-pesan {
+    margin-top: 160px;
+    height: 15px;
+    padding-left: 30px;
+    width: 240px;
+    height: 50px;
+  }
+
+  .text-title {
+    position: absolute;
+    margin-left: 60%;
+  }
+
+  .detail {
+    font-size: 12px;
+  }
+}
+</style>

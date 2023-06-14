@@ -27,14 +27,17 @@
       <div v-if="userRole == 'admin_kantor'">
         <!-- <nav-menu-link title="Account Settings" :to="{ name: 'pages-account-settings' }"
         :icon="icons.mdiAccountCogOutline"></nav-menu-link> -->
-        <nav-menu-group title="Kelola" :icon="icons.mdiCarCog">
+          <nav-menu-group title="Loket" :icon="icons.mdiCarCog">
+            <nav-menu-link title="Admin Loket" :to="{ name: 'pages-admin-loket' }"
+              :icon="icons.mdiCardAccountDetailsOutline"></nav-menu-link>
+            <nav-menu-link title="Loket" :to="{ name: 'pages-loket' }" :icon="icons.mdiCar"></nav-menu-link>
+          </nav-menu-group>
           <nav-menu-link title="Supir" :to="{ name: 'pages-supir' }"
             :icon="icons.mdiCardAccountDetailsOutline"></nav-menu-link>
           <nav-menu-link title="Mobil" :to="{ name: 'pages-mobil' }" :icon="icons.mdiCar"></nav-menu-link>
           <nav-menu-link title="Rute" :to="{ name: 'pages-routes' }" :icon="icons.mdiMapMarkerDistance"></nav-menu-link>
           <nav-menu-link title="Jadwal " :to="{ name: 'pages-schedule' }"
             :icon="icons.mdiCreditCardOutline"></nav-menu-link>
-        </nav-menu-group>
       </div>
       <div v-if="userRole == 'passenger'">
         <nav-menu-link title="Pesan E-ticket" :to="{ name: 'all-bus' }"
@@ -50,6 +53,13 @@
           :icon="icons.mdiCardAccountDetailsOutline"></nav-menu-link>
         <nav-menu-link title="Riwayat Perjalanan" :to="{ name: 'perjalanan-supir' }"
           :icon="icons.mdiHistory"></nav-menu-link>
+
+      </div>
+
+      <div v-if="userRole == 'direksi'">
+        <nav-menu-link title="Catatan Keuangan" :to="{ name: 'catatan-keuangan' }"
+          :icon="icons.mdiCashMultiple"></nav-menu-link>
+        <nav-menu-link title="Komisi" :to="{ name: 'komisi' }" :icon="icons.mdiCreditCardOutline"></nav-menu-link>
 
       </div>
 
@@ -94,7 +104,9 @@ import {
   mdiCar,
   mdiCarCog,
   mdiMapMarkerDistance,
-  mdiHistory
+  mdiHistory,
+  mdiCashMultiple
+
 } from '@mdi/js'
 import NavMenuSectionTitle from './components/NavMenuSectionTitle.vue'
 import NavMenuGroup from './components/NavMenuGroup.vue'
@@ -127,7 +139,8 @@ export default {
         mdiCar,
         mdiMapMarkerDistance,
         mdiCarCog,
-        mdiHistory
+        mdiHistory,
+        mdiCashMultiple
         // mdiCarClock
       },
     }

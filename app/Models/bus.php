@@ -16,7 +16,8 @@ class bus extends Model
         'number_of_seats',
         'merk',
         'status',
-        'supir_id'
+        'supir_id',
+        'loket_id',
     ];
 
     public function driver()

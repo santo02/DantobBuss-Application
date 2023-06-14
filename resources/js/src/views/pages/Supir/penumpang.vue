@@ -29,8 +29,8 @@ export default {
       },
       headers: [
         { text: 'Tanggal', value: 'tanggal' },
-        { text: 'Keberangkatan', value: 'arrival' },
-        { text: 'Kedatangan', value: 'derpature' },
+        { text: 'Keberangkatan', value: 'derpature' },
+        { text: 'Kedatangan', value: 'arrival' },
         { text: 'Jumlah Kursi', value: 'number_of_seats' },
         { text: 'Detail', value: 'detail' },
       ]

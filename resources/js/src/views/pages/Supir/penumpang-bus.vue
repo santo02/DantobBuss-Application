@@ -117,7 +117,7 @@ export default {
           }
         );
 
-        this.socket = io("ws://localhost:8081", {
+        this.socket = io("wss://socket08.d4trpl19.net", {
           query: `id=${this.driver_id_real}`,
         });
 

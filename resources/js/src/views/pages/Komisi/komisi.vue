@@ -1,14 +1,8 @@
 <template>
   <div>
     <h2>Komisi</h2>
-    <v-text-field
-      type="date"
-      label="Pilih tanggal"
-      placeholder="Pilih Tanggal"
-      v-model="selectedDate"
-      style="width: 300px"
-      solo
-    />
+    <v-text-field type="date" label="Pilih tanggal" placeholder="Pilih Tanggal" v-model="selectedDate"
+      style="width: 300px" solo />
     <template>
       <v-simple-table class="table-primary">
         <template v-slot:default>
@@ -81,8 +75,16 @@ export default {
   mounted() {
     const access_token = localStorage.getItem("access_token");
     // console.log(combinedDat);
+    let url = '';
+
+    if (this.userRole === "direksi") {
+      url = "/api/Keuangan/all/index";
+    } else if (this.userRole === "admin_loket") {
+      url = "/api/Keuangan/index";
+    }
+
     axios
-      .get("/api/Keuangan/index", {
+      .get(url, {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
@@ -110,18 +112,22 @@ export default {
       return moment(date).format("dddd, Do MMMM YYYY");
     },
 
+
     JumlahSetoran(total, jlhTgl) {
       return total - ((10 / 100) * total + jlhTgl * 53000 + jlhTgl * 5000);
     },
 
     perusahaan(total, jlhTgl) {
-      return (60 / 100) * (10 / 100) * total + jlhTgl * 53000 + jlhTgl * 5000;
+      return (60 / 100) * ((10 / 100) * total) + (jlhTgl * 53000 )+ (jlhTgl *5000);
     },
     Adm(total) {
       return (40 / 100) * ((10 / 100) * total);
     },
   },
   computed: {
+    userRole() {
+      return this.$store.state.userRole
+    },
     filteredItems() {
       if (!this.selectedDate) {
         return this.combinedData;

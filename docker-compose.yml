@@ -3,25 +3,23 @@ services:
   app:
     build:
       args:
-        user: sammy
+        user: naldo
         uid: 1000
       context: ./
       dockerfile: Dockerfile
-    image: travellist
-    container_name: travellist-app
+    image: dantob
+    container_name: dantob-app
     restart: unless-stopped
     working_dir: /var/www/
     volumes:
       - ./:/var/www
     networks:
-      - travellist
+      - dantob
 
   db:
     image: mysql:8.0
-    container_name: travellist-db
+    container_name: dantob-db
     restart: unless-stopped
-    ports:
-      - 3306:3306
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
@@ -30,32 +28,34 @@ services:
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     networks:
-      - travellist
+      - dantob
 
   nginx:
     image: nginx:alpine
-    container_name: travellist-nginx
+    container_name: dantob-nginx
     restart: unless-stopped
     ports:
       - 80:80
       - 443:443
     volumes:
       - ./:/var/www
-      - ./docker-compose/nginx/prod:/etc/nginx/conf.d/
-      - ./docker-compose/certbot/conf:/etc/letsencrypt
-      - ./docker-compose/certbot/www:/var/www/certbot
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
+      - ./dhparam:/etc/nginx/dhparam
+      - ./certbot/conf/:/etc/nginx/ssl/
+      - ./certbot/data:/usr/share/nginx/html/letsencrypt
     networks:
-      - travellist
-  myapp-certbot:
-    image: certbot/certbot
-    container_name: myapp-certbot
+      - dantob
+
+  certbot:
+    image: certbot/certbot:latest
+    command: certonly --webroot --webroot-path=/usr/share/nginx/html/letsencrypt --email panjaitanandree@gmail.com --agree-tos --no-eff-email -d ta8.d4trpl19.net
     volumes:
-      - ./docker-compose/certbot/conf:/etc/letsencrypt
-      - ./docker-compose/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+      - ./certbot/conf/:/etc/letsencrypt
+      - ./certbot/logs/:/var/log/letsencrypt
+      - ./certbot/data:/usr/share/nginx/html/letsencrypt
     networks:
-      - travellist
+      - dantob
 
 networks:
-  travellist:
+  dantob:
     driver: bridge
