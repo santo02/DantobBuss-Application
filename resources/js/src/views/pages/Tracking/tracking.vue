@@ -78,7 +78,7 @@ export default {
       })
       .then((response) => {
         this.schedule = response.data.data[0];
-        this.socket = io("wss://socket.eticketingkbt.online", {
+        this.socket = io("ws://181.215.68.113:3000", {
           query: `id=${crypto.randomUUID()}`,
         });
 
