@@ -102,7 +102,7 @@ class PembayaranController extends Controller
         $booking->num_seats = $request->num_seats;
         $booking->status = 'booked';
 
-        // $booking->save();
+        $booking->save();
         $pembayaran = new Pembayaran;
         $pembayaran->schedules_id = $request->schedules_id;
         $pembayaran->bookings_id = $booking->id;
@@ -116,7 +116,7 @@ class PembayaranController extends Controller
         $pembayaran->amount    = $request->harga;
         $pembayaran->virtual_account_number = 000;
         $pembayaran->active = 000;
-        // $pembayaran->save();
+        $pembayaran->save();
 
         return response()->json([
             'data' => $responseJson,
