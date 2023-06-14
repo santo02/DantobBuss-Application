@@ -33,7 +33,9 @@ export default new Vuex.Store({
 
   },
   actions: {
-    setBusData({ commit }, bus) {
+    setBusData({
+      commit
+    }, bus) {
       commit('SET_BUS_DATA', bus)
     },
     setSelectedSeat({
@@ -60,7 +62,7 @@ export default new Vuex.Store({
         .then(response => {
           const userRole = response.data.role.role
           // console.log(userRole);
-          commit('SET_USER_ROLE', userRole)
+          commit('SET_USER_ROLE', userRole) // Corrected the mutation commit
         })
         .catch(error => {
           console.log(error)
@@ -86,6 +88,11 @@ export default new Vuex.Store({
     isDireksi(state) {
       return state.userRole === 'direksi'
     },
+    hasRole: (state) => (role) => {
+      return state.userRole.includes(role);
+    }
+
+
   },
 
   plugins: [

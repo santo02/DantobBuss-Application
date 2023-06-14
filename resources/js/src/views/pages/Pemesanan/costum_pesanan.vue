@@ -4,7 +4,7 @@
     <v-card>
       <div v-for="item in schedule" :key="item.id">
         <div class="chair" style="width: 400px; margin: 100 auto;">
-          <v-container v-if="item.type === 'Ekonomi'" class="grey text-center">
+          <v-container v-if="item.type === 'Ekonomi'" class="grey text-center" style="width: 400px;">
             <v-row no-gutters>
               <v-col v-for="n in +item.number_of_seats" :key="n" cols="2" sm="4">
                 <div v-if="n !== 3" :class="['pa- text-center  text-no-wrap rounded', {
@@ -36,7 +36,8 @@
                 <div v-else
                   :class="['pa-', 'text-center', 'text-no-wrap', 'rounded', { 'style': selectedChair === (n >= 4 && n <= 8 ? n - 3 : n >= 10 && n <= 12 ? n - 4 : n >= 13 ? n - 5 : n), 'booked': bookingsChair.some(chair => chair.num_seats === (n > 2 ? n - 1 : n)) }]"
                   @click="selectedChair = (n >= 4 && n <= 8 ? n - 3 : n >= 10 && n <= 12 ? n - 4 : n >= 13 ? n - 5 : n)">
-                  <v-icon x-large>{{ selectedChair === ( n >= 5 && n <= 8 ? n - 3 : n >= 10 && n <= 12 ? n - 4 : n >= 13 ? n - 5 : n ) ?
+                  <v-icon x-large>{{ selectedChair === (n >= 5 && n <= 8 ? n - 3 : n >= 10 && n <= 12 ? n - 4 : n >= 13 ? n
+                    - 5 : n) ?
                     icons.mdiSofaSingle :
                     icons.mdiSofaSingleOutline }}</v-icon>
                   <h4>{{ n >= 5 && n <= 8 ? n - 3 : n >= 10 && n <= 12 ? n - 4 : n >= 13 ? n - 5 : n }}</h4>
@@ -45,7 +46,7 @@
             </v-row>
           </v-container>
         </div>
-        
+
         <div class="check" v-if="selectedChair !== null">
           <v-container class="grey text-center">
             <v-card class="mb-3">
@@ -245,6 +246,18 @@ export default {
 </script>
 
 <style scoped>
+.chair {
+  width: 400px;
+  margin: 100px auto;
+}
+
+@media (max-width: 600px) {
+  .chair {
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
 .style {
   background-color: gainsboro;
   color: white;

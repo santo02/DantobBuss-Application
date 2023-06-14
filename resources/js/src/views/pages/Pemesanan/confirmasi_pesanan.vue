@@ -12,7 +12,7 @@
         <div class="d-flex justify-end">
           <div v-if="userRole == 'passenger'" class="d-flex justify-start align-center">
             <label for="pesan-orang-lain" class="mr-2">Pesan untuk orang lain</label>
-            <v-switch v-model="autoFill" inset color="primary" id="pesan-orang-lain"></v-switch>
+            <v-switch v-model="autoFill" inset color="secondary" id="pesan-orang-lain"></v-switch>
           </div>
         </div>
         <div>
