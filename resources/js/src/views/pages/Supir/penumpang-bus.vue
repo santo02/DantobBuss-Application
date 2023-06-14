@@ -117,7 +117,7 @@ export default {
           }
         );
 
-        this.socket = io("ws://181.215.68.113:3000", {
+        this.socket = io("wss://socket.eticketingkbt.online", {
           query: `id=${this.driver_id_real}`,
         });
 
