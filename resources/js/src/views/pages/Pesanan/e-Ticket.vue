@@ -49,8 +49,8 @@
                 <td>: {{ this.ticket.name }}</td>
               </tr>
               <tr>
-                <td>Umur</td>
-                <td>: {{ this.ticket.age }}</td>
+                <td>No. Handphone</td>
+                <td>: {{ this.ticket.number_phone }}</td>
               </tr>
               <tr>
                 <td>Bangku</td>

@@ -38,14 +38,14 @@ class BookingController extends BaseController
         $booking->number_phone = $request->number_phone;
         $booking->alamatJemput = $request->alamatJemput;
         $booking->num_seats = $request->num_seats;
-        $booking->status = "menunggu";
+        $booking->status = "Menunggu";
         $booking->save();
 
         $pembayaran = new Pembayaran;
         $pembayaran->schedules_id = $request->schedules_id;
         $pembayaran->bookings_id = $booking->id;
         $pembayaran->method = 'cash';
-        $pembayaran->status = 'berhasil';
+        $pembayaran->status = 'Menunggu';
         $pembayaran->date = Carbon::now();
         $pembayaran->original_request_id    = random_int(100, 9999);
         $pembayaran->transaksi_id = $booking->id + 100000;

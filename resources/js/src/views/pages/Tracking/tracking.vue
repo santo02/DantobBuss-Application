@@ -59,7 +59,13 @@ export default {
         this.centerOptions = {
           position: this.center,
           label: "Posisi Anda",
-          title: "ME",
+          title: "Posisi Kamu",
+          icon: {
+            url:
+              "http://127.0.0.1:8000/images/pin-user.gif",
+            scaledSize: { width: 60, height: 60 },
+            labelOrigin: { x: 16, y: -10 },
+          },
         };
       },
       (err) => {
@@ -96,8 +102,8 @@ export default {
                 title: "DRIVER",
                 icon: {
                   url:
-                    "https://www.clipartmax.com/png/middle/198-1986353_google-map-car-icon.png",
-                  scaledSize: { width: 40, height: 40 },
+                    "http://127.0.0.1:8000/images/icon_mobil.jpg",
+                  scaledSize: { width: 50, height: 50 },
                   labelOrigin: { x: 16, y: -10 },
                 },
               };
