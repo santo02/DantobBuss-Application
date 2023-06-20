@@ -123,14 +123,7 @@ class ScheduleController extends BaseController
 
     public function getForSupir()
     {
-        $user = Auth::user();
-
-        $hasBooked = DB::table('schedules')
-            ->join('bookings', 'bookings.schedules_id', '=', 'schedules.id')
-            ->join('buses', 'schedules.bus_id', '=', 'buses.id')
-            ->where('buses.type', "=", 'Economi')
-            ->select('bookings.schedules_id')
-            ->get();
+        $user = Auth::user()->id;
 
         $schedule = DB::table('schedules')
             ->join('buses', 'buses.id', '=', 'schedules.bus_id')
@@ -140,11 +133,12 @@ class ScheduleController extends BaseController
             ->where('users.status', '=', 1)
             ->where('buses.status', '=', 1)
             ->where('routes.status', '=', 1)
+            ->where('buses.supir_id', '=', $user) 
             // ->where('schedules.status', 'complete')
             ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'schedules.status as schedules_status', 'buses.*', 'routes.*', 'users.name')
             ->get();
 
-        return response()->json(['total' => $hasBooked, 'data' => $schedule]);
+        return response()->json(['data' => $schedule]);
     }
     public function update($id)
     {

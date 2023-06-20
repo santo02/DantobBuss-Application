@@ -6,6 +6,7 @@ use App\Http\Controllers\BusController;
 use App\Http\Controllers\ConfirmPembayaran;
 use App\Http\Controllers\DashboardDireksiController;
 use App\Http\Controllers\DireksiController;
+use App\Http\Controllers\DokuController;
 use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LoketController;
@@ -83,6 +84,7 @@ Route::middleware(['auth:api', 'role:admin_loket,direksi'])->group(function () {
 
 Route::middleware(['auth:api', 'role:passenger'])->group(function () {
     // Route::get('/bookings/my', [BookingController::class, 'getByUserId']);
+    Route::post('/api/payments/notifications', [DokuController::class, 'notifications']);
 });
 
 
