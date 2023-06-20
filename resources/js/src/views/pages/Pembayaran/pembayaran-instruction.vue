@@ -5,16 +5,22 @@
       <div class="payment-details">
         <p>
           <strong>Virtual Account Number:</strong>
-          <span class="virtual-account-number">{{ paymentInstructions.virtual_account_info.virtual_account_number
+          <span class="virtual-account-number">{{
+            paymentInstructions.virtual_account_info.virtual_account_number
           }}</span>
           <button class="copy-button" @click="copyVirtualAccountNumber">Copy</button>
         </p>
         <p><strong>Amount:</strong> {{ paymentInstructions.order.amount }}</p>
-        <p><strong>Status:</strong> {{ paymentInstructions.virtual_account_info.status }}</p>
+        <p>
+          <strong>Status:</strong> {{ paymentInstructions.virtual_account_info.status }}
+        </p>
       </div>
 
       <v-expansion-panels>
-        <v-expansion-panel v-for="instruction in paymentInstructions.payment_instruction" :key="instruction.channel">
+        <v-expansion-panel
+          v-for="instruction in paymentInstructions.payment_instruction"
+          :key="instruction.channel"
+        >
           <v-expansion-panel-header>{{ instruction.channel }}</v-expansion-panel-header>
           <v-expansion-panel-content>
             <ol>
@@ -25,24 +31,29 @@
       </v-expansion-panels>
     </div>
 
-    <v-card v-if="paymentInstructions.virtual_account_info.status == 'PAID'" class="payment-success-card">
-
+    <v-card
+      v-if="paymentInstructions.virtual_account_info.status == 'PAID'"
+      class="payment-success-card"
+    >
       <div class="checklist-icon-container">
         <img
-              :src="require('@/assets/images/check.gif').default"
-
-              width="100px"
-              alt="avatar"
-            />
+          :src="require('@/assets/images/check.gif').default"
+          width="100px"
+          alt="avatar"
+        />
       </div>
       <div class="payment-success-content">
-        <h3 style="color: #76ae46;">Berhasil</h3>
+        <h3 style="color: #76ae46">Berhasil</h3>
         <p>{{ paymentInstructions.order.invoice_number }}</p>
         <p><strong>Amount:</strong> Rp.{{ paymentInstructions.order.amount }}</p>
-        <p><strong>No. Virtual Account:</strong> {{ paymentInstructions.virtual_account_info.virtual_account_number }}</p>
-        <p><strong></strong> {{ paymentInstructions.virtual_account_info.created_date }}</p>
+        <p>
+          <strong>No. Virtual Account:</strong>
+          {{ paymentInstructions.virtual_account_info.virtual_account_number }}
+        </p>
+        <p>
+          <strong></strong> {{ paymentInstructions.virtual_account_info.created_date }}
+        </p>
         <p><strong>Nama:</strong> {{ paymentInstructions.customer.name }}</p>
-
       </div>
     </v-card>
   </div>
@@ -54,7 +65,6 @@
   margin-left: 10px;
   cursor: pointer;
 }
-
 
 /* Styles for the virtual account number */
 .virtual-account-number {
@@ -95,17 +105,13 @@ export default {
     };
   },
   mounted() {
-    const access_token = localStorage.getItem('access_token');
-    let url = this.$route.params.howToPayApi
-    axios.get(url, {
-      headers: {
-        'Authorization': `Bearer ${access_token}`
-      }
-    }).then(response => {
-      this.paymentInstructions = response.data;
-    }).catch(error => {
-      console.log(error);
-    });
+    // Fetch the initial payment instructions
+  this.fetchPaymentStatus();
+
+  // Start a timer to fetch the updated status every 10 seconds (adjust the interval as needed)
+  this.statusUpdateTimer = setInterval(() => {
+    this.fetchPaymentStatus();
+  }, 30000);
   },
   methods: {
     copyVirtualAccountNumber() {
@@ -116,7 +122,25 @@ export default {
       tempInput.select();
       document.execCommand('copy');
       document.body.removeChild(tempInput);
+    },
+
+    fetchPaymentStatus(){
+      const access_token = localStorage.getItem('access_token');
+    let url = this.$route.params.howToPayApi
+    axios.get(url, {
+      headers: {
+        'Authorization': `Bearer ${access_token}`
+      }
+    }).then(response => {
+      this.paymentInstructions = response.data;
+    }).catch(error => {
+      console.log(error);
+    });
     }
-  }
+  },
+  beforeDestroy() {
+  // Clear the timer to avoid memory leaks
+  clearInterval(this.statusUpdateTimer);
+},
 }
 </script>

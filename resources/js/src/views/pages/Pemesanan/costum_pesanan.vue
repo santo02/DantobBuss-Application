@@ -1,18 +1,33 @@
 <template>
   <v-app>
-    <h3 pa-3 ma-3>Pilih Nomor Kursi </h3>
+    <h3 pa-3 ma-3>Pilih Nomor Kursi</h3>
     <v-card>
       <div v-for="item in schedule" :key="item.id">
-        <div class="chair" style="width: 400px; margin: 100 auto;">
-          <v-container v-if="item.type === 'Ekonomi'" class="grey text-center" style="width: 400px;">
+        <div class="chair" style="width: 400px; margin: 100 auto">
+          <v-container
+            v-if="item.type === 'Ekonomi'"
+            class="grey text-center"
+            style="width: 400px"
+          >
             <v-row no-gutters>
               <v-col v-for="n in +item.number_of_seats" :key="n" cols="2" sm="4">
-                <div v-if="n !== 3" :class="['pa- text-center  text-no-wrap rounded', {
-                  'style': selectedChair === (n > 3 ? n - 1 : n),
-                  'booked': bookingsChair.some(chair => chair.num_seats === (n > 3 ? n - 1 : n))
-                }]" @click="selectedChair = (n > 3 ? n - 1 : n)">
-                  <v-icon x-large>{{ selectedChair === (n > 3 ? n - 1 : n) ? icons.mdiSofaSingle :
-                    icons.mdiSofaSingleOutline
+                <div
+                  v-if="n !== 3"
+                  :class="[
+                    'pa- text-center  text-no-wrap rounded',
+                    {
+                      style: selectedChair === (n > 3 ? n - 1 : n),
+                      booked: bookingsChair.some(
+                        (chair) => chair.num_seats === (n > 3 ? n - 1 : n)
+                      ),
+                    },
+                  ]"
+                  @click="selectedChair = n > 3 ? n - 1 : n"
+                >
+                  <v-icon x-large>{{
+                    selectedChair === (n > 3 ? n - 1 : n)
+                      ? icons.mdiSofaSingle
+                      : icons.mdiSofaSingleOutline
                   }}</v-icon>
                   <h4>{{ n > 3 ? n - 1 : n }}</h4>
                 </div>
@@ -26,21 +41,79 @@
           </v-container>
           <v-container v-else class="grey text-center">
             <v-row no-gutters>
-              <v-col v-for="n in +item.number_of_seats + 4" :key="n" :cols="getColSize(n)">
+              <v-col
+                v-for="n in +item.number_of_seats + 4"
+                :key="n"
+                :cols="getColSize(n)"
+              >
                 <div v-if="n === 3">
                   <v-icon x-large>{{ icons.mdiSteering }}</v-icon>
                 </div>
-                <div v-else-if="n === 2 || n === 4 || n === 9 || n === 13">
-
-                </div>
-                <div v-else
-                  :class="['pa-', 'text-center', 'text-no-wrap', 'rounded', { 'style': selectedChair === (n >= 4 && n <= 8 ? n - 3 : n >= 10 && n <= 12 ? n - 4 : n >= 13 ? n - 5 : n), 'booked': bookingsChair.some(chair => chair.num_seats === (n > 2 ? n - 1 : n)) }]"
-                  @click="selectedChair = (n >= 4 && n <= 8 ? n - 3 : n >= 10 && n <= 12 ? n - 4 : n >= 13 ? n - 5 : n)">
-                  <v-icon x-large>{{ selectedChair === (n >= 5 && n <= 8 ? n - 3 : n >= 10 && n <= 12 ? n - 4 : n >= 13 ? n
-                    - 5 : n) ?
-                    icons.mdiSofaSingle :
-                    icons.mdiSofaSingleOutline }}</v-icon>
-                  <h4>{{ n >= 5 && n <= 8 ? n - 3 : n >= 10 && n <= 12 ? n - 4 : n >= 13 ? n - 5 : n }}</h4>
+                <div v-else-if="n === 2 || n === 4 || n === 9 || n === 13"></div>
+                <div
+                  v-else
+                  :class="[
+                    'pa-',
+                    'text-center',
+                    'text-no-wrap',
+                    'rounded',
+                    {
+                      style:
+                        selectedChair ===
+                        (n >= 5 && n <= 8
+                          ? n - 3
+                          : n >= 10 && n <= 12
+                          ? n - 4
+                          : n >= 13
+                          ? n - 5
+                          : n),
+                      booked: bookingsChair.some(
+                        (chair) =>
+                          chair.num_seats ===
+                          (n >= 5 && n <= 8
+                            ? n - 3
+                            : n >= 10 && n <= 12
+                            ? n - 4
+                            : n >= 13
+                            ? n - 5
+                            : n)
+                      ),
+                    },
+                  ]"
+                  @click="
+                    selectedChair =
+                      n >= 5 && n <= 8
+                        ? n - 3
+                        : n >= 10 && n <= 12
+                        ? n - 4
+                        : n >= 13
+                        ? n - 5
+                        : n
+                  "
+                >
+                  <v-icon x-large>{{
+                    selectedChair ===
+                    (n >= 5 && n <= 8
+                      ? n - 3
+                      : n >= 10 && n <= 12
+                      ? n - 4
+                      : n >= 13
+                      ? n - 5
+                      : n)
+                      ? icons.mdiSofaSingle
+                      : icons.mdiSofaSingleOutline
+                  }}</v-icon>
+                  <h4>
+                    {{
+                      n >= 5 && n <= 8
+                        ? n - 3
+                        : n >= 10 && n <= 12
+                        ? n - 4
+                        : n >= 13
+                        ? n - 5
+                        : n
+                    }}
+                  </h4>
                 </div>
               </v-col>
             </v-row>
@@ -59,7 +132,13 @@
                 </v-col>
                 <v-col cols="2" sm="4">
                   <div class="pa-2">
-                    <v-btn class="mx-2" fab dark color="secondary" @click="selectSeat(selectedChair)">
+                    <v-btn
+                      class="mx-2"
+                      fab
+                      dark
+                      color="secondary"
+                      @click="selectSeat(selectedChair)"
+                    >
                       <v-icon dark>
                         {{ icons.mdiChevronRight }}
                       </v-icon>
@@ -90,9 +169,15 @@
         </div>
       </div>
     </v-card>
-    <v-snackbar v-model="snackbar.show" :timeout="snackbar.timeout" :color="snackbar.color">
-      {{ snackbar.message }} <!-- Menampilkan pesan snackbar -->
-      <template v-slot:action> <!-- Menampilkan aksi/snackbar action -->
+    <v-snackbar
+      v-model="snackbar.show"
+      :timeout="snackbar.timeout"
+      :color="snackbar.color"
+    >
+      {{ snackbar.message }}
+      <!-- Menampilkan pesan snackbar -->
+      <template v-slot:action>
+        <!-- Menampilkan aksi/snackbar action -->
         <v-btn text @click="closeSnackbar">OK</v-btn>
         <!-- Menggunakan v-btn untuk aksi dan memanggil method closeSnackbar() -->
       </template>
@@ -100,19 +185,24 @@
   </v-app>
 </template>
 
-
-
 <script>
-import axios from 'axios';
-import moment from 'moment';
-import 'moment/locale/id';
-import { mapState, mapActions } from 'vuex'
-import { mdiCalendarClock, mdiAccountGroup, mdiAccount, mdiSofaSingleOutline, mdiSofaSingle, mdiChevronRight, mdiSteering } from '@mdi/js';
+import axios from "axios";
+import moment from "moment";
+import "moment/locale/id";
+import { mapState, mapActions } from "vuex";
+import {
+  mdiCalendarClock,
+  mdiAccountGroup,
+  mdiAccount,
+  mdiSofaSingleOutline,
+  mdiSofaSingle,
+  mdiChevronRight,
+  mdiSteering,
+} from "@mdi/js";
 
 export default {
   setup() {
     return {
-
       icons: {
         mdiCalendarClock,
         mdiAccountGroup,
@@ -120,9 +210,9 @@ export default {
         mdiSofaSingleOutline,
         mdiSofaSingle,
         mdiChevronRight,
-        mdiSteering
-      }
-    }
+        mdiSteering,
+      },
+    };
   },
 
   data() {
@@ -132,25 +222,25 @@ export default {
       bookingsChair: [],
       snackbar: {
         show: false,
-        message: '',
+        message: "",
         timeout: 3000,
-        color: 'error'
-      }
-    }
+        color: "error",
+      },
+    };
   },
   computed: {
-    ...mapState(['busData', 'selectedSeat']),
+    ...mapState(["busData", "selectedSeat"]),
     id_schedule() {
-      return this.$store.state.busData.id_schedule
+      return this.$store.state.busData.id_schedule;
     },
     harga() {
-      return this.$store.state.busData.harga
-    }
+      return this.$store.state.busData.harga;
+    },
   },
 
   mounted() {
     this.getSchedule();
-    this.getbookingsChair()
+    this.getbookingsChair();
   },
 
   methods: {
@@ -175,50 +265,56 @@ export default {
       // }
     },
     formatDate(date) {
-      moment.locale('id');
-      return moment(date).format('dddd, Do MMMM YYYY, hh:mm:ss');
+      moment.locale("id");
+      return moment(date).format("dddd, Do MMMM YYYY, hh:mm:ss");
     },
-    ...mapActions(['setSelectedSeat']),
+    ...mapActions(["setSelectedSeat"]),
 
     selectSeat(seat) {
       // set tempat duduk yang dipilih ke state Vuex
-      this.$store.dispatch('setSelectedSeat', seat)
+      this.$store.dispatch("setSelectedSeat", seat);
 
-      this.$router.push('/confirmasi-pemesanan')
+      this.$router.push("/confirmasi-pemesanan");
     },
 
     getbookingsChair() {
-      const access_token = localStorage.getItem('access_token');
-      axios.get(`/api/bookings/show/schedules/${this.id_schedule}`, {
-        headers: {
-          'Authorization': `Bearer ${access_token}`
-        }
-      }).then(response => {
-        this.bookingsChair = response.data.data.map((item) => {
-          return {
-            num_seats: item.num_seats,
-          }
-        });
+      const access_token = localStorage.getItem("access_token");
+      axios
+        .get(`/api/bookings/show/schedules/${this.id_schedule}`, {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        })
+        .then((response) => {
+          this.bookingsChair = response.data.data.map((item) => {
+            return {
+              num_seats: item.num_seats,
+            };
+          });
 
-        console.log(this.bookingsChair);
-      }).catch(error => {
-        console.log(error);
-      });
+          console.log(this.bookingsChair);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     getSchedule() {
-      const access_token = localStorage.getItem('access_token');
+      const access_token = localStorage.getItem("access_token");
       let uri = `/api/schedule/show/${this.id_schedule}`;
-      axios.get(uri, {
-        headers: {
-          'Authorization': `Bearer ${access_token}`
-        }
-      }).then(response => {
-        this.schedule = response.data.data;
-        // this.number = response.data.data.number_of_seats;
-        // console.log(this.number)
-      }).catch(error => {
-        console.log(error);
-      });
+      axios
+        .get(uri, {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        })
+        .then((response) => {
+          this.schedule = response.data.data;
+          // this.number = response.data.data.number_of_seats;
+          // console.log(this.number)
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     closeSnackbar() {
       this.snackbar.show = false;
@@ -228,21 +324,20 @@ export default {
     // cek setiap kali nilai dari selectedChair berubah
     selectedChair(newValue) {
       // simpan data selectedSeat ke local storage
-      localStorage.setItem('selectedSeat', JSON.stringify(newValue));
+      localStorage.setItem("selectedSeat", JSON.stringify(newValue));
 
       // Jika newValue lebih besar dari 3, kurangi satu
       if (newValue > 3) {
         newValue === newValue - 1;
       }
-      if (this.bookingsChair.some(chair => chair.num_seats === newValue)) {
-        this.snackbar.message = 'Kursi telah dipilih orang lain';
+      if (this.bookingsChair.some((chair) => chair.num_seats === newValue)) {
+        this.snackbar.message = "Kursi telah dipilih orang lain";
         this.snackbar.show = true;
         this.selectedChair = null;
       }
-    }
-  }
-
-}
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -262,7 +357,6 @@ export default {
   background-color: gainsboro;
   color: white;
   cursor: pointer;
-
 }
 
 .booked {

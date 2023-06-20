@@ -55,7 +55,7 @@ class PembayaranController extends Controller
         $requestBody = [
             "order" => [
                 "invoice_number" => "INV-EKBT-" . time(),
-                "amount" => 20000
+                "amount" => $request->harga
             ],
             "virtual_account_info" => [
                 "billing_type" => "FIX_BILL",
@@ -109,9 +109,6 @@ class PembayaranController extends Controller
         $pembayaran->method = 'noncash';
         $pembayaran->status = 'Menunggu';
         $pembayaran->date = Carbon::now();
-        $pembayaran->original_request_id = random_int(999, 99999);
-        $pembayaran->transaksi_id = $booking->id + 100000;
-        $pembayaran->terminal_id = random_int(100, 999);
         $pembayaran->invoice_number = "INV-EKBT-$currentDate";
         $pembayaran->amount    = $request->harga;
         $pembayaran->virtual_account_number = 000;
