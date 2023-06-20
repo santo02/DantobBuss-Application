@@ -15,7 +15,7 @@ class DokuController extends Controller
             $notificationHeader = getallheaders();
             $notificationBody = file_get_contents('php://input');
             $notificationPath = '/api/payments/notifications'; // Adjust according to your notification path
-            $secretKey = env("DOKU_SECRET_KEY"); // Adjust according to your secret key
+            $secretKey = "SK-3ut5p5VDAKku2Dqd541q"; // Adjust according to your secret key
 
             $digest = base64_encode(hash('sha256', $notificationBody, true));
             $rawSignature = "Client-Id:" . $notificationHeader['Client-Id'] . "\n"
@@ -36,6 +36,7 @@ class DokuController extends Controller
                 if ($transaction) {
                     $transaction->status = 'Berhasil';  
                     $transaction->save();
+
                 } else {
                     return response('Not Found', 404)->header('Content-Type', 'text/plain');
                 }
