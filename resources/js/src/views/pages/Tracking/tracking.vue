@@ -62,7 +62,7 @@ export default {
           title: "Posisi Kamu",
           icon: {
             url:
-              "http://127.0.0.1:8000/images/pin-user.gif",
+              "https://eticketingkbt.online/images/pin-user.gif",
             scaledSize: { width: 60, height: 60 },
             labelOrigin: { x: 16, y: -10 },
           },
@@ -102,7 +102,7 @@ export default {
                 title: "DRIVER",
                 icon: {
                   url:
-                    "http://127.0.0.1:8000/images/icon_mobil.jpg",
+                    "https://eticketingkbt.online/images/icon_mobil.jpg",
                   scaledSize: { width: 50, height: 50 },
                   labelOrigin: { x: 16, y: -10 },
                 },

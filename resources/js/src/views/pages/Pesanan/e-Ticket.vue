@@ -156,7 +156,7 @@ export default {
         ["Tanggal : ", this.ticket.tanggal, ""],
         ["", "", "", ""],
         ["Nama: ", this.ticket.name, "Tipe :", this.ticket.type],
-        ["Umur: ", this.ticket.age, "Asal : ", this.ticket.derpature],
+        ["No.Handphone: ", this.ticket.number_phone, "Asal : ", this.ticket.derpature],
         ["Nomor Bangku :", this.ticket.num_seats, "Tujuan: ", this.ticket.arrival],
         ["", "", "Tarif", "Rp." + this.ticket.harga],
         ["", "", "Status Pembayaran", this.ticket.status],
