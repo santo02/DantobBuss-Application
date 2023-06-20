@@ -47,9 +47,6 @@ class BookingController extends BaseController
         $pembayaran->method = 'cash';
         $pembayaran->status = 'Menunggu';
         $pembayaran->date = Carbon::now();
-        $pembayaran->original_request_id    = random_int(100, 9999);
-        $pembayaran->transaksi_id = $booking->id + 100000;
-        $pembayaran->terminal_id    = random_int(100, 999);
         $pembayaran->invoice_number     = "INV-$currentDate";
         $pembayaran->amount    = 10000;
         $pembayaran->virtual_account_number    = 000;

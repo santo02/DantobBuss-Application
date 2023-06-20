@@ -111,7 +111,7 @@ export default {
   // Start a timer to fetch the updated status every 10 seconds (adjust the interval as needed)
   this.statusUpdateTimer = setInterval(() => {
     this.fetchPaymentStatus();
-  }, 30000);
+  }, 3000);
   },
   methods: {
     copyVirtualAccountNumber() {
