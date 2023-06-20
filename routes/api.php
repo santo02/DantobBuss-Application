@@ -84,7 +84,7 @@ Route::middleware(['auth:api', 'role:admin_loket,direksi'])->group(function () {
 
 Route::middleware(['auth:api', 'role:passenger'])->group(function () {
     // Route::get('/bookings/my', [BookingController::class, 'getByUserId']);
-    Route::post('/api/payments/notifications', [DokuController::class, 'notifications']);
+    Route::post('/payments/notifications', [DokuController::class, 'notifications']);
 });
 
 

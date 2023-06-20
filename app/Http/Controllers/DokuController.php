@@ -34,7 +34,7 @@ class DokuController extends Controller
                 $transaction = Pembayaran::where("invoice_number", $decodedBody['order']['invoice_number'])->with(['user:id,name,uuid'])->first();
 
                 if ($transaction) {
-                    $transaction->status = 'Berhasil';
+                    $transaction->status = 'Berhasil';  
                     $transaction->save();
                 } else {
                     return response('Not Found', 404)->header('Content-Type', 'text/plain');
