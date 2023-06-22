@@ -93,14 +93,10 @@
 
 <script>
 import axios from 'axios';
-import { mdiCheckCircleOutline } from '@mdi/js';
 
 export default {
   data() {
     return {
-      icons: {
-        mdiCheckCircleOutline,
-      },
       paymentInstructions: []
     };
   },

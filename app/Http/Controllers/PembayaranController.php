@@ -49,7 +49,7 @@ class PembayaranController extends Controller
         $isoDateTime = date(DATE_ISO8601, strtotime($dateTime));
         $dateTimeFinal = substr($isoDateTime, 0, 19) . "Z";
         $requestDate =  $dateTimeFinal;
-        $targetPath = "/mandiri-virtual-account/v2/payment-code"; // For merchant request to Jokul, use Jokul path here. For HTTP Notification, use merchant path here
+        $targetPath = "/bca-virtual-account/v2/payment-code"; // For merchant request to Jokul, use Jokul path here. For HTTP Notification, use merchant path here
         $secretKey = "SK-3ut5p5VDAKku2Dqd541q";
 
         $requestBody = [
@@ -58,18 +58,15 @@ class PembayaranController extends Controller
                 "amount" => $request->harga
             ],
             "virtual_account_info" => [
-                "billing_type" => "FIX_BILL",
                 "expired_time" => 60,
-                "reusable_status" => false,
-                "info1" => "Merchant Demo Store",
-                "info2" => "Thank you for shopping",
-                "info3" => "on our store"
+                "billing_type" => "FIX_BILL",
+                "reusable_status"=> false,
+                "info1"=>"pembelian e-ticket KBT"
             ],
             "customer" => [
-                "name" => "test payment",
-                "email" => "anton@example.com"
+                "name" =>'test',
+                "email" =>'test@gmail.com'
             ]
-
         ];
 
         $digestValue = base64_encode(hash('sha256', json_encode($requestBody), true));
@@ -88,7 +85,7 @@ class PembayaranController extends Controller
             'Request-Id' => $requestId,
             'Request-Timestamp' => $dateTimeFinal,
             'Signature' => 'HMACSHA256=' . $signature,
-        ])->post('https://api-sandbox.doku.com/mandiri-virtual-account/v2/payment-code', $requestBody);
+        ])->post('https://api-sandbox.doku.com/bca-virtual-account/v2/payment-code', $requestBody);
 
         $responseJson = json_decode($response->body());
         $httpCode = $response->status();
