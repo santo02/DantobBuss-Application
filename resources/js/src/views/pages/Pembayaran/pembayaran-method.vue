@@ -3,7 +3,7 @@
     <h3 pa-3 ma-3>Pembayaran</h3>
     <v-card v-for="item in schedule" :key="item.id">
       <div class="container mt-3">
-        <div class=" text-center">
+        <div class="text-center">
           <h2>{{ item.derpature }} -> {{ item.arrival }}</h2>
           <h5>{{ formatHour(item.tanggal) }}</h5>
           <h5>{{ formatDate(item.tanggal) }}</h5>
@@ -39,20 +39,31 @@
           </v-col>
 
           <v-col>
-            <v-text-field id="loket" v-model="passengerData.alamatJemput" outlined dense placeholder="Umur" required
-              hide-details readonly></v-text-field>
+            <v-text-field
+              id="loket"
+              v-model="passengerData.alamatJemput"
+              outlined
+              dense
+              placeholder="Umur"
+              required
+              hide-details
+              readonly
+            ></v-text-field>
           </v-col>
         </div>
         <v-container>
           <div v-if="userRole == 'admin_loket'">
-
             <div class="text-center">
               <v-row justify="center">
                 <v-col class="col">
-                  <v-btn class="custom-button" color="primary" @click.prevent="BayarCash">Bayar Sekarang</v-btn>
+                  <v-btn class="custom-button" color="primary" @click.prevent="BayarCash"
+                    >Bayar Sekarang</v-btn
+                  >
                 </v-col>
                 <v-col class="col">
-                  <v-btn class="custom-button" color="error" @click.prevent="cancel">Batalkan</v-btn>
+                  <v-btn class="custom-button" color="error" @click.prevent="cancel"
+                    >Batalkan</v-btn
+                  >
                 </v-col>
               </v-row>
             </div>
@@ -71,7 +82,6 @@
             </v-row> -->
           <!-- <v-row v-if="showPaymentMethods"> -->
           <v-col>
-
             <!-- <v-radio-group v-model="selectedMethod"> -->
             <!-- nontunai -->
             <div v-if="userRole == 'passenger'">
@@ -81,11 +91,11 @@
               <v-banner>
                 <v-row>
                   <v-col cols="auto">
-                    <v-icon size="22" color="primary">{{ icons.mdiWalletOutline }}</v-icon>
+                    <v-icon size="22" color="primary">{{
+                      icons.mdiWalletOutline
+                    }}</v-icon>
                   </v-col>
-                  <v-col @click="togglePaymentNoncash">
-                    NonTunai
-                  </v-col>
+                  <v-col @click="togglePaymentNoncash"> NonTunai </v-col>
                   <v-col cols="auto">
                     <v-icon size="22">{{ icons.mdiChevronRight }}</v-icon>
                   </v-col>
@@ -96,7 +106,9 @@
                   <v-row>
                     <v-col cols="auto">
                       <v-col>
-                        <v-btn color="primary" @click.prevent="BayarNontunai">Bayar Sekarang</v-btn>
+                        <v-btn color="primary" @click.prevent="BayarNontunai"
+                          >Bayar Sekarang</v-btn
+                        >
                       </v-col>
                     </v-col>
                   </v-row>
@@ -110,19 +122,17 @@
         </v-container>
       </div>
     </v-card>
-
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import moment from 'moment';
-import 'moment/locale/id';
-import { mapState } from 'vuex';
-import Swal from 'sweetalert2'
+import axios from "axios";
+import moment from "moment";
+import "moment/locale/id";
+import { mapState } from "vuex";
+import Swal from "sweetalert2";
 
-
-import { mdiChevronRight, mdiCreditCard, mdiCashCheck, mdiWalletOutline } from '@mdi/js';
+import { mdiChevronRight, mdiCreditCard, mdiCashCheck, mdiWalletOutline } from "@mdi/js";
 
 export default {
   data() {
@@ -139,33 +149,33 @@ export default {
         mdiChevronRight,
         mdiCreditCard,
         mdiCashCheck,
-        mdiWalletOutline
+        mdiWalletOutline,
       },
 
       bookings: [
-        'schedules_id',
-        'name',
-        'number_phone ',
-        'num_seats',
-        'alamat_jemput',
-        'status',
-        'harga'
+        "schedules_id",
+        "name",
+        "number_phone ",
+        "num_seats",
+        "alamat_jemput",
+        "status",
+        "harga",
       ],
-    }
+    };
   },
   computed: {
-    ...mapState(['selectedSeat']),
+    ...mapState(["selectedSeat"]),
     passengerData() {
-      return this.$store.state.passengerData
+      return this.$store.state.passengerData;
     },
     id_schedule() {
-      return this.$store.state.busData.id_schedule
+      return this.$store.state.busData.id_schedule;
     },
     harga() {
-      return this.$store.state.busData.harga
+      return this.$store.state.busData.harga;
     },
     userRole() {
-      return this.$store.state.userRole
+      return this.$store.state.userRole;
     },
   },
   mounted() {
@@ -174,136 +184,146 @@ export default {
 
   methods: {
     formatDate(date) {
-      moment.locale('id');
-      return moment(date).format('dddd, Do MMMM YYYY');
+      moment.locale("id");
+      return moment(date).format("dddd, Do MMMM YYYY");
     },
     formatHour(date) {
-      moment.locale('id');
-      return moment(date).format('hh:mm');
+      moment.locale("id");
+      return moment(date).format("hh:mm");
     },
     togglePaymentcash() {
       this.showPaymentcash = !this.showPaymentcash;
-      this.showPaymentNoncash = false
+      this.showPaymentNoncash = false;
     },
     togglePaymentNoncash() {
       this.showPaymentNoncash = !this.showPaymentNoncash;
-      this.showPaymentcash = false
+      this.showPaymentcash = false;
     },
     getSchedule() {
-      const access_token = localStorage.getItem('access_token');
+      const access_token = localStorage.getItem("access_token");
       let uri = `/api/schedule/show/${this.id_schedule}`;
-      axios.get(uri, {
-        headers: {
-          'Authorization': `Bearer ${access_token}`
-        }
-      }).then(response => {
-        this.schedule = response.data.data;
-        console.log(this.schedule);
-      }).catch(error => {
-        console.log(error);
-      });
+      axios
+        .get(uri, {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        })
+        .then((response) => {
+          this.schedule = response.data.data;
+          console.log(this.schedule);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     BayarCash() {
-      const access_token = localStorage.getItem('access_token');
+      const access_token = localStorage.getItem("access_token");
 
-      axios.post('api/bookings', {
-        schedules_id: this.id_schedule,
-        name: this.passengerData.name,
-        number_phone: this.passengerData.number_phone,
-        num_seats: this.selectedSeat,
-        alamatJemput: this.passengerData.alamatJemput,
-        harga: this.harga,
-        status: 'berhasil',
-      }, {
-        headers: {
-          'Authorization': `Bearer ${access_token}`
-        }
-      }).then(response => {
-        // console.log(this.bookings);
+      axios
+        .post(
+          "api/bookings",
+          {
+            schedules_id: this.id_schedule,
+            name: this.passengerData.name,
+            number_phone: this.passengerData.number_phone,
+            num_seats: this.selectedSeat,
+            alamatJemput: this.passengerData.alamatJemput,
+            harga: this.harga,
+            status: "berhasil",
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+            },
+          }
+        )
+        .then((response) => {
+          // tampilkan SweetAlert jika pembayaran berhasil
+          Swal.fire({
+            icon: "success",
+            title: "Pembayaran Berhasil",
+            text: "Terima kasih sudah melakukan pembayaran",
+          });
 
-        // tampilkan SweetAlert jika pembayaran berhasil
-        Swal.fire({
-          icon: 'success',
-          title: 'Pembayaran Berhasil',
-          text: 'Terima kasih sudah melakukan pembayaran'
+          this.$router.push({
+            name: "pesananku",
+          });
         })
-
-        this.$router.push({
-          name: 'pesananku'
+        .catch((error) => {
+          console.log(error.response.data.errors);
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Terjadi kesalahan saat melakukan pembayaran",
+          });
         });
-      }).catch((error) => {
-        console.log(error.response.data.errors);
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Terjadi kesalahan saat melakukan pembayaran'
-        })
-      })
     },
     cancel() {
       Swal.fire({
-        icon: 'question',
-        title: 'Apakah anda ingin membatalkan pesanan?',
+        icon: "question",
+        title: "Apakah anda ingin membatalkan pesanan?",
         showCancelButton: true,
-        confirmButtonText: 'Ya',
-        cancelButtonText: 'Tidak',
-        confirmButtonColor: '#307475',
-
-
+        confirmButtonText: "Ya",
+        cancelButtonText: "Tidak",
+        confirmButtonColor: "#307475",
       }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
           this.$router.push({
-            name: 'pages-pemesanan'
+            name: "pages-pemesanan",
           });
         }
-      })
+      });
     },
     BayarNontunai() {
-      const access_token = localStorage.getItem('access_token');
+      const access_token = localStorage.getItem("access_token");
       try {
+        axios
+          .post(
+            "api/bookings/nontunai",
+            {
+              schedules_id: this.id_schedule,
+              name: this.passengerData.name,
+              number_phone: this.passengerData.number_phone,
+              num_seats: this.selectedSeat,
+              alamatJemput: this.passengerData.alamatJemput,
+              harga: this.harga,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${access_token}`,
+              },
+            }
+          )
+          .then((response) => {
+            this.loading = true;
+            const data = response.data;
+            window.open(data.data.virtual_account_info.how_to_pay_page, "_blank");
+            this.loading = false;
+            // this.$router.push({
+            //   name: "pemesanan",
+            // }); b 
+            // console.log(data);
+            // if (data.code === 200 && data.data.virtual_account_info.how_to_pay_api) {
+            //   const howToPayApi = data.data.virtual_account_info.how_to_pay_api;
+            //   console.log(howToPayApi)
+            //   this.$router.push({
+            //     name: 'pembayaran-instruction-bca',
+            //     params: { howToPayApi: howToPayApi }
+            //   });
 
-        axios.post('api/bookings/nontunai', {
-          schedules_id: this.id_schedule,
-          name: this.passengerData.name,
-          number_phone: this.passengerData.number_phone,
-          num_seats: this.selectedSeat,
-          alamatJemput: this.passengerData.alamatJemput,
-          harga: this.harga,
-        }, {
-          headers: {
-            'Authorization': `Bearer ${access_token}`
-          }
-
-        }).then(response => {
-          this.loading = true; // hidupkan animasi loading
-          const data = response.data;
-          console.log(data);
-          if (data.code === 200 && data.data.virtual_account_info.how_to_pay_api) {
-            const howToPayApi = data.data.virtual_account_info.how_to_pay_api;
-            this.$router.push({
-              name: 'pembayaran-instruction',
-              params: { howToPayApi: howToPayApi }
-            });
-
-          } else {
-            console.error("Invalid response or missing how_to_pay_page XML");
-          }
-        })
-      }
-      catch (error) {
+            // } else {
+            //   console.error("Invalid response or missing how_to_pay_page XML");
+            // }
+          });
+      } catch (error) {
         console.error(error);
-      }
-      finally {
+      } finally {
         this.loading = false;
       }
-    }
-
-    ,
+    },
   },
-
-
-}
+};
 </script>
 
 <style scoped>

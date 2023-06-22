@@ -207,6 +207,16 @@ const routes = [{
     // },
   },
   {
+    path: '/pembayaran-instruction-bca/:howToPayApi',
+    name: 'pembayaran-instruction-bca',
+    component: () => import('@/views/pages/Pembayaran/pembayaran-instruction-bca.vue'),
+    props: true,
+    // meta: {
+    //   requiresAuth: true,
+    //   requiresRole: 'passenger',
+    // },
+  },
+  {
     path: '/all-bus',
     name: 'all-bus',
     component: () => import('@/views/pages/Pemesanan/pemesanan-by-penumpang.vue'),
