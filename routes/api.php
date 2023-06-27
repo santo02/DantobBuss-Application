@@ -65,6 +65,7 @@ Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver,passenger']
     Route::post('bookings', [BookingController::class, 'store']);
     Route::post('bookings/nontunai', [PembayaranController::class, 'generateToken']);
     Route::get('/bookings/show/schedules/{id}', [BookingController::class, 'getOneSchedules']);
+    Route::get('/bookings/show/waiting/schedules/{id}', [BookingController::class, 'WaitPayment']);
     Route::get('/bookings/show/{id}', [BookingController::class, 'getOne']);
     Route::get('/pesanan/ticket/{id}', [TicketController::class, 'index']);
     Route::get('/bookings/my', [BookingController::class, 'getByUserId']);

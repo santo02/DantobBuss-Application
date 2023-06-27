@@ -366,10 +366,11 @@ export default {
 }
 
 .booked::before {
-  content: "Telah di booking";
+  content: "Tidak Tersedia";
   position: absolute;
   color: #000;
   padding: 5px 10px;
+  margin: 2px;
   border-radius: 5px;
   left: 50%;
   top: 50%;

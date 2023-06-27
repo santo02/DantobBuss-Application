@@ -61,7 +61,7 @@
         </v-col>
         <v-col>
           <div class="d-flex justify-content-between">
-            <v-card-title class="text-h6"
+            <v-card-title class="text-h6" width="100%"
               >{{ item.derpature }} - {{ item.arrival }}</v-card-title
             >
             <div class="text-h6 mt-4 mr-5 harga" style="color: #ff4c51">
@@ -312,6 +312,9 @@ export default {
 
   .detail {
     font-size: 12px;
+  }
+  .harga{
+    margin-left: auto;
   }
 }
 </style>
