@@ -42,7 +42,7 @@
           <v-container v-else class="grey text-center">
             <v-row no-gutters>
               <v-col
-                v-for="n in +item.number_of_seats + 4"
+                v-for="n in +item.number_of_seats + 2"
                 :key="n"
                 :cols="getColSize(n)"
               >
@@ -212,7 +212,7 @@ export default {
         mdiChevronRight,
         mdiSteering,
       },
-    };
+    };  
   },
 
   data() {
