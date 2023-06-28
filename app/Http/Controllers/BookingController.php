@@ -38,14 +38,13 @@ class BookingController extends BaseController
         $booking->number_phone = $request->number_phone;
         $booking->alamatJemput = $request->alamatJemput;
         $booking->num_seats = $request->num_seats;
-        $booking->status = "Menunggu";
         $booking->save();
 
         $pembayaran = new Pembayaran;
         $pembayaran->schedules_id = $request->schedules_id;
         $pembayaran->bookings_id = $booking->id;
         $pembayaran->method = 'cash';
-        $pembayaran->status = 'Menunggu';
+        $pembayaran->status = 'Berhasil';
         $pembayaran->date = Carbon::now();
         $pembayaran->invoice_number     = "INV-$currentDate";
         $pembayaran->amount    = 10000;
@@ -116,8 +115,10 @@ class BookingController extends BaseController
         ->join('routes', 'schedules.route_id', 'routes.id')
         ->join('pembayarans', 'pembayarans.bookings_id', 'bookings.id')
         ->where('schedules.id', $id)
-        ->select('bookings.*','schedules.id','routes.derpature','routes.arrival', 'buses.nomor_pintu', 'buses.type', 'buses.number_of_seats', 'schedules.tanggal', 'schedules.harga', 'schedules.status', 'pembayarans.method')
+        ->whereIn('pembayarans.status', ['Berhasil', 'Menunggu'])
+        ->select('bookings.*', 'schedules.id', 'routes.derpature', 'routes.arrival', 'buses.nomor_pintu', 'buses.type', 'buses.number_of_seats', 'schedules.tanggal', 'schedules.harga', 'schedules.status', 'pembayarans.method', 'pembayarans.status as status_pembayaran')
         ->get();
+
 
         $num_of_bookings = $booking->count();
         if ($booking) {
@@ -126,6 +127,25 @@ class BookingController extends BaseController
             return response()->json(['message' => 'Booking not found.'], 404);
         }
     }
+    public function WaitPayment($id)
+    {
+        $wait = DB::table('bookings')
+        ->join('schedules', 'bookings.schedules_id', 'schedules.id')
+        ->join('buses', 'schedules.bus_id', 'buses.id')
+        ->join('routes', 'schedules.route_id', 'routes.id')
+        ->join('pembayarans', 'pembayarans.bookings_id', 'bookings.id')
+        ->where('schedules.id', $id)
+        ->where('pembayarans.status', 'Menunggu')
+        ->select('bookings.*','schedules.id','routes.derpature','routes.arrival', 'buses.nomor_pintu', 'buses.type', 'buses.number_of_seats', 'schedules.tanggal', 'schedules.harga', 'schedules.status', 'pembayarans.method','pembayarans.status as status_pembayaran')
+        ->get();
+
+        $num_of_bookings = $wait->count();
+        if ($wait) {
+            return response()->json(['total' => $num_of_bookings, 'data' => $wait]);
+        } else {
+            return response()->json(['message' => 'Booking not found.'], 404);
+        }
+    }   
     public function update($id)
     {
         $booking = Bookings::find($id);

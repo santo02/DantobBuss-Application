@@ -22,7 +22,6 @@
                 $table->string('name');
                 $table->string('age');
                 $table->string('alamatJemput');
-                $table->string('status'); // kolom ini menunjukkan waktu keberangkatan
                 $table->integer('num_seats'); // kolom ini menunjukkan jumlah kursi yang dipesan
                 $table->timestamps();
             });

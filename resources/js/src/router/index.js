@@ -327,7 +327,7 @@ const routes = [{
     component: () => import('@/views/pages/Komisi/komisi.vue'),
     meta: {
       requiresAuth: true,
-      requiresRole: 'direksi',
+      // requiresRole: 'direksi',
     },
   },
   {

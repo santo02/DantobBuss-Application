@@ -61,11 +61,11 @@
         </v-col>
         <v-col>
           <div class="d-flex justify-content-between">
-            <v-card-title class="text-h6"
+            <v-card-title class="text-h6" width="100%"
               >{{ item.derpature }} - {{ item.arrival }}</v-card-title
             >
             <div class="text-h6 mt-4 mr-5 harga" style="color: #ff4c51">
-              Rp.{{ item.harga }}
+              {{ item.harga | toRupiah }}
             </div>
           </div>
           <div class="d-flex justify-content-between ml-5">
@@ -261,21 +261,31 @@ export default {
       })
       .then((response) => {
         this.route = response.data.data
-        .filter((item) => item.status == 1)
-        .map((item) => {
-          return {
-            id: item.id,
-            derpatures: item.derpature + " - " + item.arrival,
-            derpature: item.derpature + " - " + item.arrival,
-            // derpature: item.derpature,
-            // arrival: item.arrival,
-          };
-        });
+          .filter((item) => item.status == 1)
+          .map((item) => {
+            return {
+              id: item.id,
+              derpatures: item.derpature + " - " + item.arrival,
+              derpature: item.derpature + " - " + item.arrival,
+              // derpature: item.derpature,
+              // arrival: item.arrival,
+            };
+          });
         // console.log(this.route)
       })
       .catch((error) => {
         console.log(error);
       });
+  },
+  filters: {
+    toRupiah(value) {
+      const formatter = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+      return formatter.format(value);
+    },
   },
 };
 </script>
@@ -312,6 +322,9 @@ export default {
 
   .detail {
     font-size: 12px;
+  }
+  .harga {
+    margin-left: auto;
   }
 }
 </style>

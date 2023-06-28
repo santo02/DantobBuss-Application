@@ -72,7 +72,7 @@
               >{{ item.derpature }} - {{ item.arrival }}</v-card-title
             >
             <div class="text-h6 mt-4 mr-5 harga" style="color: #ff4c51">
-              Rp.{{ item.harga }}
+              {{ item.harga | toRupiah}}
             </div>
           </div>
           <v-row no-gutters class="my-3">
@@ -251,6 +251,16 @@ export default {
       .catch((error) => {
         console.log(error);
       });
+  },
+  filters: {
+    toRupiah(value) {
+      const formatter = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+      return formatter.format(value);
+    },
   },
 };
 </script>

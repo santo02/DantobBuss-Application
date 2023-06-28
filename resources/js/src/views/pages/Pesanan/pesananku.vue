@@ -31,7 +31,7 @@
                 rounded
                 small
                 color="warning"
-                class=" status text-capitalize"
+                class="status text-capitalize"
                 style="color: white; font-weight: bold"
               >
                 sedang berjalan
@@ -62,7 +62,7 @@
                         <v-btn
                           small
                           color="secondary"
-                          class="ml-3"
+                          class="ml-3 btn-tracking"
                           style="color: white; font-weight: bold"
                         >
                           Tracking
@@ -77,7 +77,7 @@
                         <v-btn
                           small
                           color="accent"
-                          class="ml-3"
+                          class="ml-3 btn-tiket"
                           style="color: white; font-weight: bold"
                         >
                           E-Ticket
@@ -239,5 +239,11 @@ export default {
 .harga {
   position: absolute;
   right: 150px;
+}
+@media only screen and (min-width: 481px) {
+  .btn-pesan {
+    margin-top: 160px;
+
+  }
 }
 </style>
