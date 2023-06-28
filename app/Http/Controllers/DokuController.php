@@ -31,7 +31,7 @@ class DokuController extends Controller
 
                 $decodedBody = json_decode($notificationBody, true);
 
-                $transaction = Pembayaran::where("invoice_number", $decodedBody['invoice_number'])->first();
+                $transaction = Pembayaran::where("invoice_number", $decodedBody['order']['invoice_number'])->with(['user:id,name,uuid'])->first();
 
                 if ($transaction) {
                     $transaction->status = 'Berhasil';  

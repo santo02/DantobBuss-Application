@@ -97,7 +97,7 @@ class PembayaranController extends Controller
         $booking->number_phone = $request->number_phone;
         $booking->alamatJemput = $request->alamatJemput;
         $booking->num_seats = $request->num_seats;
-        $booking->status = 'booked';
+        // $booking->status = 'booked';
 
         $booking->save();
         $pembayaran = new Pembayaran;
