@@ -64,7 +64,7 @@
             <v-card-title class="text-h6"
               >{{ item.derpature }} - {{ item.arrival }}</v-card-title
             >
-            <div class="text-h6 mt-4 mr-5 harga" style="color: #ff4c51">
+            <div class="harga" style="color: #ff4c51">
             {{ item.harga | toRupiah}}
             </div>
           </div>
@@ -301,6 +301,11 @@ export default {
   .text-title {
     position: absolute;
     text-align: center;
+  }
+  .harga {
+    position: absolute;
+    right: 20px;
+    top: 20px;
   }
 }
 

@@ -1,160 +1,107 @@
 <template>
   <div>
     <h2>Pesanan anda</h2>
-    <v-card flat>
-      <v-card
-        v-for="item in pesanan"
-        :key="item.bookings_id"
-        class="mb-2"
-        v-if="item.status === 'in_progress'"
-      >
-        <v-row no-gutters>
-          <v-col cols="auto">
-            <v-avatar size="40" class="mt-2 ml-2">
-              <img
-                :src="require('@/assets/images/logos/logo-KBT.png').default"
-                max-height="50px"
-                max-width="100px"
-                alt="avatar"
-              />
-            </v-avatar>
-          </v-col>
-          <v-col>
-            <div class="d-flex justify-content-between">
-              <v-card-title class="text-h6"
-                >{{ item.derpature }} - {{ item.arrival }}</v-card-title
-              >
-              <div class="text-h6 mt-4 mr-5 harga" style="color: #ff4c51">
-                Rp.{{ item.harga }}
-              </div>
-              <v-btn
-                rounded
-                small
-                color="warning"
-                class="status text-capitalize"
-                style="color: white; font-weight: bold"
-              >
-                sedang berjalan
-              </v-btn>
+    <!-- <v-card flat> -->
+    <v-card v-for="item in pesanan" :key="item.bookings_id" class="card">
+      <v-row no-gutters>
+        <v-col cols="auto">
+          <v-avatar size="40" class="mt-2 ml-2">
+            <img
+              :src="require('@/assets/images/logos/logo-KBT.png').default"
+              max-height="50px"
+              max-width="100px"
+              alt="avatar"
+            />
+          </v-avatar>
+        </v-col>
+        <v-col>
+          <div class="d-flex justify-content-between">
+            <v-card-title class="text-h6"
+              >{{ item.derpature }} - {{ item.arrival }}</v-card-title
+            >
+            <div class="text-h6 mt-4 mr-5 harga" style="color: #ff4c51">
+              {{ item.harga | toRupiah}}
             </div>
-            <div class="d-flex justify-content-between ml-5">
-              <h6>{{ item.nomor_pintu }}</h6>
-              <h6 class="text--primary ml-5">{{ item.type }}</h6>
-            </div>
-            <v-row no-gutters class="my-3">
-              <v-col cols="12">
-                <div class="row">
-                  <div class="col-md-4">
-                    <v-icon left>{{ icons.mdiCalendarClock }}</v-icon>
-                    {{ formatDate(item.tanggal) }}
-                  </div>
-                  <div class="col-md-2">
-                    <v-icon left>{{ icons.mdiAccount }}</v-icon> {{ item.name }}
-                  </div>
-                  <v-row class="col-md-4 d-flex justify-space-around">
-                    <div v-if="userRole === 'passenger'" class="col-md-2">
-                      <router-link
-                        :to="{
-                          name: 'tracking',
-                          params: { schedule_id: item.schedule_id },
-                        }"
-                      >
-                        <v-btn
-                          small
-                          color="secondary"
-                          class="ml-3 btn-tracking"
-                          style="color: white; font-weight: bold"
-                        >
-                          Tracking
-                        </v-btn>
-                      </router-link>
-                    </div>
-                    <div v-else class="col-md-2"></div>
-                    <div class="col-md-2">
-                      <router-link
-                        :to="{ name: 'e-ticket', params: { id: item.bookings_id } }"
-                      >
-                        <v-btn
-                          small
-                          color="accent"
-                          class="ml-3 btn-tiket"
-                          style="color: white; font-weight: bold"
-                        >
-                          E-Ticket
-                        </v-btn>
-                      </router-link>
-                    </div>
-                  </v-row>
+            <v-btn
+              v-if="item.status === 'in_progress' && item.status_pay == 'Berhasil'"
+              rounded
+              small
+              color="primary"
+              class="status text-capitalize"
+              style="color: white; font-weight: bold"
+            >
+              sedang berjalan
+            </v-btn>
+            <v-btn
+              v-if="item.status_pay === 'Menunggu'"
+              rounded
+              small
+              color="warning"
+              class="status text-capitalize"
+              style="color: white; font-weight: bold"
+            >
+              Menunggu Pembayaran
+            </v-btn>
+          </div>
+          <div class="d-flex justify-content-between ml-5">
+            <h6>{{ item.nomor_pintu }}</h6>
+            <h6 class="text--primary ml-5">{{ item.type }}</h6>
+          </div>
+          <v-row no-gutters class="my-3">
+            <v-col cols="12">
+              <div class="row">
+                <div class="col-md-4">
+                  <v-icon left>{{ icons.mdiCalendarClock }}</v-icon>
+                  {{ formatDate(item.tanggal) }}
                 </div>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-      </v-card>
-      <v-card
-        v-for="item in pesanan"
-        :key="item.schedule_id"
-        class="mb-2"
-        v-if="item.status !== 'in_progress'"
-      >
-        <v-row no-gutters>
-          <v-col cols="auto">
-            <v-avatar size="40" class="mt-2 ml-2">
-              <img
-                :src="require('@/assets/images/logos/logo-KBT.png').default"
-                max-height="50px"
-                max-width="100px"
-                alt="avatar"
-              />
-            </v-avatar>
-          </v-col>
-          <v-col>
-            <div class="d-flex justify-content-between">
-              <v-card-title class="text-h6"
-                >{{ item.derpature }} - {{ item.arrival }}</v-card-title
-              >
-              <div class="text-h6 mt-4 harga mr-5" style="color: #ff4c51">
-                Rp.{{ item.harga }}
-              </div>
-            </div>
-            <div class="d-flex justify-content-between ml-5">
-              <h6>{{ item.nomor_pintu }}</h6>
-              <h6 class="text--primary ml-5">{{ item.type }}</h6>
-            </div>
-            <v-row no-gutters class="my-3">
-              <v-col cols="12">
-                <div class="row">
-                  <div class="col-md-4">
-                    <v-icon left>{{ icons.mdiCalendarClock }}</v-icon>
-                    {{ formatDate(item.tanggal) }}
-                  </div>
-                  <div class="col-md-2">
-                    <v-icon left>{{ icons.mdiAccount }}</v-icon> {{ item.name }}
-                  </div>
-                  <v-row class="col-md-4 d-flex justify-space-around">
-                    <div class="col-md-2"></div>
-                    <div class="col-md-2">
-                      <router-link
-                        :to="{ name: 'e-ticket', params: { id: item.bookings_id } }"
-                      >
-                        <v-btn
-                          small
-                          color="accent"
-                          class="ml-3"
-                          style="color: white; font-weight: bold"
-                        >
-                          E-Ticket
-                        </v-btn>
-                      </router-link>
-                    </div>
-                  </v-row>
+                <div class="col-md-2">
+                  <v-icon left>{{ icons.mdiAccount }}</v-icon> {{ item.name }}
                 </div>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-      </v-card>
+                <v-row class="col-md-4 d-flex justify-space-around">
+                  <div v-if="userRole === 'passenger'" class="col-md-2">
+                    <router-link
+                      :to="{
+                        name: 'tracking',
+                        params: { schedule_id: item.schedule_id },
+                      }"
+                    >
+                      <v-btn
+                        v-if="
+                          item.status === 'in_progress' && item.status_pay === 'Berhasil'
+                        "
+                        small
+                        color="secondary"
+                        class="ml-3 btn-tracking"
+                        style="color: white; font-weight: bold"
+                      >
+                        Tracking
+                      </v-btn>
+                    </router-link>
+                  </div>
+                  <div v-else class="col-md-2"></div>
+                  <div class="col-md-2">
+                    <router-link
+                      :to="{ name: 'e-ticket', params: { id: item.bookings_id } }"
+                    >
+                      <v-btn
+                        v-if="item.status_pay == 'Berhasil'"
+                        small
+                        color="accent"
+                        class="ml-3 btn-tiket"
+                        style="color: white; font-weight: bold"
+                      >
+                        E-Ticket
+                      </v-btn>
+                    </router-link>
+                  </div>
+                </v-row>
+              </div>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
     </v-card>
+    <!-- </v-card> -->
   </div>
 </template>
 <script>
@@ -223,27 +170,44 @@ export default {
         console.log(error);
       });
   },
+  filters: {
+    toRupiah(value) {
+      const formatter = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+      return formatter.format(value);
+    },
+  },
 };
 </script>
 
-<style>
+<style scoped>
+.card {
+  margin-top: 25px;
+}
 .status {
   position: absolute;
   top: -15px;
   right: 10px;
+  cursor: default;
   /*  transform: rotate(38deg); */
   /* Mengatur rotasi button */
+}
+v-btn {
+  cursor: pointer;
 }
 
 /* Mengatur jarak dari kanan card */
 .harga {
   position: absolute;
-  right: 150px;
+  right: 20px;
+  top: 20px;
 }
 @media only screen and (min-width: 481px) {
   .btn-pesan {
     margin-top: 160px;
-
   }
 }
 </style>

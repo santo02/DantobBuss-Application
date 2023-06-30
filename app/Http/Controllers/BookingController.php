@@ -89,14 +89,16 @@ class BookingController extends BaseController
     public function getByUserId()
     {
         $user = Auth::user();
-        
+
         $booking = DB::table('bookings')
             ->join('schedules', 'bookings.schedules_id', 'schedules.id')
             ->join('buses', 'schedules.bus_id', 'buses.id')
             ->join('users', 'buses.supir_id', 'users.id')
             ->join('routes', 'schedules.route_id', 'routes.id')
+            ->join('pembayarans', 'pembayarans.bookings_id', 'bookings.id')
             ->where('bookings.user_id', $user->id)
-            ->select('bookings.id as bookings_id','bookings.created_at','schedules.id as schedule_id','routes.derpature','routes.arrival', 'buses.nomor_pintu', 'buses.type', 'buses.number_of_seats', 'schedules.tanggal', 'users.name', 'schedules.harga', 'schedules.status')
+            // ->where('pembayarans.status', '=', 'Berhasil')
+            ->select('bookings.id as bookings_id', 'bookings.created_at', 'schedules.id as schedule_id', 'routes.derpature', 'routes.arrival', 'buses.nomor_pintu', 'buses.type', 'buses.number_of_seats', 'schedules.tanggal', 'users.name', 'schedules.harga', 'schedules.status', 'pembayarans.status as status_pay')
             ->orderBy('bookings.created_at', 'DESC')
             ->get();
         // $booking = Bookings::with('schedules', 'user', 'buss')->where('user_id', $user->id)->get();
@@ -110,14 +112,14 @@ class BookingController extends BaseController
     public function getOneSchedules($id)
     {
         $booking = DB::table('bookings')
-        ->join('schedules', 'bookings.schedules_id', 'schedules.id')
-        ->join('buses', 'schedules.bus_id', 'buses.id')
-        ->join('routes', 'schedules.route_id', 'routes.id')
-        ->join('pembayarans', 'pembayarans.bookings_id', 'bookings.id')
-        ->where('schedules.id', $id)
-        ->whereIn('pembayarans.status', ['Berhasil', 'Menunggu'])
-        ->select('bookings.*', 'schedules.id', 'routes.derpature', 'routes.arrival', 'buses.nomor_pintu', 'buses.type', 'buses.number_of_seats', 'schedules.tanggal', 'schedules.harga', 'schedules.status', 'pembayarans.method', 'pembayarans.status as status_pembayaran')
-        ->get();
+            ->join('schedules', 'bookings.schedules_id', 'schedules.id')
+            ->join('buses', 'schedules.bus_id', 'buses.id')
+            ->join('routes', 'schedules.route_id', 'routes.id')
+            ->join('pembayarans', 'pembayarans.bookings_id', 'bookings.id')
+            ->where('schedules.id', $id)
+            ->whereIn('pembayarans.status', ['Berhasil', 'Menunggu'])
+            ->select('bookings.*', 'schedules.id', 'routes.derpature', 'routes.arrival', 'buses.nomor_pintu', 'buses.type', 'buses.number_of_seats', 'schedules.tanggal', 'schedules.harga', 'schedules.status', 'pembayarans.method', 'pembayarans.status as status_pembayaran')
+            ->get();
 
 
         $num_of_bookings = $booking->count();
@@ -130,14 +132,14 @@ class BookingController extends BaseController
     public function WaitPayment($id)
     {
         $wait = DB::table('bookings')
-        ->join('schedules', 'bookings.schedules_id', 'schedules.id')
-        ->join('buses', 'schedules.bus_id', 'buses.id')
-        ->join('routes', 'schedules.route_id', 'routes.id')
-        ->join('pembayarans', 'pembayarans.bookings_id', 'bookings.id')
-        ->where('schedules.id', $id)
-        ->where('pembayarans.status', 'Menunggu')
-        ->select('bookings.*','schedules.id','routes.derpature','routes.arrival', 'buses.nomor_pintu', 'buses.type', 'buses.number_of_seats', 'schedules.tanggal', 'schedules.harga', 'schedules.status', 'pembayarans.method','pembayarans.status as status_pembayaran')
-        ->get();
+            ->join('schedules', 'bookings.schedules_id', 'schedules.id')
+            ->join('buses', 'schedules.bus_id', 'buses.id')
+            ->join('routes', 'schedules.route_id', 'routes.id')
+            ->join('pembayarans', 'pembayarans.bookings_id', 'bookings.id')
+            ->where('schedules.id', $id)
+            ->where('pembayarans.status', 'Menunggu')
+            ->select('bookings.*', 'schedules.id', 'routes.derpature', 'routes.arrival', 'buses.nomor_pintu', 'buses.type', 'buses.number_of_seats', 'schedules.tanggal', 'schedules.harga', 'schedules.status', 'pembayarans.method', 'pembayarans.status as status_pembayaran')
+            ->get();
 
         $num_of_bookings = $wait->count();
         if ($wait) {
@@ -145,7 +147,7 @@ class BookingController extends BaseController
         } else {
             return response()->json(['message' => 'Booking not found.'], 404);
         }
-    }   
+    }
     public function update($id)
     {
         $booking = Bookings::find($id);
