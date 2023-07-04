@@ -64,7 +64,7 @@
             <v-card-title class="text-h6"
               >{{ item.derpature }} - {{ item.arrival }}</v-card-title
             >
-            <div class="text-h6 mt-4 mr-5 harga" style="color: #ff4c51">
+            <div class="harga" style="color: #ff4c51">
             {{ item.harga | toRupiah}}
             </div>
           </div>
@@ -88,7 +88,10 @@
                   :key="id"
                   v-if="item.schedule_id == id"
                 >
-                  <small color="secondary"
+                  <small v-if="count + 1 == item.number_of_seats" color="secondary"
+                    >Penuh
+                  </small>
+                  <small v-else color="secondary"
                     >Tersedia : {{ item.number_of_seats - count - 1 }} Kursi
                   </small>
                 </div>
@@ -287,7 +290,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 @media only screen and (max-width: 480px) {
   .btn-pesan {
     margin-top: 160px;
@@ -301,6 +304,11 @@ export default {
   .text-title {
     position: absolute;
     text-align: center;
+  }
+  .harga {
+    position: absolute;
+    right: 20px;
+    top: 20px;
   }
 }
 

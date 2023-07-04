@@ -64,8 +64,8 @@ class PembayaranController extends Controller
                 "info1"=>"pembelian e-ticket KBT"
             ],
             "customer" => [
-                "name" =>'test',
-                "email" =>'test@gmail.com'
+                "name" =>$request->name,
+                "email" =>$user->email
             ]
         ];
 
@@ -87,7 +87,7 @@ class PembayaranController extends Controller
             'Signature' => 'HMACSHA256=' . $signature,
         ])->post('https://api-sandbox.doku.com/bca-virtual-account/v2/payment-code', $requestBody);
 
-        $responseJson = json_decode($response->body());
+        $responseJson = json_decode($response->body()); 
         $httpCode = $response->status();
 
         $booking = new Bookings;
@@ -97,7 +97,6 @@ class PembayaranController extends Controller
         $booking->number_phone = $request->number_phone;
         $booking->alamatJemput = $request->alamatJemput;
         $booking->num_seats = $request->num_seats;
-        // $booking->status = 'booked';
 
         $booking->save();
         $pembayaran = new Pembayaran;
@@ -105,11 +104,14 @@ class PembayaranController extends Controller
         $pembayaran->bookings_id = $booking->id;
         $pembayaran->method = 'noncash';
         $pembayaran->status = 'Menunggu';
-        $pembayaran->date = Carbon::now();
+        $pembayaran->created_date = $responseJson->virtual_account_info->created_date;
+        $pembayaran->expired_date = $responseJson->virtual_account_info->expired_date;
+        $pembayaran->how_to_pay_api = $responseJson->virtual_account_info->how_to_pay_api;
+        $pembayaran->how_to_pay_page = $responseJson->virtual_account_info->how_to_pay_page;
         $pembayaran->invoice_number = "INV-EKBT-$currentDate";
         $pembayaran->amount    = $request->harga;
-        $pembayaran->virtual_account_number = 000;
-        $pembayaran->active = 000;
+        $pembayaran->virtual_account_number = $responseJson->virtual_account_info->virtual_account_number;
+        $pembayaran->active = 0;
         $pembayaran->save();
 
         return response()->json([

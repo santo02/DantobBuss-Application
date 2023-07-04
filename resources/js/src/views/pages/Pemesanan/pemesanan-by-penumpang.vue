@@ -64,7 +64,7 @@
             <v-card-title class="text-h6" width="100%"
               >{{ item.derpature }} - {{ item.arrival }}</v-card-title
             >
-            <div class="text-h6 mt-4 mr-5 harga" style="color: #ff4c51">
+            <div class="text-h6 harga" style="color: #ff4c51">
               {{ item.harga | toRupiah }}
             </div>
           </div>
@@ -74,7 +74,7 @@
           </div>
           <v-row no-gutters class="my-3">
             <v-col cols="12" class="detail">
-              <div class="row">
+              <div class="row list-detail">
                 <div class="col-md-3">
                   <v-icon left>{{ icons.mdiCalendarClock }}</v-icon>
                   {{ formatDate(item.tanggal) }}
@@ -88,7 +88,13 @@
                   :key="id"
                   v-if="item.schedule_id == id"
                 >
-                  <small color="secondary"
+                  <h3
+                    v-if="count + 1 == item.number_of_seats"
+                    style="color: #ff4c51; opacity: 70%"
+                  >
+                    PENUH
+                  </h3>
+                  <small v-else color="secondary"
                     >Tersedia : {{ item.number_of_seats - count - 1 }} Kursi
                   </small>
                 </div>
@@ -101,12 +107,11 @@
                   </small>
                 </div>
 
-                <v-row class="col-md-2 d-flex justify-space-around">
-                  <div class="col-md-2">
+                <v-row class="col-md-3 d-flex justify-space-around">
+                  <div class="col-md-12">
                     <v-btn
                       color="secondary"
                       @click="selectBus(item.schedule_id, item.harga)"
-                      class="ml-3"
                       style="color: white; font-weight: bold"
                     >
                       Pesan
@@ -289,42 +294,28 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
+.harga {
+  padding: 17px;
+  margin-left: auto;
+}
 @media only screen and (max-width: 480px) {
-  .btn-pesan {
-    margin-top: 160px;
-    height: 15px;
-    padding-left: 30px;
-    width: 120px;
-    font-size: 10px;
-    height: 50px;
+
+  .list-detail {
+    text-align: left;
+    margin-left: 10px;
   }
 
-  .text-title {
-    position: absolute;
-    text-align: center;
-  }
 }
 
-@media only screen and (min-width: 481px) {
-  .btn-pesan {
-    margin-top: 160px;
-    height: 15px;
-    padding-left: 30px;
-    width: 240px;
-    height: 50px;
-  }
 
-  .text-title {
-    position: absolute;
-    margin-left: 60%;
-  }
+@media only screen and (min-width: 960px) {
 
   .detail {
     font-size: 12px;
   }
-  .harga {
-    margin-left: auto;
+  .list-detail {
+    text-align: center;
   }
 }
 </style>

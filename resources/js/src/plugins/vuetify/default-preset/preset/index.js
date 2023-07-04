@@ -12,7 +12,6 @@ export default {
         info: '#16B1FF',
         warning: '#FFB400',
         error: '#FF4C51',
-
       },
       dark: {
         primary: '#9155FD',

@@ -22,9 +22,6 @@ return new class extends Migration
             $table->string('method');
             $table->string('status');
             $table->string('date');
-            $table->string('original_request_id');
-            $table->string('transaksi_id');
-            $table->string('terminal_id');
             $table->string('invoice_number');
             $table->bigInteger('amount');
             $table->string('virtual_account_number');

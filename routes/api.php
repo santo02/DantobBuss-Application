@@ -57,7 +57,7 @@ Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver,passenger,d
 });
 
 
-Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver,passenger'])->group(function () {
+Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver, '])->group(function () {
 
     Route::get('/schedule/show/{id}', [ScheduleController::class, 'SelectOne']);
     Route::get('/schedule/type/executive', [ScheduleController::class, 'ShowExecutive']);
@@ -69,7 +69,6 @@ Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver,passenger']
     Route::get('/bookings/show/{id}', [BookingController::class, 'getOne']);
     Route::get('/pesanan/ticket/{id}', [TicketController::class, 'index']);
     Route::get('/bookings/my', [BookingController::class, 'getByUserId']);
-
     Route::get('/routes/show/all', [RoutesController::class, 'index']);
 });
 
@@ -86,6 +85,7 @@ Route::middleware(['auth:api', 'role:admin_loket,direksi'])->group(function () {
 Route::middleware(['auth:api', 'role:passenger'])->group(function () {
     // Route::get('/bookings/my', [BookingController::class, 'getByUserId']);
     Route::post('/payments/notifications', [DokuController::class, 'notifications']);
+    Route::put('/bookings/update-status/{id}', [BookingController::class, 'expiredCheck']);
 });
 
 
@@ -135,7 +135,6 @@ Route::middleware(['auth:api', 'role:driver'])->group(function () {
 
 Route::middleware(['auth:api', 'role:direksi,admin_kantor'])->group(function () {
     Route::get('/Dashboard/direksi', [DashboardDireksiController::class, 'CountAll']);
-
     Route::get('/Keuangan/all/index', [DireksiController::class, 'index']);
     Route::get('/Detail-keuangan-Bydate/all/{tanggal}', [DireksiController::class, 'getByTanggal']);
     Route::get('/Detail-keuangan-ByPassenger/all/{id}', [DireksiController::class, 'getPassenger']);
