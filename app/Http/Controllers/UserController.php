@@ -22,7 +22,6 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|string',
-            'username' => 'required|string',
             'phone_number' => 'required|string',
             'gender' => 'required|string',
             'address' => 'required|string',
@@ -33,7 +32,6 @@ class UserController extends Controller
 
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->username = $request->username;
         $user->phone_number = $request->phone_number;
         $user->gender = $request->gender;
         $user->address = $request->address;

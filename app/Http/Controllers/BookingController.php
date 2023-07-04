@@ -98,10 +98,30 @@ class BookingController extends BaseController
             ->join('pembayarans', 'pembayarans.bookings_id', 'bookings.id')
             ->where('bookings.user_id', $user->id)
             // ->where('pembayarans.status', '=', 'Berhasil')
-            ->select('bookings.id as bookings_id', 'bookings.created_at', 'schedules.id as schedule_id', 'routes.derpature', 'routes.arrival', 'buses.nomor_pintu', 'buses.type', 'buses.number_of_seats', 'schedules.tanggal', 'users.name', 'schedules.harga', 'schedules.status', 'pembayarans.status as status_pay')
+            ->select(
+                'pembayarans.id as pembayarans_id',
+                'bookings.id as bookings_id',
+                'bookings.created_at',
+                'schedules.id as schedule_id',
+                'routes.derpature',
+                'routes.arrival',
+                'buses.nomor_pintu',
+                'buses.type',
+                'buses.number_of_seats',
+                'schedules.tanggal',
+                'users.name',
+                'schedules.harga',
+                'schedules.status',
+                'pembayarans.status as status_pay',
+                'pembayarans.how_to_pay_page',
+                'pembayarans.how_to_pay_api',
+                'pembayarans.created_date',
+                'pembayarans.expired_date'
+            )
             ->orderBy('bookings.created_at', 'DESC')
             ->get();
-        // $booking = Bookings::with('schedules', 'user', 'buss')->where('user_id', $user->id)->get();
+
+
         if ($booking) {
             return response()->json($booking);
         } else {
@@ -152,5 +172,17 @@ class BookingController extends BaseController
     {
         $booking = Bookings::find($id);
         return $this->sendResponse($booking, 'Booking Retrieved Successfully');
+    }
+
+    public function expiredCheck($id)
+    {
+        $pembayaran = Pembayaran::find($id);
+
+        if (!$pembayaran && $pembayaran != 'Expired') {
+            return $this->sendResponse(null, 'Pembayaran Not Found');
+        }
+        $pembayaran->status = 'Expired';
+        $pembayaran->save();
+        return response()->json(['data' => $pembayaran, 'message' => 'update berhasil']);
     }
 }

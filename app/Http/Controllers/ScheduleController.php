@@ -57,8 +57,9 @@ class ScheduleController extends BaseController
 
         $hasBooked = DB::table('schedules')
             ->join('bookings', 'bookings.schedules_id', '=', 'schedules.id')
+            ->join('pembayarans', 'pembayarans.bookings_id', 'bookings.id')
             ->join('buses', 'schedules.bus_id', '=', 'buses.id')
-            // ->where('buses.type', "=", 'Economi')
+            ->whereIn('pembayarans.status', ['Berhasil', 'Menunggu'])
             ->select('bookings.schedules_id')
             ->get();
 

@@ -13,7 +13,7 @@
       </v-container>
     </v-row>
     <v-container>
-      <v-row>
+      <v-row style="justify-content: flex-end">
         <v-col>
           <v-text-field
             v-model="selectedDate"
@@ -36,6 +36,15 @@
             hide-details
           ></v-select
         ></v-col>
+        <v-col
+          ><v-select
+            v-model="selectedType"
+            :items="['Economi', 'Executive']"
+            placeholder="Pilih Type"
+            clearable
+            hide-details
+          ></v-select
+        ></v-col>
       </v-row>
     </v-container>
     <!-- <v-slide-group class="pa-4" multiple show-arrows>
@@ -49,7 +58,7 @@
         </v-card>
       </v-slide-item>
     </v-slide-group> -->
-    <h3 class="m-4">Operasional Mobil Bus Danau Toba</h3>
+    <h3 class="mt-4 mb-4">Operasional Mobil Bus Danau Toba</h3>
 
     <v-card v-if="filterSchedules().length < 1">
       <h3 class="text-center py-4">Maaf, tidak ada jadwal yang tersedia saat ini.</h3>
@@ -71,18 +80,22 @@
             <v-card-title class="text-h6"
               >{{ item.derpature }} - {{ item.arrival }}</v-card-title
             >
-            <div class="text-h6 mt-4 mr-5 harga" style="color: #ff4c51">
-              {{ item.harga | toRupiah}}
+            <div class="harga text-h6" style="color: #ff4c51">
+              {{ item.harga | toRupiah }}
             </div>
           </div>
+          <div class="d-flex justify-content-between ml-5">
+            <h6>{{ item.nomor_pintu }}</h6>
+            <h6 class="text--primary ml-5">{{ item.type }}</h6>
+          </div>
           <v-row no-gutters class="my-3">
-            <v-col cols="12">
+            <v-col cols="12" class="detail">
               <div class="row">
-                <div class="col-md-5">
+                <div class="col-md-3">
                   <v-icon left>{{ icons.mdiCalendarClock }}</v-icon>
                   {{ formatDate(item.tanggal) }}
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                   <v-icon left>{{ icons.mdiAccount }}</v-icon> {{ item.name }}
                 </div>
                 <div
@@ -91,7 +104,10 @@
                   :key="id"
                   v-if="item.schedule_id == id"
                 >
-                  <small color="secondary"
+                  <small v-if="count + 1 == item.number_of_seats" color="secondary"
+                    >Penuh
+                  </small>
+                  <small v-else color="secondary"
                     >Tersedia : {{ item.number_of_seats - count - 1 }} Kursi
                   </small>
                 </div>
@@ -103,16 +119,19 @@
                     >Tersedia : {{ item.number_of_seats - 1 }} Kursi
                   </small>
                 </div>
-                <div class="col-md-2">
-                  <v-btn
-                    color="secondary"
-                    @click="selectBus(item.schedule_id, item.harga)"
-                    class="ml-3"
-                    style="color: white; font-weight: bold"
-                  >
-                    Pesan
-                  </v-btn>
-                </div>
+
+                <v-row class="col-md-2 d-flex justify-space-around">
+                  <div class="col-md-2">
+                    <v-btn
+                      color="secondary"
+                      @click="selectBus(item.schedule_id, item.harga)"
+                      class="ml-3"
+                      style="color: white; font-weight: bold"
+                    >
+                      Pesan
+                    </v-btn>
+                  </div>
+                </v-row>
               </div>
             </v-col>
           </v-row>
@@ -148,6 +167,7 @@ export default {
       },
       selectedDate: null,
       selectedRoute: null,
+      selectedType: null,
     };
   },
 
@@ -206,12 +226,13 @@ export default {
         filteredSchedules = filteredSchedules.filter(
           (schedule) => schedule.id === this.selectedRoute
         );
-
-        if (filteredSchedules < 1) {
-          console.log("KOsong woiiiii");
-        }
       }
-
+      if (this.selectedType) {
+        console.log(this.selectedType);
+        filteredSchedules = filteredSchedules.filter(
+          (schedule) => schedule.type === this.selectedType
+        );
+      }
       return filteredSchedules;
     },
     countBookings(bookings) {
@@ -264,7 +285,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 @media only screen and (max-width: 480px) {
   .btn-pesan {
     margin-top: 160px;
@@ -278,6 +299,11 @@ export default {
   .text-title {
     position: absolute;
     text-align: center;
+  }
+  .harga {
+    position: absolute;
+    right: 20px;
+    top: 20px;
   }
 }
 
@@ -293,6 +319,16 @@ export default {
   .text-title {
     position: absolute;
     margin-left: 60%;
+  }
+
+  .detail {
+    font-size: 12px;
+  }
+
+  .harga {
+    position: absolute;
+    right: 20px;
+    top: 20px;
   }
 }
 </style>

@@ -300,9 +300,13 @@ export default {
             const data = response.data;
             window.open(data.data.virtual_account_info.how_to_pay_page, "_blank");
             this.loading = false;
-            // this.$router.push({
-            //   name: "pemesanan",
-            // }); b 
+
+            setTimeout(() => {
+              this.$router.push({
+                name: 'pesananku',
+              });
+            }, 3000);
+
             // console.log(data);
             // if (data.code === 200 && data.data.virtual_account_info.how_to_pay_api) {
             //   const howToPayApi = data.data.virtual_account_info.how_to_pay_api;

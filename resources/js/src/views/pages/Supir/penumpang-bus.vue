@@ -66,7 +66,7 @@ export default {
       headers: [
         { text: "Nama", value: "name" },
         { text: "Bangku", value: "num_seats" },
-        { text: "Umur", value: "age" },
+        { text: "No Handphone", value: "number_phone" },
         { text: "Penjemputan", value: "alamatJemput" },
         { text: "Metode", value: "method" },
         { text: "Harga", value: "harga" },

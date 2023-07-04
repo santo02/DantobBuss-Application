@@ -14,6 +14,15 @@ const routes = [{
     },
   },
   {
+    path: '/forgot-password',
+    name: 'pages-forgot-password',
+    component: () => import('@/views/pages/Lupa-password.vue'),
+    meta: {
+      requiresAuth: false,
+      layout: 'blank',
+    },
+  },
+  {
     path: '/supir',
     name: 'pages-supir',
     component: () => import('@/views/pages/supir/list-supir.vue'),

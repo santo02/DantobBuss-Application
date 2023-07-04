@@ -18,8 +18,8 @@
 
         <!-- title -->
         <v-card-text>
-          <p class="text-1xl font-weight-semibold text--primary mb-2">Welcome to E-KBT</p>
-          <p class="mb-2">Kepuasan Penumpang adalah Kebahagian Kami</p>
+          <p class="text-1xl font-weight-semibold text--primary mb-2 text-center">Welcome to E-KBT</p>
+          <p class="mb-2 text-center">Kepuasan Penumpang adalah Kebahagian Kami</p>
         </v-card-text>
         <v-card-text>
           <v-form ref="form" @submit.prevent="login">
@@ -55,11 +55,11 @@
             </label>
 
             <div class="d-flex align-center justify-space-between flex-wrap">
-              <v-checkbox label="Remember Me" hide-details class="me-3 mt-1">
+              <v-checkbox label="Ingat saya" hide-details class="me-3 mt-1">
               </v-checkbox>
 
               <!-- forgot link -->
-              <a href="javascript:void(0)" class="mt-1"> Forgot Password? </a>
+              <router-link :to="{ name: 'pages-forgot-password' }"> Lupa Password? </router-link>
             </div>
 
             <v-btn type="submit" block color="primary" class="mt-6" :loading="isLoading">
@@ -77,8 +77,8 @@
 
         <!-- create new account  -->
         <v-card-text class="d-flex align-center justify-center flex-wrap mt-2">
-          <span class="me-2"> New on our platform? </span>
-          <router-link :to="{ name: 'pages-register' }"> Create an account </router-link>
+          <span class="me-2"> Belum memiliki akun?</span>
+          <router-link :to="{ name: 'pages-register' }"> Daftar sekarang</router-link>
         </v-card-text>
 
         <!-- divider -->
@@ -102,51 +102,23 @@
 </template>
 
 <script>
-import {
-  mdiFacebook,
-  mdiTwitter,
-  mdiGithub,
-  mdiGoogle,
-  mdiEyeOutline,
-  mdiEyeOffOutline,
-} from "@mdi/js";
+import { mdiEyeOutline, mdiEyeOffOutline } from "@mdi/js";
 import { ref } from "@vue/composition-api";
 import axios from "axios";
+import Swal from "sweetalert2";
 
-import doku from "../../utils/doku";
+// import doku from "../../utils/doku";
 
 export default {
   setup() {
     const isPasswordVisible = ref(false);
     const email = ref("");
     const password = ref("");
-    const socialLink = [
-      {
-        icon: mdiFacebook,
-        color: "#4267b2",
-        colorInDark: "#4267b2",
-      },
-      {
-        icon: mdiTwitter,
-        color: "#1da1f2",
-        colorInDark: "#1da1f2",
-      },
-      {
-        icon: mdiGithub,
-        color: "#272727",
-        colorInDark: "#fff",
-      },
-      {
-        icon: mdiGoogle,
-        color: "#db4437",
-        colorInDark: "#db4437",
-      },
-    ];
     return {
       isPasswordVisible,
       email,
       password,
-      socialLink,
+      // socialLink,
       icons: {
         mdiEyeOutline,
         mdiEyeOffOutline,
@@ -180,10 +152,22 @@ export default {
         .catch((error) => {
           if (error.response.status === 422) {
             this.errors = error.response.data.errors;
-            console.log(this.errors);
-          } else if (error.response.status === 404) {
-            this.errors = error.response.data.errors;
-            console.log(this.errors);
+            // console.log(this.errors);
+            Swal.fire({
+              icon: "error",
+              title: "Login Gagal",
+              text: "Email dan Password tidak boleh kosong!",
+              confirmButtonText: "Ok",
+              confirmButtonColor: "#d33",
+            });
+          } else if (error.response.status === 401) {
+            Swal.fire({
+              icon: "error",
+              title: "Login gagal",
+              text: "Email atau Password salah!",
+              confirmButtonText: "Ok",
+              confirmButtonColor: "#d33",
+            });
           } else {
             this.errors = { general: ["Something went wrong. Please try again later."] };
           }

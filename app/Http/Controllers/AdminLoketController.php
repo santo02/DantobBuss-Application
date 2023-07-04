@@ -16,13 +16,9 @@ class AdminLoketController extends Controller
         $fields = $request->validate([
             'name' => 'required|string|max:20',
             'email' => 'required|string|unique:users',
-            'username' => 'required|string',
             'phone_number' => 'required|string',
             'address' => 'required|string',
             'gender' => 'required|string',
-            // 'password' => 'required|string',
-            // 'confirm_password' => 'required|same:password'
-
         ]);
 
         $input = $request->all();

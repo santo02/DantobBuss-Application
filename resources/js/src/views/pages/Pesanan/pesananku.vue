@@ -20,7 +20,7 @@
               >{{ item.derpature }} - {{ item.arrival }}</v-card-title
             >
             <div class="text-h6 mt-4 mr-5 harga" style="color: #ff4c51">
-              {{ item.harga | toRupiah}}
+              {{ item.harga | toRupiah }}
             </div>
             <v-btn
               v-if="item.status === 'in_progress' && item.status_pay == 'Berhasil'"
@@ -57,8 +57,8 @@
                 <div class="col-md-2">
                   <v-icon left>{{ icons.mdiAccount }}</v-icon> {{ item.name }}
                 </div>
-                <v-row class="col-md-4 d-flex justify-space-around">
-                  <div v-if="userRole === 'passenger'" class="col-md-2">
+                <v-row class="col-md-6 d-flex">
+                  <div v-if="userRole === 'passenger'" class="col-md-4">
                     <router-link
                       :to="{
                         name: 'tracking',
@@ -78,7 +78,21 @@
                       </v-btn>
                     </router-link>
                   </div>
-                  <div v-else class="col-md-2"></div>
+                  <div
+                    v-if="userRole === 'passenger' && item.status_pay === 'Menunggu'"
+                    class="col-md-2"
+                  >
+                    <a :href="item.how_to_pay_page" target="_blank">
+                      <v-btn
+                        small
+                        color="primary"
+                        class="ml-3 btn-menunggu"
+                        style="color: white; font-weight: bold"
+                      >
+                        Bayar
+                      </v-btn>
+                    </a>
+                  </div>
                   <div class="col-md-2">
                     <router-link
                       :to="{ name: 'e-ticket', params: { id: item.bookings_id } }"
@@ -164,7 +178,40 @@ export default {
           (pesanan) =>
             pesanan.status === "in_progress" || pesanan.status === "not_started"
         );
-        // console.log(response.pesanan);
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+        const day = String(currentDate.getDate()).padStart(2, "0");
+        const hours = String(currentDate.getHours()).padStart(2, "0");
+        const minutes = String(currentDate.getMinutes()).padStart(2, "0");
+        const seconds = String(currentDate.getSeconds()).padStart(2, "0");
+
+        const now = `${year}${month}${day}${hours}${minutes}${seconds}`;
+
+        // console.log(now);
+        this.pesanan.forEach((item) => {
+          const expiredDate = item.expired_date;
+          // console.log(expiredDate);
+          // console.log(now);
+
+          if (now > expiredDate && item.status_pay !== "Expired") {
+            item.status_pay = "Expired";
+            // console.log(item.pembayarans_id);
+            // console.log("expired");
+            // Mengirim permintaan ke API untuk memperbarui status pembayaran
+            axios.put(
+              `/api/bookings/update-status/${item.pembayarans_id}`,
+              {
+                status_pay: "Expired",
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${access_token}`,
+                },
+              }
+            );
+          }
+        });
       })
       .catch((error) => {
         console.log(error);

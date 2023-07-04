@@ -144,7 +144,7 @@ export default {
       if (this.mobil.type === 'Ekonomi') {
         this.mobil.number_of_seats = '12';
       } else if (this.mobil.type === 'Eksekutif') {
-        this.mobil.number_of_seats = '14';
+        this.mobil.number_of_seats = '12';
       }
     },
     AddMobil() {

@@ -88,7 +88,10 @@
                   :key="id"
                   v-if="item.schedule_id == id"
                 >
-                  <small color="secondary"
+                  <small v-if="count + 1 == item.number_of_seats" color="secondary"
+                    >Penuh
+                  </small>
+                  <small v-else color="secondary"
                     >Tersedia : {{ item.number_of_seats - count - 1 }} Kursi
                   </small>
                 </div>
@@ -287,7 +290,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 @media only screen and (max-width: 480px) {
   .btn-pesan {
     margin-top: 160px;
