@@ -82,9 +82,9 @@ Route::middleware(['auth:api', 'role:admin_loket,direksi'])->group(function () {
     Route::put('/bookings/update/{id}', [BookingController::class, 'update']);
 });
 
+Route::post('/payments/notifications', [DokuController::class, 'notifications']);
 Route::middleware(['auth:api', 'role:passenger'])->group(function () {
     // Route::get('/bookings/my', [BookingController::class, 'getByUserId']);
-    Route::post('/payments/notifications', [DokuController::class, 'notifications']);
     Route::put('/bookings/update-status/{id}', [BookingController::class, 'expiredCheck']);
 });
 
