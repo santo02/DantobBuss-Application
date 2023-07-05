@@ -3,7 +3,7 @@
     <google-map :center="center" :zoom="15" style="width: 100%; height: 80vh">
       <map-marker :position="center" :options="centerMarkerOptions"></map-marker>
       <map-marker :position="carPosition" :options="carMarkerOptions"></map-marker>
-      <map-polyline :path="polylinePath" :options="polylineOptions"></map-polyline>
+      <!-- <map-polyline :path="polylinePath" :options="polylineOptions"></map-polyline> -->
     </google-map>
   </div>
 </template>
@@ -18,7 +18,7 @@ export default {
   components: {
     "google-map": Map,
     "map-marker": Marker,
-    "map-polyline": Polyline,
+    // "map-polyline": Polyline,
   },
   data() {
     return {
@@ -43,12 +43,12 @@ export default {
           labelOrigin: { x: 16, y: -10 },
         },
       },
-      polylinePath: [],
-      polylineOptions: {
-        strokeColor: "#FF0000",
-        strokeOpacity: 1.0,
-        strokeWeight: 2,
-      },
+      // polylinePath: [],
+      // polylineOptions: {
+      //   strokeColor: "#FF0000",
+      //   strokeOpacity: 1.0,
+      //   strokeWeight: 2,
+      // },
     };
   },
   created() {
@@ -101,7 +101,7 @@ export default {
             this.carPosition = message.data.location.center;
 
             // Update the polyline path when the car position changes
-            this.updatePolylinePath();
+            // this.updatePolylinePath();
           });
         });
       })
@@ -116,13 +116,13 @@ export default {
     }
   },
   methods: {
-    updatePolylinePath() {
-      if (this.center && this.carPosition) {
-        this.polylinePath = [this.center, this.carPosition];
-      } else {
-        this.polylinePath = [];
-      }
-    },
+    // updatePolylinePath() {
+    //   if (this.center && this.carPosition) {
+    //     this.polylinePath = [this.center, this.carPosition];
+    //   } else {
+    //     this.polylinePath = [];
+    //   }
+    // },
   },
 };
 </script>
