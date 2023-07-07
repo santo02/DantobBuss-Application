@@ -178,7 +178,7 @@ class BookingController extends BaseController
     {
         $pembayaran = Pembayaran::find($id);
 
-        if (!$pembayaran && $pembayaran != 'Expired') {
+        if (!$pembayaran && $pembayaran != 'Expired'    ) {
             return $this->sendResponse(null, 'Pembayaran Not Found');
         }
         $pembayaran->status = 'Expired';

@@ -98,7 +98,7 @@ export default {
         'Authorization': `Bearer ${access_token}`
       }
     }).then(response => {
-      this.pesanan = response.data.filter(pesanan => pesanan.status === 'complete');
+      this.pesanan = response.data.filter(pesanan => pesanan.status === 'complete' && pesanan.status_pay === 'Berhasil');
       console.log(this.pesanan)
     }).catch(error => {
       console.log(error);

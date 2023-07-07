@@ -194,7 +194,7 @@ export default {
           // console.log(expiredDate);
           // console.log(now);
 
-          if (now > expiredDate && item.status_pay !== "Expired") {
+          if (now > expiredDate && item.status_pay !== "Expired" && item.status_pay !== "Berhasil") {
             item.status_pay = "Expired";
             // console.log(item.pembayarans_id);
             // console.log("expired");
