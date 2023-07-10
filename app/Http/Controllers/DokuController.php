@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Pembayaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 class DokuController extends Controller
 {
-
     public function notifications(Request $request)
     {
         try {
@@ -26,23 +26,23 @@ class DokuController extends Controller
 
             $signature = base64_encode(hash_hmac('sha256', $rawSignature, $secretKey, true));
             $finalSignature = 'HMACSHA256=' . $signature;
+            // return [$finalSignature, $notificationHeader['Signature']];
 
             if ($finalSignature == $notificationHeader['Signature']) {
+                // TODO: Process if Signature is Valid
 
                 $decodedBody = json_decode($notificationBody, true);
 
                 $transaction = Pembayaran::where("invoice_number", $decodedBody['order']['invoice_number'])->first();
 
                 if ($transaction) {
-                    $transaction->status = 'Berhasil';  
+                    $transaction->status = 'Berhasil';
                     $transaction->save();
-
                 } else {
                     return response('Not Found', 404)->header('Content-Type', 'text/plain');
                 }
                 return response('OK', 200)->header('Content-Type', 'text/plain');
             } else {
-                // TODO: Response with 400 errors for Invalid Signature
                 return response('Invalid Signature', 400)->header('Content-Type', 'text/plain');
             }
         } catch (\Throwable $th) {

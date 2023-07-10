@@ -19,7 +19,7 @@
             <v-card-title class="text-h6"
               >{{ item.derpature }} - {{ item.arrival }}</v-card-title
             >
-            <div class="text-h6 mt-4 mr-5 harga" style="color: #ff4c51">
+            <div class="text-h6 mt-2 mr-5 harga" style="color: #ff4c51">
               {{ item.harga | toRupiah }}
             </div>
             <v-btn
@@ -194,7 +194,7 @@ export default {
           // console.log(expiredDate);
           // console.log(now);
 
-          if (now > expiredDate && item.status_pay !== "Expired") {
+          if (now > expiredDate && item.status_pay !== "Expired" && item.status_pay !== "Berhasil") {
             item.status_pay = "Expired";
             // console.log(item.pembayarans_id);
             // console.log("expired");
@@ -250,7 +250,7 @@ v-btn {
 .harga {
   position: absolute;
   right: 20px;
-  top: 20px;
+  top: 10px;
 }
 @media only screen and (min-width: 481px) {
   .btn-pesan {

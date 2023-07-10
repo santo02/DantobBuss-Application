@@ -7,7 +7,7 @@
           <h2>{{ item.derpature }} -> {{ item.arrival }}</h2>
           <h5>{{ formatHour(item.tanggal) }}</h5>
           <h5>{{ formatDate(item.tanggal) }}</h5>
-          <h5>{{ item.harga }}</h5>
+          <h5>{{ item.harga | toRupiah}}</h5>
         </div>
         <template class="text-center">
           <v-container class="grey lighten-5">
@@ -181,7 +181,16 @@ export default {
   mounted() {
     this.getSchedule();
   },
-
+  filters: {
+    toRupiah(value) {
+      const formatter = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+      return formatter.format(value);
+    },
+  },
   methods: {
     formatDate(date) {
       moment.locale("id");

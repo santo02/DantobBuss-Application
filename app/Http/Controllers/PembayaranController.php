@@ -12,7 +12,7 @@ use DOKU\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
-
+use Ramsey\Uuid\Uuid;
 class PembayaranController extends Controller
 {
     public static function generateToken(Request $request)
@@ -30,50 +30,44 @@ class PembayaranController extends Controller
         if ($validator->fails()) {
             return response()->json(['message' => $validator->errors()], 400);
         }
-
-        $uuid = sprintf(
-            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0x0fff) | 0x4000,
-            mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff)
-        );
-        $testid = substr($uuid, 0, 32);
+        
         $clientId = "BRN-0215-1665721005141";
-        $requestId = $testid;
+        $requestId = Uuid::uuid4()->toString();
+
         $dateTime = gmdate("Y-m-d H:i:s");
         $isoDateTime = date(DATE_ISO8601, strtotime($dateTime));
         $dateTimeFinal = substr($isoDateTime, 0, 19) . "Z";
         $requestDate =  $dateTimeFinal;
+        
         $targetPath = "/bca-virtual-account/v2/payment-code"; // For merchant request to Jokul, use Jokul path here. For HTTP Notification, use merchant path here
         $secretKey = "SK-3ut5p5VDAKku2Dqd541q";
 
+        $invoice = "INV-EKBT-".time();
+        
         $requestBody = [
-            "order" => [
-                "invoice_number" => "INV-EKBT-" . time(),
+            "order" => array(
+                "invoice_number" => $invoice,
                 "amount" => $request->harga
-            ],
-            "virtual_account_info" => [
-                "expired_time" => 60,
+            ),
+            "virtual_account_info" => array(
                 "billing_type" => "FIX_BILL",
-                "reusable_status"=> false,
-                "info1"=>"pembelian e-ticket KBT"
-            ],
-            "customer" => [
-                "name" =>$request->name,
-                "email" =>$user->email
-            ]
+                "expired_time" => 60,
+                "reusable_status" => false,
+                "info1" => "Thank you for ordering ",
+                "info2" => "Pembelian e-ticket",
+                "info3" => "di e-KBT"
+            ),
+            "customer" => array(
+                "name" => $request->name,
+                "email" => $user->email
+            )
         ];
 
         $digestValue = base64_encode(hash('sha256', json_encode($requestBody), true));
 
         $componentSignature = "Client-Id:" . $clientId . "\n" .
             "Request-Id:" . $requestId . "\n" .
-            "Request-Timestamp:" . $dateTimeFinal . "\n" .
+            "Request-Timestamp:" . $requestDate . "\n" .
             "Request-Target:" . $targetPath . "\n" .
             "Digest:" . $digestValue;
 
@@ -83,11 +77,11 @@ class PembayaranController extends Controller
             'Content-Type' => 'application/json',
             'Client-Id' => $clientId,
             'Request-Id' => $requestId,
-            'Request-Timestamp' => $dateTimeFinal,
+            'Request-Timestamp' => $requestDate,
             'Signature' => 'HMACSHA256=' . $signature,
         ])->post('https://api-sandbox.doku.com/bca-virtual-account/v2/payment-code', $requestBody);
 
-        $responseJson = json_decode($response->body()); 
+        $responseJson = json_decode($response->body());
         $httpCode = $response->status();
 
         $booking = new Bookings;
@@ -108,7 +102,7 @@ class PembayaranController extends Controller
         $pembayaran->expired_date = $responseJson->virtual_account_info->expired_date;
         $pembayaran->how_to_pay_api = $responseJson->virtual_account_info->how_to_pay_api;
         $pembayaran->how_to_pay_page = $responseJson->virtual_account_info->how_to_pay_page;
-        $pembayaran->invoice_number = "INV-EKBT-$currentDate";
+        $pembayaran->invoice_number = $invoice;
         $pembayaran->amount    = $request->harga;
         $pembayaran->virtual_account_number = $responseJson->virtual_account_info->virtual_account_number;
         $pembayaran->active = 0;
@@ -117,6 +111,7 @@ class PembayaranController extends Controller
         return response()->json([
             'data' => $responseJson,
             'code' => $httpCode,
+            'signature' => 'HMACSHA256=' . $signature,
         ]);
     }
 }

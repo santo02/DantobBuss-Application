@@ -17,6 +17,10 @@
 
   <script src="{{ asset(mix('js/app.js')) }}" defer></script>
   {{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_lX5Kf_oGH_rBt6gj-e4zH_-Xb90Qk7M"></script> --}}
+  <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_lX5Kf_oGH_rBt6gj-e4zH_-Xb90Qk7M&callback=initMap&v=weekly"
+      defer
+    ></script>
 </head>
 
 <body>

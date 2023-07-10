@@ -26,91 +26,91 @@ const routes = [{
     path: '/supir',
     name: 'pages-supir',
     component: () => import('@/views/pages/supir/list-supir.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'admin_kantor',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'admin_kantor',
+    },
   },
   {
     path: '/admin-loket',
     name: 'pages-admin-loket',
     component: () => import('@/views/pages/Admin Loket/list-admin-loket.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'admin_kantor',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'admin_kantor',
+    },
   },
   {
     path: '/add-admin-loket',
     name: 'pages-add-admin-loket',
     component: () => import('@/views/pages/Admin Loket/add-admin-loket.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'admin_kantor',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'admin_kantor',
+    },
   },
   {
     path: '/loket',
     name: 'pages-loket',
     component: () => import('@/views/pages/Loket/list-loket.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'admin_kantor',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'admin_kantor',
+    },
   },
   {
     path: '/add-loket',
     name: 'pages-add-loket',
     component: () => import('@/views/pages/Loket/add-loket.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'admin_kantor',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'admin_kantor',
+    },
   },
   {
     path: '/edit-loket/:id',
     name: 'pages-edit-lokets',
     component: () => import('@/views/pages/Loket/edit-loket.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'admin_kantor',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'admin_kantor',
+    },
   },
   {
     path: '/edit-user/:id',
     name: 'pages-edit-user',
     component: () => import('@/views/pages/edit-user.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'admin_kantor',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'admin_kantor',
+    },
   },
   {
     path: '/add-supir',
     name: 'pages-add-supir',
     component: () => import('@/views/pages/supir/add-supir.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'admin_kantor',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'admin_kantor',
+    },
   },
   {
     path: '/mobil',
     name: 'pages-mobil',
     component: () => import('@/views/pages/Mobil/list-mobil.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'admin_kantor',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'admin_kantor',
+    },
   },
   {
     path: '/add-mobil',
     name: 'pages-add-mobil',
     component: () => import('@/views/pages/Mobil/add-mobil.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'admin_kantor',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'admin_kantor',
+    },
   },
   {
     path: '/edit-mobil/:id',
@@ -152,10 +152,10 @@ const routes = [{
     path: '/schedule',
     name: 'pages-schedule',
     component: () => import('@/views/pages/Schedule/list-schedule.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'admin_kantor',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'admin_kantor',
+    },
   },
   {
     path: '/add-schedule',
@@ -179,60 +179,76 @@ const routes = [{
     path: '/pemesanan',
     name: 'pages-pemesanan',
     component: () => import('@/views/pages/Pemesanan/pemesanan.vue'),
+    meta: {
+      requiresAuth: true,
+      requiresRole: ['admin_loket', 'passenger'],
+    },
 
   },
   {
     path: '/costumize-pemesanan/',
     name: 'pages-costumize-pemesanan',
     component: () => import('@/views/pages/Pemesanan/costum_pesanan.vue'),
-
+    meta: {
+      requiresAuth: true,
+      requiresRole: ['admin_loket', 'passenger'],
+    },
   },
   {
     path: '/confirmasi-pemesanan',
     name: 'pages-confirmation-bookings',
     component: () => import('@/views/pages/Pemesanan/confirmasi_pesanan.vue'),
-
+    meta: {
+      requiresAuth: true,
+      requiresRole: ['admin_loket', 'passenger'],
+    },
   },
   {
     path: '/pembayaran',
     name: 'pembayaran',
     component: () => import('@/views/pages/Pembayaran/pembayaran-page.vue'),
-
+    meta: {
+      requiresAuth: true,
+      requiresRole: ['admin_loket', 'passenger'],
+    },
   },
   {
     path: '/pembayaran-method',
     name: 'pembayaran-method',
     component: () => import('@/views/pages/Pembayaran/pembayaran-method.vue'),
-
+    meta: {
+      requiresAuth: true,
+      requiresRole: ['admin_loket', 'passenger'],
+    },
   },
   {
     path: '/pembayaran-instruction/:howToPayApi',
     name: 'pembayaran-instruction',
     component: () => import('@/views/pages/Pembayaran/pembayaran-instruction.vue'),
     props: true,
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'passenger',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: ['admin_loket', 'passenger'],
+    },
   },
   {
     path: '/pembayaran-instruction-bca/:howToPayApi',
     name: 'pembayaran-instruction-bca',
     component: () => import('@/views/pages/Pembayaran/pembayaran-instruction-bca.vue'),
     props: true,
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'passenger',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: ['admin_loket', 'passenger'],
+    },
   },
   {
     path: '/all-bus',
     name: 'all-bus',
     component: () => import('@/views/pages/Pemesanan/pemesanan-by-penumpang.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'passenger',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'passenger',
+    },
   },
   {
     path: '/dashboard',
@@ -247,88 +263,92 @@ const routes = [{
     path: '/Beranda',
     name: 'dashboard-penumpang',
     component: () => import('@/views/dashboard/DashboardPenumpang.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'passenger',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'passenger',
+    },
   },
   {
     path: '/perjalanan-supir',
     name: 'perjalanan-supir',
     component: () => import('@/views/pages/Supir/riwayat-perjalanan-supir.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'driver',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'driver',
+    },
   },
   {
     path: '/riwayat-perjalanan',
     name: 'riwayat-perjalanan',
     component: () => import('@/views/pages/Pesanan/riwayat-perjalanan.vue'),
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'passenger',
+    },
 
   },
   {
     path: '/penumpang',
     name: 'penumpang',
     component: () => import('@/views/pages/Supir/penumpang.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'driver',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'driver',
+    },
   },
   {
     path: '/pesananku',
     name: 'pesananku',
     component: () => import('@/views/pages/Pesanan/pesananku.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'passenger',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: ['admin_loket', 'passenger'],
+    },
   },
   {
     path: '/e-ticket/:id',
     name: 'e-ticket',
     component: () => import('@/views/pages/Pesanan/e-Ticket.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'passenger',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: ['admin_loket', 'passenger'],
+    },
   },
   {
     path: '/tracking/:schedule_id',
     name: 'tracking',
     component: () => import('@/views/pages/Tracking/tracking.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'passenger',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'passenger',
+    },
   },
   {
     path: '/catatan-keuangan',
     name: 'catatan-keuangan',
     component: () => import('@/views/pages/Keuangan/catatan-keuangan.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'admin_loket',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: ['admin_loket', 'direksi'],
+    },
   },
   {
     path: '/detail-catatan-keuangan/:tanggal',
     name: 'detail-catatan-keuangan',
     component: () => import('@/views/pages/Keuangan/detail-catatan-keuangan.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'admin_loket',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: ['admin_loket', 'direksi'],
+    },
   },
   {
     path: '/detail-keuangan-by-penumpang/:id',
     name: 'detail-keuangan-by-penumpang',
     component: () => import('@/views/pages/Keuangan/detail-keuangan.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'admin_loket',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: ['admin_loket', 'direksi'],
+    },
   },
   {
     path: '/Komisi',
@@ -336,26 +356,26 @@ const routes = [{
     component: () => import('@/views/pages/Komisi/komisi.vue'),
     meta: {
       requiresAuth: true,
-      // requiresRole: 'direksi',
+      requiresRole: ['admin_loket', 'direksi'],
     },
   },
   {
     path: '/detail-Komisi/:tanggal',
     name: 'detail-komisi',
     component: () => import('@/views/pages/Komisi/detail-komisi.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'direksi',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: ['admin_loket', 'direksi'],
+    },
   },
   {
     path: '/penumpang-bus/:id',
     name: 'penumpang-bus',
     component: () => import('@/views/pages/Supir/penumpang-bus.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    //   requiresRole: 'driver',
-    // },
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'driver',
+    },
   },
   {
     path: '/typography',

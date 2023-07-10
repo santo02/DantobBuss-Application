@@ -38,6 +38,7 @@ use Illuminate\Support\Facades\Route;
 
 // Route::post('/pembayaran', [PembayaranController::class, 'generateToken']);
 
+Route::post('/payments/notifications', [DokuController::class, 'notifications']);
 
 Route::post('registrasi', [RegisterUserController::class, 'RegisterUser']);
 Route::post('login', [LoginController::class, 'login']);
@@ -57,7 +58,7 @@ Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver,passenger,d
 });
 
 
-Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver, '])->group(function () {
+Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver,passenger'])->group(function () {
 
     Route::get('/schedule/show/{id}', [ScheduleController::class, 'SelectOne']);
     Route::get('/schedule/type/executive', [ScheduleController::class, 'ShowExecutive']);
@@ -82,7 +83,6 @@ Route::middleware(['auth:api', 'role:admin_loket,direksi'])->group(function () {
     Route::put('/bookings/update/{id}', [BookingController::class, 'update']);
 });
 
-Route::post('/payments/notifications', [DokuController::class, 'notifications']);
 Route::middleware(['auth:api', 'role:passenger'])->group(function () {
     // Route::get('/bookings/my', [BookingController::class, 'getByUserId']);
     Route::put('/bookings/update-status/{id}', [BookingController::class, 'expiredCheck']);

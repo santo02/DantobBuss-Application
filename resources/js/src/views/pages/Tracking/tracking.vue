@@ -1,6 +1,8 @@
 <template>
   <div>
-    <google-map :center="center" :zoom="15" style="width: 100%; height: 80vh">
+    <!-- <h2>Lokasi Kamu : {{ this.placeName }}</h2>
+    <h2>Lokasi Bus : {{ placeName }} </h2> -->
+    <google-map :center="center" :zoom="10" style="width: 100%; height: 80vh" :tilt="45">
       <map-marker :position="center" :options="centerMarkerOptions"></map-marker>
       <map-marker :position="carPosition" :options="carMarkerOptions"></map-marker>
       <map-polyline :path="polylinePath" :options="polylineOptions"></map-polyline>
@@ -10,7 +12,7 @@
 
 <script>
 import axios from "axios";
-import { Map, Marker, Polyline } from "vue2-google-maps";
+import { Map, Marker, Polyline,Geocoder } from "vue2-google-maps";
 import { io } from "socket.io-client";
 
 export default {
@@ -45,10 +47,11 @@ export default {
       },
       polylinePath: [],
       polylineOptions: {
-        strokeColor: "#FF0000",
+        strokeColor: "#307475",
         strokeOpacity: 1.0,
-        strokeWeight: 2,
+        strokeWeight: 6,
       },
+      placeName: {}
     };
   },
   created() {
@@ -66,7 +69,9 @@ export default {
 
     this.watcher = navigator.geolocation.watchPosition(
       (position) => {
-        console.log(`Watch position with coordinates lat: ${position.coords.latitude}, lng: ${position.coords.longitude}`);
+        console.log(
+          `Watch position with coordinates lat: ${position.coords.latitude}, lng: ${position.coords.longitude}`
+        );
         this.center = {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
@@ -76,6 +81,7 @@ export default {
         console.log(`Failed to watch position: ${error.message}`);
       }
     );
+    // this.getPlaceName(this.center.lat, this.center.lng);
   },
   mounted() {
     const access_token = localStorage.getItem("access_token");
@@ -96,18 +102,20 @@ export default {
           console.log(`Received data from socket: ${data.toString()}`);
           console.log(data);
           console.log(`${this.schedule.supir_id}#----#${this.schedule.schedule_id}`);
-          this.socket.on(`${this.schedule.supir_id}#----#${this.schedule.schedule_id}`, (message) => {
-            console.log(message);
-            this.carPosition = message.data.location.center;
-
-            // Update the polyline path when the car position changes
-            this.updatePolylinePath();
-          });
+          this.socket.on(
+            `${this.schedule.supir_id}#----#${this.schedule.schedule_id}`,
+            (message) => {
+              console.log(message);
+              this.carPosition = message.data.location.center;
+              this.calculateRoute();
+            }
+          );
         });
       })
       .catch((error) => {
         console.log(error);
       });
+      // this.getPlaceName(this.carPosition.lat, this.carPosition.lng);
   },
   beforeUnmount() {
     if (this.watcher !== null) {
@@ -116,13 +124,41 @@ export default {
     }
   },
   methods: {
-    updatePolylinePath() {
-      if (this.center && this.carPosition) {
-        this.polylinePath = [this.center, this.carPosition];
-      } else {
-        this.polylinePath = [];
+    calculateRoute() {
+      if (this.carPosition && this.center) {
+        const directionsService = new window.google.maps.DirectionsService();
+
+        directionsService.route(
+          {
+            origin: this.center,
+            destination: this.carPosition,
+            travelMode: google.maps.TravelMode.DRIVING,
+            avoidTolls: true,
+          },
+          (response, status) => {
+            if (status === "OK") {
+              this.polylinePath = response.routes[0].overview_path;
+            } else {
+              console.log("Directions request failed due to " + status);
+            }
+          }
+        );
       }
     },
+    // getPlaceName(latitude, longitude) {
+    //   const geocoder = new Geocoder();
+    //   const latLng = new window.google.maps.LatLng(latitude, longitude);
+
+    //   geocoder.geocode({ location: latLng }, (results, status) => {
+    //     if (status === "OK" && results[0]) {
+    //       const placeName = results[0].formatted_address;
+    //       // Update the place name in your data or use it directly
+    //       this.placeName = placeName;
+    //     } else {
+    //       console.log("Geocoding request failed due to " + status);
+    //     }
+    //   });
+    // },
   },
 };
 </script>

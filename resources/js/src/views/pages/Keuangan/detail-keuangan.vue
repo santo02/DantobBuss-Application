@@ -71,7 +71,6 @@ export default {
           value: "name",
         },
         { text: "Bangku", value: "num_seats" },
-        { text: "Umur", value: "age" },
         { text: "No Telepon", value: "phone_number" },
         { text: "Penjumputan", value: "alamatJemput" },
         { text: "Metode", value: "method" },

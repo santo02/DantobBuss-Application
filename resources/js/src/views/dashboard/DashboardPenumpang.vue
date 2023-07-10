@@ -4,7 +4,7 @@
       <v-container>
         <v-img height="400px" :src="require('@/assets/images/logos/KBT-BG.jpg').default">
           <v-card-title>
-            <v-btn small color="primary" class="btn-pesan"> Pesan E-Ticket </v-btn>
+            <v-btn small color="primary" class="btn-pesan-ticket"> Pesan E-Ticket </v-btn>
           </v-card-title>
           <v-card-title class="text-title">
             <h5 class="white--text">Pelayanan terbaik untuk perjalanan kamu</h5>
@@ -77,10 +77,10 @@
         </v-col>
         <v-col>
           <div class="d-flex justify-content-between">
-            <v-card-title class="text-h6"
+            <v-card-title class="text-h6" width="100%"
               >{{ item.derpature }} - {{ item.arrival }}</v-card-title
             >
-            <div class="harga text-h6" style="color: #ff4c51">
+            <div class="text-h6 harga" style="color: #ff4c51">
               {{ item.harga | toRupiah }}
             </div>
           </div>
@@ -90,7 +90,7 @@
           </div>
           <v-row no-gutters class="my-3">
             <v-col cols="12" class="detail">
-              <div class="row">
+              <div class="row list-detail">
                 <div class="col-md-3">
                   <v-icon left>{{ icons.mdiCalendarClock }}</v-icon>
                   {{ formatDate(item.tanggal) }}
@@ -99,20 +99,23 @@
                   <v-icon left>{{ icons.mdiAccount }}</v-icon> {{ item.name }}
                 </div>
                 <div
-                  class="col-md-2"
+                  class="col-md-3"
                   v-for="(count, id) in bookingCounts"
                   :key="id"
                   v-if="item.schedule_id == id"
                 >
-                  <small v-if="count + 1 == item.number_of_seats" color="secondary"
-                    >Penuh
-                  </small>
+                  <h3
+                    v-if="count + 1 == item.number_of_seats"
+                    style="color: #ff4c51; opacity: 70%"
+                  >
+                    PENUH
+                  </h3>
                   <small v-else color="secondary"
                     >Tersedia : {{ item.number_of_seats - count - 1 }} Kursi
                   </small>
                 </div>
                 <div
-                  class="col-md-2"
+                  class="col-md-3"
                   v-if="!Object.keys(bookingCounts).includes(String(item.schedule_id))"
                 >
                   <small color="secondary"
@@ -120,17 +123,14 @@
                   </small>
                 </div>
 
-                <v-row class="col-md-2 d-flex justify-space-around">
-                  <div class="col-md-2">
-                    <v-btn
-                      color="secondary"
-                      @click="selectBus(item.schedule_id, item.harga)"
-                      class="ml-3"
-                      style="color: white; font-weight: bold"
-                    >
-                      Pesan
-                    </v-btn>
-                  </div>
+                <v-row class="col-md-4 btn-pesan">
+                  <v-btn
+                    color="secondary"
+                    @click="selectBus(item.schedule_id, item.harga)"
+                    style="color: white; font-weight: bold"
+                  >
+                    Pesan
+                  </v-btn>
                 </v-row>
               </div>
             </v-col>
@@ -286,8 +286,38 @@ export default {
 };
 </script>
 <style scoped>
+.harga {
+  padding: 17px;
+  margin-left: auto;
+}
+
+.btn-pesan {
+  display: flex;
+  justify-content: flex-end;
+}
+.detail {
+  font-size: 12px;
+}
+.list-detail {
+  text-align: left;
+  margin-left: 10px;
+}
+.text-title {
+  position: absolute;
+  margin-left: 60%;
+}
+
 @media only screen and (max-width: 480px) {
+  .list-detail {
+    text-align: left;
+    margin-left: 10px;
+  }
   .btn-pesan {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+  }
+  .btn-pesan-ticket {
     margin-top: 160px;
     height: 15px;
     padding-left: 30px;
@@ -300,15 +330,22 @@ export default {
     position: absolute;
     text-align: center;
   }
-  .harga {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-  }
 }
 
-@media only screen and (min-width: 481px) {
+@media only screen and (min-width: 481px) and (max-width: 960px) {
+  .detail {
+    font-size: 12px;
+  }
+  .list-detail {
+    text-align: left;
+    margin-left: 10px;
+  }
+  
   .btn-pesan {
+    position: absolute;
+    left: 5px;
+  }
+  .btn-pesan-ticket {
     margin-top: 160px;
     height: 15px;
     padding-left: 30px;
@@ -318,17 +355,7 @@ export default {
 
   .text-title {
     position: absolute;
-    margin-left: 60%;
-  }
-
-  .detail {
-    font-size: 12px;
-  }
-
-  .harga {
-    position: absolute;
-    right: 20px;
-    top: 20px;
+    text-align: center;
   }
 }
 </style>

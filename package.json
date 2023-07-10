@@ -41,6 +41,7 @@
     "core-js": "^3.6.5",
     "crypto-js": "^4.1.1",
     "downloadjs": "^1.4.7",
+    "escpos": "^3.0.0-alpha.6",
     "geolib": "^3.3.3",
     "html2pdf.js": "^0.10.1",
     "jspdf": "^2.5.1",

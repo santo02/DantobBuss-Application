@@ -83,7 +83,7 @@
               <v-col cols="2" sm="4">
                 <div class="pa-2" tile>
                   <h3>Harga</h3>
-                  <h5>Rp.{{ item.harga }}</h5>
+                  <h5>{{ item.harga | toRupiah}}</h5>
                 </div>
               </v-col>
               <v-col cols="2" sm="6">
@@ -151,6 +151,16 @@ export default {
 
     userRole() {
       return this.$store.state.userRole;
+    },
+  },
+  filters: {
+    toRupiah(value) {
+      const formatter = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+      return formatter.format(value);
     },
   },
   data() {

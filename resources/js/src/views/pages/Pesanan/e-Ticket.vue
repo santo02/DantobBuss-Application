@@ -80,6 +80,9 @@
         >Download</v-btn
       >
     </div>
+    <div class="mx-auto text-center mt-4" width="500px">
+      <v-btn color="primary" width="500px" height="40px" @click="CetakCard">Cetak</v-btn>
+    </div>
   </div>
 </template>
 
@@ -88,6 +91,8 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import axios from "axios";
 import "moment/locale/id";
+// import { Printer, PosPrintMode } from "escpos-printer";
+
 export default {
   setup() {
     return {};
@@ -122,8 +127,10 @@ export default {
         });
     },
     downloadCard() {
-      // Create a new jsPDF instance
-      const doc = new jsPDF();
+      const doc = new jsPDF({
+        format: [60, Infinity],
+      });
+
       // Set the document properties
       doc.setProperties({
         title: "E-ticket Koperasi Bintang Tapanuli (KBT)",
@@ -135,56 +142,134 @@ export default {
 
       const logoImg = new Image();
       logoImg.src = require("@/assets/images/logos/logo-KBT.png").default;
-      doc.addImage(logoImg, "PNG", 15, 10, 15, 15);
+      doc.addImage(logoImg, "PNG", 5, 8, 8, 8);
 
-      // Define the column widths for the table
-      const columnWidths = [50, 50, 50, 50];
-
-      // Add the header for the table
-      doc.setFontSize(18);
+      // Add the header for the ticket
+      doc.setFontSize(10);
       doc.setFont("helvetica", "bold");
+      doc.text("Tiket", doc.internal.pageSize.getWidth() / 2, 12, { align: "center" });
+      doc.text("Koperasi Bintang Tapanuli", doc.internal.pageSize.getWidth() / 2, 19, {
+        align: "center",
+      });
       doc.text(
-        "E-ticket Koperasi Bintang Tapanuli (KBT)",
+        "-------------------------------------",
         doc.internal.pageSize.getWidth() / 2,
-        20,
-        { align: "center" }
+        25,
+        {
+          align: "center",
+        }
       );
 
-      // Define the data for the table
-      const tableData = [
-        ["BUS : ", this.ticket.nomor_pintu, ""],
-        ["Tanggal : ", this.ticket.tanggal, ""],
-        ["", "", "", ""],
-        ["Nama: ", this.ticket.name, "Tipe :", this.ticket.type],
-        ["No.Handphone: ", this.ticket.number_phone, "Asal : ", this.ticket.derpature],
-        ["Nomor Bangku :", this.ticket.num_seats, "Tujuan: ", this.ticket.arrival],
-        ["", "", "Tarif", "Rp." + this.ticket.harga],
-        ["", "", "Status Pembayaran", this.ticket.status],
+      // Define the data for the ticket
+      const ticketData = [
+        { label: "BUS :", value: this.ticket.nomor_pintu.toString() },
+        { label: "Tanggal:", value: this.ticket.tanggal.toString() },
+        { label: "Nama :", value: this.ticket.name.toString() },
+        { label: "Tipe :", value: this.ticket.type.toString() },
+        { label: "No.Hp :", value: this.ticket.number_phone.toString() },
+        { label: "Asal :", value: this.ticket.derpature.toString() },
+        { label: "Tujuan :", value: this.ticket.arrival.toString() },
+        { label: "Bangku :", value: this.ticket.num_seats.toString() },
+        { label: "Tarif : ", value: "Rp " + this.ticket.harga.toString() },
       ];
 
-      // Add the table to the PDF document
-      doc.autoTable({
-        startY: 30,
-        head: [["", "", "", ""]],
-        body: tableData,
-        columnStyles: {
-          0: { cellWidth: columnWidths[0] },
-          1: { cellWidth: columnWidths[1] },
-          2: { cellWidth: columnWidths[2] },
-          3: { cellWidth: columnWidths[3] },
-        },
-        theme: "plain",
-        styles: {
-          font: "courier",
-          fontSize: 12,
-        },
-      });
+      // Set initial position for content
+      let contentX = 2;
+      let contentY = 32;
+
+      // Loop through the ticket data and add to the PDF
+      for (let i = 0; i < ticketData.length; i++) {
+        const { label, value } = ticketData[i];
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+
+        doc.text(label, contentX, contentY);
+
+        // Check if the value length exceeds 15 characters
+        if (value.length > 10) {
+          const splitValue = doc.splitTextToSize(value, 50); // Split the value into multiple lines
+          doc.text(splitValue, contentX + 20, contentY);
+          contentY += splitValue.length * 6; // Increase the Y position based on the number of lines
+        } else {
+          doc.text(value, contentX + 20, contentY);
+          contentY += 6; // Increase the Y position for the next line
+        }
+      }
 
       // Save the PDF document
       doc.save("e-ticket.pdf");
+    },
+    CetakCard() {
+      const doc = new jsPDF({
+        format: [60, Infinity],
+      });
+
+      // Set the document properties
+      doc.setProperties({
+        title: "E-ticket Koperasi Bintang Tapanuli (KBT)",
+        author: "Your Name",
+        subject: "E-ticket Koperasi Bintang Tapanuli (KBT)",
+        keywords: "E-ticket Koperasi Bintang Tapanuli (KBT), bus, passenger",
+        creator: "Your Name",
+      });
+
+      const logoImg = new Image();
+      logoImg.src = require("@/assets/images/logos/logo-KBT.png").default;
+      doc.addImage(logoImg, "PNG", 5, 8, 8, 8);
+
+      // Add the header for the ticket
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "bold");
+      doc.text("Ticket", doc.internal.pageSize.getWidth() / 2, 12, { align: "center" });
+      doc.text("Koperasi Bintang Tapanuli", doc.internal.pageSize.getWidth() / 2, 19, {
+        align: "center",
+      });
+      doc.text(
+        "--------------------------------------------",
+        doc.internal.pageSize.getWidth() / 2,
+        25,
+        { align: "center" }
+      );
+
+      // Define the data for the ticket
+      const ticketData = [
+        { label: "BUS :", value: this.ticket.nomor_pintu.toString() },
+        { label: "Tanggal:", value: this.ticket.tanggal.toString() },
+        { label: "Nama :", value: this.ticket.name.toString() },
+        { label: "Tipe :", value: this.ticket.type.toString() },
+        { label: "No.Hp :", value: this.ticket.number_phone.toString() },
+        { label: "Asal :", value: this.ticket.derpature.toString() },
+        { label: "Bangku :", value: this.ticket.num_seats.toString() },
+        { label: "Tujuan :", value: this.ticket.arrival.toString() },
+        { label: "Tarif : ", value: "Rp " + this.ticket.harga.toString() },
+      ];
+
+      // Set initial position for content
+      let contentX = 2;
+      let contentY = 32;
+
+      // Loop through the ticket data and add to the PDF
+      for (let i = 0; i < ticketData.length; i++) {
+        const { label, value } = ticketData[i];
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+
+        doc.text(label, contentX, contentY);
+
+        // Check if the value length exceeds 10 characters
+        if (value.length > 10) {
+          const splitValue = doc.splitTextToSize(value, 50); // Split the value into multiple lines
+          doc.text(splitValue, contentX + 20, contentY);
+          contentY += splitValue.length * 6; // Increase the Y position based on the number of lines
+        } else {
+          doc.text(value, contentX + 20, contentY);
+          contentY += 6; // Increase the Y position for the next line
+        }
+      }
 
       // Print the PDF document
-      autoPrint(doc);
+      doc.autoPrint();
+      doc.output("dataurlnewwindow");
     },
   },
 };
