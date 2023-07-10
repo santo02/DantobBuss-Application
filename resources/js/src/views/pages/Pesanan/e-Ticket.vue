@@ -147,7 +147,7 @@ export default {
       // Add the header for the ticket
       doc.setFontSize(10);
       doc.setFont("helvetica", "bold");
-      doc.text("Ticket", doc.internal.pageSize.getWidth() / 2, 12, { align: "center" });
+      doc.text("Tiket", doc.internal.pageSize.getWidth() / 2, 12, { align: "center" });
       doc.text("Koperasi Bintang Tapanuli", doc.internal.pageSize.getWidth() / 2, 19, {
         align: "center",
       });
@@ -168,8 +168,8 @@ export default {
         { label: "Tipe :", value: this.ticket.type.toString() },
         { label: "No.Hp :", value: this.ticket.number_phone.toString() },
         { label: "Asal :", value: this.ticket.derpature.toString() },
-        { label: "Bangku :", value: this.ticket.num_seats.toString() },
         { label: "Tujuan :", value: this.ticket.arrival.toString() },
+        { label: "Bangku :", value: this.ticket.num_seats.toString() },
         { label: "Tarif : ", value: "Rp " + this.ticket.harga.toString() },
       ];
 

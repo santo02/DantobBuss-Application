@@ -42,7 +42,7 @@ class PembayaranController extends Controller
         $targetPath = "/bca-virtual-account/v2/payment-code"; // For merchant request to Jokul, use Jokul path here. For HTTP Notification, use merchant path here
         $secretKey = "SK-3ut5p5VDAKku2Dqd541q";
 
-        $invoice = "INV-EKBT-" . time();
+        $invoice = "INV-EKBT-".time();
         
         $requestBody = [
             "order" => array(
@@ -55,7 +55,7 @@ class PembayaranController extends Controller
                 "reusable_status" => false,
                 "info1" => "Thank you for ordering ",
                 "info2" => "Pembelian e-ticket",
-                "info3" => "in e-KBT"
+                "info3" => "di e-KBT"
             ),
             "customer" => array(
                 "name" => $request->name,
@@ -111,6 +111,7 @@ class PembayaranController extends Controller
         return response()->json([
             'data' => $responseJson,
             'code' => $httpCode,
+            'signature' => 'HMACSHA256=' . $signature,
         ]);
     }
 }

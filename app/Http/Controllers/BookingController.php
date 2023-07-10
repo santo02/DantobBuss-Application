@@ -27,6 +27,9 @@ class BookingController extends BaseController
             'num_seats' => 'required|integer',
         ]);
 
+        $invoice = "INV-EKBT-" . time();
+
+
         if ($validator->fails()) {
             return response()->json(['message' => $validator->errors()], 400);
         }
@@ -45,11 +48,14 @@ class BookingController extends BaseController
         $pembayaran->bookings_id = $booking->id;
         $pembayaran->method = 'cash';
         $pembayaran->status = 'Berhasil';
-        $pembayaran->date = Carbon::now();
-        $pembayaran->invoice_number     = "INV-$currentDate";
-        $pembayaran->amount    = 10000;
-        $pembayaran->virtual_account_number    = 000;
-        $pembayaran->active = 000;
+        $pembayaran->invoice_number     = $invoice;
+        $pembayaran->created_date = time();
+        $pembayaran->expired_date = "null";
+        $pembayaran->how_to_pay_api = "null";
+        $pembayaran->how_to_pay_page = "null";
+        $pembayaran->amount    = $request->harga;
+        $pembayaran->virtual_account_number = 'null';
+        $pembayaran->active = 0;
         $pembayaran->save();
 
 
@@ -178,7 +184,7 @@ class BookingController extends BaseController
     {
         $pembayaran = Pembayaran::find($id);
 
-        if (!$pembayaran && $pembayaran != 'Expired'    ) {
+        if (!$pembayaran && $pembayaran != 'Expired') {
             return $this->sendResponse(null, 'Pembayaran Not Found');
         }
         $pembayaran->status = 'Expired';

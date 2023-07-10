@@ -10,10 +10,10 @@ class Pembayaran extends Model
     use HasFactory;
 
     protected $fillable = [
-        'created_date',
-        'expired_date',
-        'how_to_pay_page',
-        'how_to_pay_api',
-        'amount',
+        // 'created_date',
+        // 'expired_date',
+        // 'how_to_pay_page',
+        // 'how_to_pay_api',
+        // 'amount',
     ];
 }

@@ -83,7 +83,7 @@
                   <v-icon left>{{ icons.mdiAccount }}</v-icon> {{ item.name }}
                 </div>
                 <div
-                  class="col-md-2"
+                  class="col-md-3"
                   v-for="(count, id) in bookingCounts"
                   :key="id"
                   v-if="item.schedule_id == id"
@@ -99,7 +99,7 @@
                   </small>
                 </div>
                 <div
-                  class="col-md-2"
+                  class="col-md-3"
                   v-if="!Object.keys(bookingCounts).includes(String(item.schedule_id))"
                 >
                   <small color="secondary"
@@ -107,16 +107,14 @@
                   </small>
                 </div>
 
-                <v-row class="col-md-3 d-flex justify-space-around">
-                  <div class="col-md-12">
-                    <v-btn
-                      color="secondary"
-                      @click="selectBus(item.schedule_id, item.harga)"
-                      style="color: white; font-weight: bold"
-                    >
-                      Pesan
-                    </v-btn>
-                  </div>
+                <v-row class="col-md-4 btn-pesan">
+                  <v-btn
+                    color="secondary"
+                    @click="selectBus(item.schedule_id, item.harga)"
+                    style="color: white; font-weight: bold"
+                  >
+                    Pesan
+                  </v-btn>
                 </v-row>
               </div>
             </v-col>
@@ -299,23 +297,44 @@ export default {
   padding: 17px;
   margin-left: auto;
 }
-@media only screen and (max-width: 480px) {
 
+.btn-pesan {
+  display: flex;
+  justify-content: flex-end;
+}
+.detail {
+  font-size: 12px;
+}
+.list-detail {
+  text-align: left;
+  margin-left: 10px;
+}
+
+@media only screen and (max-width: 480px) {
   .list-detail {
     text-align: left;
     margin-left: 10px;
   }
+  .btn-pesan {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+  }
 
 }
 
-
-@media only screen and (min-width: 960px) {
-
+@media only screen and (min-width: 481px) and (max-width: 960px) {
   .detail {
     font-size: 12px;
   }
   .list-detail {
-    text-align: center;
+    text-align: left;
+    margin-left: 10px;
   }
+  .btn-pesan {
+    position: absolute;
+    left: 5px;
+  }
+
 }
 </style>

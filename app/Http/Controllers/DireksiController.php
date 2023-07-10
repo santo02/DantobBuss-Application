@@ -53,7 +53,7 @@ class DireksiController extends Controller
             ->join('schedules', 'bookings.schedules_id', '=', 'schedules.id')
             ->join('pembayarans', 'bookings.id', 'pembayarans.bookings_id')
             ->join('routes', 'schedules.route_id', '=', 'routes.id')
-            ->select('bookings.name', 'bookings.num_seats', 'bookings.age', 'bookings.alamatJemput', 'pembayarans.method', 'routes.harga', 'users.phone_number')
+            ->select('bookings.name', 'bookings.num_seats', 'bookings.number_phone', 'bookings.alamatJemput', 'pembayarans.method', 'routes.harga')
             ->where('bookings.schedules_id', '=', $id)
             ->get();
 
