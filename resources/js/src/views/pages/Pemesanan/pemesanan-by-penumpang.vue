@@ -37,12 +37,12 @@
     </v-container>
     <h3 class="my-4">
       Pesan Tiket Mobil Bus Online di
-      <h3 text-color="primary">DantobBus</h3>
+      <h3 text-color="primary">e-KBT</h3>
     </h3>
     <p>
       Pesan tiket mobil bus online semudah belanja online tanpa perlu ke agen tiket mobil
       bus. Jadwal bus travel, trayek, tempat keberangkatan,harga tiket, hingga pilih kursi
-      hanya di DanTobBus.
+      hanya di e-KBT.
     </p>
     <v-card v-if="filterSchedules().length < 1">
       <h3 class="text-center py-4">Maaf, tidak ada jadwal yang tersedia saat ini.</h3>

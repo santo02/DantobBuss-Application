@@ -65,6 +65,35 @@ class ScheduleController extends BaseController
 
         return response()->json(['total' => $hasBooked, 'data' => $schedule]);
     }
+    public function showForAdmin()
+    {
+        $user = Auth::user()->id;
+        // return $user;    
+        $schedule = DB::table('schedules')
+            ->join('buses', 'buses.id', '=', 'schedules.bus_id')
+            ->join('users', 'buses.supir_id', '=', 'users.id')
+            // ->join('buses as bus_sc', 'bus_sc.loket_id', '=', 'schedules.bus_id')
+            ->join('lokets as lok', 'lok.id', '=', 'buses.loket_id')
+            ->join('users as us', 'us.id', '=', 'lok.admin_id')
+            ->join('routes', 'schedules.route_id', '=', 'routes.id')
+            ->where('lok.admin_id', "=", $user)  
+            ->where('schedules.status', "!=", 'complete')
+            ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'buses.*', 'routes.*', 'users.name', 'lok.admin_id as admin_loket')
+            ->orderBy('schedules.tanggal', 'DESC')
+            ->get();
+
+        // return $this->sendResponse($schedule, 'Schedule Retrieved Successfully');
+
+        $hasBooked = DB::table('schedules')
+            ->join('bookings', 'bookings.schedules_id', '=', 'schedules.id')
+            ->join('pembayarans', 'pembayarans.bookings_id', 'bookings.id')
+            ->join('buses', 'schedules.bus_id', '=', 'buses.id')
+            ->whereIn('pembayarans.status', ['Berhasil', 'Menunggu'])
+            ->select('bookings.schedules_id')
+            ->get();
+
+        return response()->json(['total' => $hasBooked, 'data' => $schedule]);
+    }
     public function ShowExecutive()
     {
         $schedule = DB::table('schedules')
@@ -134,7 +163,7 @@ class ScheduleController extends BaseController
             ->where('users.status', '=', 1)
             ->where('buses.status', '=', 1)
             ->where('routes.status', '=', 1)
-            ->where('buses.supir_id', '=', $user) 
+            ->where('buses.supir_id', '=', $user)
             // ->where('schedules.status', 'complete')
             ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'schedules.status as schedules_status', 'buses.*', 'routes.*', 'users.name')
             ->get();
@@ -156,7 +185,6 @@ class ScheduleController extends BaseController
         ]);
         $schedule->update($input);
         return $this->sendResponse($schedule, 'Schedule Updated Successfully');
-        
     }
 
     public function UpdateStatusBus($id)
