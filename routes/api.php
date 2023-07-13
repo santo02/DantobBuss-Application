@@ -81,6 +81,8 @@ Route::middleware(['auth:api', 'role:admin_loket,direksi'])->group(function () {
 
     Route::get('/bookings/index/all', [BookingController::class, 'index']);
     Route::put('/bookings/update/{id}', [BookingController::class, 'update']);
+
+    Route::get('/schedule/show/admin/all', [ScheduleController::class, 'showForAdmin']);
 });
 
 Route::middleware(['auth:api', 'role:passenger'])->group(function () {

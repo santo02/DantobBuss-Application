@@ -58,7 +58,7 @@
         </v-card>
       </v-slide-item>
     </v-slide-group> -->
-    <h3 class="mt-4 mb-4">Operasional Mobil Bus Danau Toba</h3>
+    <h3 class="mt-4 mb-4">Operasional Mobil Bus e-KBT</h3>
 
     <v-card v-if="filterSchedules().length < 1">
       <h3 class="text-center py-4">Maaf, tidak ada jadwal yang tersedia saat ini.</h3>
@@ -340,7 +340,7 @@ export default {
     text-align: left;
     margin-left: 10px;
   }
-  
+
   .btn-pesan {
     position: absolute;
     left: 5px;

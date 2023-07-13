@@ -158,6 +158,16 @@ export default {
       selectedType: null,
     };
   },
+  filters: {
+    toRupiah(value) {
+      const formatter = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+      return formatter.format(value);
+    },
+  },
   computed: {
     paginatedSchedules() {
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
@@ -218,7 +228,7 @@ export default {
       const access_token = localStorage.getItem("access_token");
 
       axios
-        .get("/api/schedule/show/all", {
+        .get("/api/schedule/show/admin/all", {
           headers: {
             Authorization: `Bearer ${access_token}`,
           },

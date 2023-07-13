@@ -167,56 +167,64 @@ export default {
   mounted() {
     const access_token = localStorage.getItem("access_token");
 
-    axios
-      .get("/api/bookings/my", {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      })
-      .then((response) => {
-        this.pesanan = response.data.filter(
-          (pesanan) =>
-            pesanan.status === "in_progress" || pesanan.status === "not_started"
-        );
-        const currentDate = new Date();
-        const year = currentDate.getFullYear();
-        const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-        const day = String(currentDate.getDate()).padStart(2, "0");
-        const hours = String(currentDate.getHours()).padStart(2, "0");
-        const minutes = String(currentDate.getMinutes()).padStart(2, "0");
-        const seconds = String(currentDate.getSeconds()).padStart(2, "0");
+    // Define a function to fetch data and update status
+    const fetchDataAndUpdateStatus = () => {
+      axios
+        .get("/api/bookings/my", {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        })
+        .then((response) => {
+          this.pesanan = response.data.filter(
+            (pesanan) =>
+              pesanan.status === "in_progress" || pesanan.status === "not_started"
+          );
+          const currentDate = new Date();
+          const year = currentDate.getFullYear();
+          const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+          const day = String(currentDate.getDate()).padStart(2, "0");
+          const hours = String(currentDate.getHours()).padStart(2, "0");
+          const minutes = String(currentDate.getMinutes()).padStart(2, "0");
+          const seconds = String(currentDate.getSeconds()).padStart(2, "0");
 
-        const now = `${year}${month}${day}${hours}${minutes}${seconds}`;
+          const now = `${year}${month}${day}${hours}${minutes}${seconds}`;
 
-        // console.log(now);
-        this.pesanan.forEach((item) => {
-          const expiredDate = item.expired_date;
-          // console.log(expiredDate);
-          // console.log(now);
+          this.pesanan.forEach((item) => {
+            const expiredDate = item.expired_date;
 
-          if (now > expiredDate && item.status_pay !== "Expired" && item.status_pay !== "Berhasil") {
-            item.status_pay = "Expired";
-            // console.log(item.pembayarans_id);
-            // console.log("expired");
-            // Mengirim permintaan ke API untuk memperbarui status pembayaran
-            axios.put(
-              `/api/bookings/update-status/${item.pembayarans_id}`,
-              {
-                status_pay: "Expired",
-              },
-              {
-                headers: {
-                  Authorization: `Bearer ${access_token}`,
+            if (
+              now > expiredDate &&
+              item.status_pay !== "Expired" &&
+              item.status_pay !== "Berhasil"
+            ) {
+              item.status_pay = "Expired";
+              axios.put(
+                `/api/bookings/update-status/${item.pembayarans_id}`,
+                {
+                  status_pay: "Expired",
                 },
-              }
-            );
-          }
+                {
+                  headers: {
+                    Authorization: `Bearer ${access_token}`,
+                  },
+                }
+              );
+            }
+          });
+        })
+        .catch((error) => {
+          console.log(error);
         });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    };
+
+    // Call the function immediately when the component is mounted
+    fetchDataAndUpdateStatus();
+
+    // Set interval to refresh data every 3 seconds
+    setInterval(fetchDataAndUpdateStatus, 3000);
   },
+
   filters: {
     toRupiah(value) {
       const formatter = new Intl.NumberFormat("id-ID", {
