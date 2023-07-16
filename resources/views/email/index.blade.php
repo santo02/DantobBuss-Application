@@ -1,0 +1,1 @@
+{{$user->remember_token}}

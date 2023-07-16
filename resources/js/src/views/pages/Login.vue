@@ -81,21 +81,7 @@
           <router-link :to="{ name: 'pages-register' }"> Daftar sekarang</router-link>
         </v-card-text>
 
-        <!-- divider -->
-        <!-- <v-card-text class="d-flex align-center mt-2">
-          <v-divider></v-divider>
-          <span class="mx-5">or</span>
-          <v-divider></v-divider>
-        </v-card-text> -->
 
-        <!-- social links -->
-        <!-- <v-card-actions class="d-flex justify-center">
-          <v-btn v-for="link in socialLink" :key="link.icon" icon class="ms-1">
-            <v-icon :color="$vuetify.theme.dark ? link.colorInDark : link.color">
-              {{ link.icon }}
-            </v-icon>
-          </v-btn>
-        </v-card-actions>-->
       </v-card>
     </div>
   </div>

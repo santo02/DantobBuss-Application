@@ -76,7 +76,7 @@ class ScheduleController extends BaseController
             ->join('lokets as lok', 'lok.id', '=', 'buses.loket_id')
             ->join('users as us', 'us.id', '=', 'lok.admin_id')
             ->join('routes', 'schedules.route_id', '=', 'routes.id')
-            ->where('lok.admin_id', "=", $user)  
+            ->where('lok.admin_id', "=", $user)
             ->where('schedules.status', "!=", 'complete')
             ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'buses.*', 'routes.*', 'users.name', 'lok.admin_id as admin_loket')
             ->orderBy('schedules.tanggal', 'DESC')
@@ -165,10 +165,12 @@ class ScheduleController extends BaseController
             ->where('routes.status', '=', 1)
             ->where('buses.supir_id', '=', $user)
             // ->where('schedules.status', 'complete')
-            ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'schedules.status as schedules_status', 'buses.*', 'routes.*', 'users.name')
+            ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'schedules.status as schedules_status', 'buses.id as bus_id', 'buses.*', 'routes.*', 'users.name')
             ->get();
 
-        return response()->json(['data' => $schedule]);
+
+
+        return response()->json( ['data' => $schedule]);
     }
     public function update($id)
     {

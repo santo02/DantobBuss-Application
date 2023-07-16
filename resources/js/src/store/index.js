@@ -91,8 +91,6 @@ export default new Vuex.Store({
     hasRole: (state) => (role) => {
       return state.userRole.includes(role);
     }
-
-
   },
 
   plugins: [

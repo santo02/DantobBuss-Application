@@ -21,14 +21,6 @@
             <v-text-field id="email" v-model="supir.email" outlined dense placeholder="Email" hide-details></v-text-field>
           </v-col>
 
-          <v-col cols="12" md="3">
-            <label for="username">Username</label>
-          </v-col>
-
-          <v-col cols="12" md="9">
-            <v-text-field id="Username" v-model="supir.username" type="text" outlined dense placeholder="Username"
-              hide-details></v-text-field>
-          </v-col>
 
           <v-col cols="12" md="3">
             <label for="phone_number">No Handphone</label>
@@ -91,7 +83,6 @@ export default {
       supir: [
         'name',
         'email',
-        'username',
         'phone_number',
         'address',
         'gender'
@@ -129,7 +120,6 @@ export default {
       axios.post('/api/registrasi/adminLoket', {
         name: this.supir.name,
         email: this.supir.email,
-        username: this.supir.username,
         phone_number: this.supir.phone_number,
         address: this.supir.address,
         gender: this.supir.gender
