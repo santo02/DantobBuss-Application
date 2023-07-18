@@ -30,7 +30,7 @@ class LoginController extends BaseController
     return response()->json(['message' => 'Invalid credentials'], 401);
   }
 
-  
+
   public function user(Request $request)
   {
     return response()->json($request->user());

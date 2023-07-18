@@ -33,6 +33,7 @@
                   outlined
                   dense
                   placeholder="Nama Lengkap"
+                  :error-messages="errors.name"
                 ></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
@@ -44,6 +45,7 @@
                   outlined
                   dense
                   placeholder="Email"
+                  :error-messages="errors.email"
                 ></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
@@ -55,6 +57,7 @@
                   dense
                   type="number"
                   placeholder="Nomor Handphone"
+                  :error-messages="errors.phone_number"
                 ></v-text-field>
               </v-col>
 
@@ -67,6 +70,7 @@
                   outlined
                   dense
                   placeholder="Jenis Kelamin"
+                  :error-messages="errors.gender"
                 ></v-select>
               </v-col>
 
@@ -79,6 +83,7 @@
                   dense
                   type="text"
                   placeholder="Alamat"
+                  :error-messages="errors.address"
                 ></v-text-field>
               </v-col>
 
@@ -91,6 +96,7 @@
                   dense
                   type="password"
                   placeholder="password"
+                  :error-messages="errors.password"
                 ></v-text-field>
               </v-col>
 
@@ -103,16 +109,10 @@
                   dense
                   type="password"
                   placeholder="Konfirmasi password"
+                  :error-messages="errors.confirm_password"
                 ></v-text-field>
               </v-col>
             </v-row>
-            <!-- <v-checkbox hide-details class="mt-1">
-              <template #label>
-                <div class="d-flex align-center flex-wrap">
-                  <span class="me-2">I agree to</span><a href="javascript:void(0)">privacy policy &amp; terms</a>
-                </div>
-              </template>
-            </v-checkbox> -->
 
             <v-btn block color="primary" class="mt-6" @click.prevent="registrasi">
               Sign Up
@@ -125,28 +125,11 @@
           <span class="me-2"> Sudah punya akun?</span>
           <router-link :to="{ name: 'pages-login' }"> Masuk disini </router-link>
         </v-card-text>
-
-        <!-- divider -->
-        <!-- <v-card-text class="d-flex align-center mt-2">
-          <v-divider></v-divider>
-          <span class="mx-5">or</span>
-          <v-divider></v-divider>
-        </v-card-text> -->
-
-        <!-- social link -->
-        <!-- <v-card-actions class="d-flex justify-center">
-          <v-btn v-for="link in socialLink" :key="link.icon" icon class="ms-1">
-            <v-icon :color="$vuetify.theme.dark ? link.colorInDark : link.color">
-              {{ link.icon }}
-            </v-icon>
-          </v-btn>
-        </v-card-actions> -->
       </v-card>
     </div>
   </div>
 </template>
 <script>
-// eslint-disable-next-line object-curly-newline
 import {
   mdiFacebook,
   mdiTwitter,
@@ -166,7 +149,7 @@ import axios from "axios";
 export default {
   setup() {
     const isPasswordVisible = ref(false);
-
+    const errors = ref({});
     const user = [
       "name",
       "email",
@@ -202,6 +185,7 @@ export default {
     return {
       isPasswordVisible,
       user: {},
+      errors,
 
       icons: {
         mdiEyeOutline,
@@ -235,8 +219,10 @@ export default {
           });
         })
         .catch((error) => {
-          if (error.response.status === 401) {
-            this.errors = e.response.data.errors;
+          if (error.response.status === 422) {
+            this.errors = error.response.data.data;
+            this.errors_general = error.response.data.message;
+            console.log(this.errors);
           }
         });
     },
@@ -246,4 +232,11 @@ export default {
 
 <style lang="scss">
 @import "~@resources/sass/preset/pages/auth.scss";
+.v-messages.error--text {
+  color: red; /* Customize the error message text color */
+}
+.alert_error {
+  color: red;
+  align-items: center;
+}
 </style>

@@ -2,26 +2,42 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\API\BaseController;
 use App\Models\loket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
-class LoketController extends Controller
+class LoketController extends BaseController
 {
 
     public function store(Request $request)
     {
 
-        $input = $this->validate($request, [
+        $validator = Validator::make($request->all(), [
+
             'nama_loket' => 'required|string',
             'lokasi_loket' => 'required|string',
             'admin_id' => 'required|integer|unique:lokets',
+            
+        ], [
+            'required' => ':attribute tidak boleh kosong.',
+            'string' => ':attribute hanya bisa diisi oleh huruf dan angka.',
+            'admin_id.unique' => 'Admin telah terdaftar di loket lain.',
+            'admin_id.required'=> 'Admin harus diisi.',
+            'lokasi_loket.required'=> 'Lokasi loket harus diisi.',
+            'nama_loket.required'=> 'Nama loket harus diisi.',
+
         ]);
+        if ($validator->fails()) {
+            return $this->sendError('Input tidak boleh kosong', $validator->errors(), 422);
+        }
 
-
+        $input = $request->all();
         loket::create($input);
 
-        return response()->json(['data' => $input, 'message' => 'Loet  Successfully added']);
+        return $this->sendResponse($input, 'Berhasil Menambahkan Loket.');
+
     }
 
     public function UpdateStatus($id)

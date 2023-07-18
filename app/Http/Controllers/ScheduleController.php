@@ -15,17 +15,28 @@ class ScheduleController extends BaseController
 {
     public function store(Request $request)
     {
-        $input = $this->validate($request, [
+        $validator = Validator::make($request->all(),[
             'bus_id' => 'required',
             'route_id' => 'required',
             'tanggal' => 'required|date',
             'harga' => 'required|string',
-            // 'status' => 'not_started',
+        ],[
+            'bus_id.required'=> 'Bus harus diisi!',
+            'route_id.required'=> 'Rute harus diisi!',
+            'tanggal.required'=>'Tanggal Harus Di Isi!',
+            'tanggal.date'=>'Format Tanggal Salah!',
+            'harga.required'=>'Harga harus di isi!'
+
         ]);
+
+        if($validator->fails()){
+            return $this->sendError('Input tidak boleh kosong', $validator->errors(), 422);
+        }
+        $input = $request->all();
         $input['status'] = 'not_started';
         Schedule::create($input);
 
-        return $this->sendResponse($input, 'Schedule Created Successfully');
+        return $this->sendResponse($input, 'Berhasil Membuat Jadwal Baru');
     }
     public function ShowALl()
     {
@@ -33,8 +44,9 @@ class ScheduleController extends BaseController
             ->join('buses', 'buses.id', '=', 'schedules.bus_id')
             ->join('users', 'buses.supir_id', '=', 'users.id')
             ->join('routes', 'schedules.route_id', '=', 'routes.id')
+            ->join('lokets', 'buses.loket_id', '=', 'lokets.id')
             // ->where('schedules.status', "!=", 'complete')
-            ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'buses.status as status_bus', 'buses.nomor_pintu', 'buses.police_number', 'routes.status as routes_status', 'routes.derpature', 'routes.arrival', 'users.name')
+            ->select('schedules.id as schedule_id', 'schedules.tanggal','schedules.status', 'schedules.harga', 'buses.status as status_bus', 'buses.nomor_pintu', 'buses.police_number', 'routes.status as routes_status', 'routes.derpature', 'routes.arrival', 'users.name', 'lokets.nama_loket as loket')
             ->orderBy('schedules.tanggal', 'DESC')
             ->get();
 
@@ -68,7 +80,7 @@ class ScheduleController extends BaseController
     public function showForAdmin()
     {
         $user = Auth::user()->id;
-        // return $user;    
+        // return $user;
         $schedule = DB::table('schedules')
             ->join('buses', 'buses.id', '=', 'schedules.bus_id')
             ->join('users', 'buses.supir_id', '=', 'users.id')

@@ -52,7 +52,7 @@ export default {
 
     let url = '';
 
-    if (this.userRole === "direksi") {
+    if (this.userRole === "direksi" || this.userRole === "admin_kantor") {
       url = "/api/Keuangan/all/index";
     } else if (this.userRole === "admin_loket") {
       url = "/api/Keuangan/index";

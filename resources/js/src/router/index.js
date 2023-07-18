@@ -338,7 +338,7 @@ const routes = [{
     component: () => import('@/views/pages/Keuangan/catatan-keuangan.vue'),
     meta: {
       requiresAuth: true,
-      requiresRole: ['admin_loket', 'direksi'],
+      requiresRole: ['admin_loket', 'direksi','admin_kantor'],
     },
   },
   {
@@ -347,7 +347,7 @@ const routes = [{
     component: () => import('@/views/pages/Keuangan/detail-catatan-keuangan.vue'),
     meta: {
       requiresAuth: true,
-      requiresRole: ['admin_loket', 'direksi'],
+      requiresRole: ['admin_loket', 'direksi', 'admin_kantor'],
     },
   },
   {
@@ -356,7 +356,7 @@ const routes = [{
     component: () => import('@/views/pages/Keuangan/detail-keuangan.vue'),
     meta: {
       requiresAuth: true,
-      requiresRole: ['admin_loket', 'direksi'],
+      requiresRole: ['admin_loket', 'direksi', 'admin_kantor'],
     },
   },
   {
@@ -365,7 +365,7 @@ const routes = [{
     component: () => import('@/views/pages/Komisi/komisi.vue'),
     meta: {
       requiresAuth: true,
-      requiresRole: ['admin_loket', 'direksi'],
+      requiresRole: ['admin_loket', 'direksi', 'admin_kantor'],
     },
   },
   {
@@ -374,7 +374,7 @@ const routes = [{
     component: () => import('@/views/pages/Komisi/detail-komisi.vue'),
     meta: {
       requiresAuth: true,
-      requiresRole: ['admin_loket', 'direksi'],
+      requiresRole: ['admin_loket', 'direksi', 'admin_kantor'],
     },
   },
   {

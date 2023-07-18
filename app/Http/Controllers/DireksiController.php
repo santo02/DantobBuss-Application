@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class DireksiController extends Controller
 {
     public function index()
     {
+        $user = Auth::user()->id;
+
         $keuangan = DB::table('schedules')
             ->join('bookings', 'bookings.schedules_id', '=', 'schedules.id')
             ->join('buses', 'buses.id', '=', 'schedules.bus_id')
@@ -23,7 +26,7 @@ class DireksiController extends Controller
             ->join('buses', 'buses.id', '=', 'schedules.bus_id')
             ->join('users', 'buses.supir_id', '=', 'users.id')
             ->join('lokets', 'buses.loket_id', '=', 'lokets.id')
-            ->select(DB::raw('DATE(schedules.tanggal) as tanggal'), DB::raw('COUNT(*) as jumlah'))
+            ->select(DB::raw('DATE(schedules.tanggal) as tanggal'), DB::raw('COUNT(DISTINCT buses.id) as jumlah'))
             ->groupBy(DB::raw('DATE(schedules.tanggal)'))
             ->get();
 

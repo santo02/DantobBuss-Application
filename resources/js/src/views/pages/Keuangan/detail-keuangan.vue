@@ -31,12 +31,12 @@
             </tr>
             <tr>
               <td class="judul">Kantor</td>
-              <td>1 * Rp.53.0000</td>
+              <td>1 * Rp 53.000</td>
               <td>{{ kantor | toRupiah }}</td>
             </tr>
             <tr>
               <td class="judul">Administrasi</td>
-              <td>1 * Rp.5.0000</td>
+              <td>1 * Rp 5.000</td>
               <td>{{ admin | toRupiah }}</td>
             </tr>
             <tr>
@@ -83,7 +83,7 @@ export default {
     const access_token = localStorage.getItem("access_token");
     let url = '';
 
-    if (this.userRole === "direksi") {
+    if (this.userRole === "direksi" || this.userRole === "admin_kantor") {
       url = `/api/Detail-keuangan-ByPassenger/all/${this.schedule_id}`;
     } else if (this.userRole === "admin_loket") {
       url = `/api/Detail-keuangan-ByPassenger/${this.schedule_id}`;

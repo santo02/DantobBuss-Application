@@ -50,6 +50,7 @@ Route::post('/payments/notifications', [DokuController::class, 'notifications'])
 
 Route::post('registrasi', [RegisterUserController::class, 'RegisterUser']);
 Route::post('login', [LoginController::class, 'login']);
+Route::post('reset-password', [LupaPasswordController::class, 'sendOTP']);
 
 Route::get('/schedule/show/all', [ScheduleController::class, 'index']);
 Route::put('user/update/{id}', [UserController::class, 'update']);
@@ -58,7 +59,6 @@ Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver,passenger,d
     Route::post('logout', [LoginController::class, 'logout']);
     Route::post('user/update-password', [UserController::class, 'updatePassword']);
     Route::get('/user/profile', [UserController::class, 'user']);
-    Route::post('reset-password', [LupaPasswordController::class, 'sendOTP']);
     
 });
 
@@ -83,7 +83,6 @@ Route::middleware(['auth:api', 'role:admin_loket,direksi'])->group(function () {
     Route::get('/Keuangan/index', [KeuanganController::class, 'index']);
     Route::get('/Detail-keuangan-Bydate/{tanggal}', [KeuanganController::class, 'getByTanggal']);
     Route::get('/Detail-keuangan-ByPassenger/{id}', [KeuanganController::class, 'getPassenger']);
-
     Route::get('/bookings/index/all', [BookingController::class, 'index']);
     Route::put('/bookings/update/{id}', [BookingController::class, 'update']);
 

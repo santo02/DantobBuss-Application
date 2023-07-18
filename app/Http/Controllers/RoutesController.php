@@ -29,12 +29,17 @@ class RoutesController extends BaseController
             'arrival' => 'required|string',
             'harga' => 'required|string',
             'type' => 'required|string'
+        ],[
+            'required' => ':attribute tidak boleh kosong',
+            'derpature.required' => 'Keberangkatan tidak boleh kosong',
+            'arrival.required' => 'Kedatangan tidak boleh kosong',
+            'type.required' => 'Type tidak boleh kosong',
+            'string' => ':attribute hanya bisa diisi oleh huruf dan angka.',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors()], 400);
+            return $this->sendError('Input tidak boleh kosong', $validator->errors(), 422);
         }
-
         $routes = new Routes;
 
         $routes->derpature = $request->derpature;
@@ -43,7 +48,8 @@ class RoutesController extends BaseController
         $routes->type = $request->type;
         $routes->save();
 
-        return $this->sendResponse($routes, 'Routes Created Successfully');
+        return $this->sendResponse($routes, 'Berhasil menambahkan rute.');
+
     }
 
     public function update(Request $request, $id)
