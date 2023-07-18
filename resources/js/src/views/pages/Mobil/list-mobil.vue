@@ -52,7 +52,7 @@ export default {
 
         },
         { text: 'Nomor Pintu', value: 'nomor_pintu' },
-        { text: 'Supir', value: 'name' },
+        { text: 'Sopir', value: 'name' },
         { text: 'Jumlah Seat', value: 'number_of_seats' },
         { text: 'Type', value: 'type' },
         { text: 'Loket', value: 'nama_loket' },

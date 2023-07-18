@@ -63,7 +63,7 @@ export default {
 
     let url = '';
 
-    if (this.userRole === "direksi") {
+    if (this.userRole === "direksi" || this.userRole === "admin_kantor") {
       url = `/api/Detail-keuangan-Bydate/all/${this.tanggal}`;
     } else if (this.userRole === "admin_loket") {
       url = `/api/Detail-keuangan-Bydate/${this.tanggal}`;

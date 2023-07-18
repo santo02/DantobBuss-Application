@@ -10,6 +10,7 @@ use App\Http\Controllers\DokuController;
 use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LoketController;
+use App\Http\Controllers\LupaPasswordController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\RoutesController;
@@ -35,13 +36,6 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-// Route::post('/pembayaran', [PembayaranController::class, 'generateToken']);
-
-Route::post('/payments/notifications', [DokuController::class, 'notifications']);
-
-Route::post('registrasi', [RegisterUserController::class, 'RegisterUser']);
-Route::post('login', [LoginController::class, 'login']);
 // Route::get('signature', function () {
 //     // return $request;
 //     $signature = SignatureDoku::generateToken();
@@ -50,11 +44,22 @@ Route::post('login', [LoginController::class, 'login']);
 // });
 
 // Route::post('logout', [LoginController::class, 'logout']th);
+// Route::post('/pembayaran', [PembayaranController::class, 'generateToken']);
+
+Route::post('/payments/notifications', [DokuController::class, 'notifications']);
+
+Route::post('registrasi', [RegisterUserController::class, 'RegisterUser']);
+Route::post('login', [LoginController::class, 'login']);
+Route::post('reset-password', [LupaPasswordController::class, 'sendOTP']);
+
 Route::get('/schedule/show/all', [ScheduleController::class, 'index']);
+Route::put('user/update/{id}', [UserController::class, 'update']);
 
 Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver,passenger,direksi'])->group(function () {
     Route::post('logout', [LoginController::class, 'logout']);
+    Route::post('user/update-password', [UserController::class, 'updatePassword']);
     Route::get('/user/profile', [UserController::class, 'user']);
+    
 });
 
 
@@ -78,7 +83,6 @@ Route::middleware(['auth:api', 'role:admin_loket,direksi'])->group(function () {
     Route::get('/Keuangan/index', [KeuanganController::class, 'index']);
     Route::get('/Detail-keuangan-Bydate/{tanggal}', [KeuanganController::class, 'getByTanggal']);
     Route::get('/Detail-keuangan-ByPassenger/{id}', [KeuanganController::class, 'getPassenger']);
-
     Route::get('/bookings/index/all', [BookingController::class, 'index']);
     Route::put('/bookings/update/{id}', [BookingController::class, 'update']);
 
@@ -95,7 +99,6 @@ Route::middleware(['auth:api', 'role:admin_kantor'])->group(function () {
     Route::put('/account/update/status/{id}', [UpdateStatusUserController::class, 'update']);
     Route::put('/bus/update/status/{id}', [BusController::class, 'updateStatus']);
 
-    Route::put('user/update/{id}', [UserController::class, 'update']);
     Route::get('user/get/{id}', [UserController::class, 'getUser']);
     Route::get('bus/get/{id}', [BusController::class, 'SelectOneBus']);
 

@@ -3,7 +3,43 @@
     <div class="auth-inner">
       <v-card class="auth-card">
         <!-- logo -->
-        <v-form ref="form" @submit.prevent="submitEmail">
+        <v-form ref="form" v-if="isOTP">
+          <div class="body1">
+            <h3 class="judul" color="primary">Masukkan Kode 4 Digit</h3>
+            <p class="body">
+              Masukkan 4 digit kode verifikasi yang dikirim ke email terdaftar Anda.
+            </p>
+            <div class="otp-container">
+              <vue-otp2
+                :length="4"
+                :input-style="{
+                  width: '30px',
+                  height: '50px',
+                  borderRadius: '4px',
+                  textAlign: 'center',
+                  fontSize: '18px',
+                }"
+                @onChange="onOtpInput"
+
+
+              />
+            </div>
+            <div class="text-center mt-3">
+              <span v-if="!isResending">
+                Tidak menerima OTP?
+                <span color="primary" style="font-weight: bold" @click="resendOTP"
+                  >Kirim ulang</span
+                >
+                <span v-if="countdown !== '00:00'">({{ countdown }})</span>
+              </span>
+              <span style="color: #ff4c51" v-else>
+                Kirim ulang dalam <span>{{ countdown }}</span>
+              </span>
+            </div>
+            <p color="info" class="text-center" @click="back">Kembali</p>
+          </div>
+        </v-form>
+        <v-form ref="form" @submit.prevent="submitEmail" v-else>
           <div class="body1">
             <h3 class="judul" color="primary">Lupa Password</h3>
             <p class="body">
@@ -50,14 +86,21 @@
 import { ref } from "@vue/composition-api";
 import axios from "axios";
 import Swal from "sweetalert2";
-
-// import doku from "../../utils/doku";
-
+import VueOtp2 from "vue-otp-2";
 export default {
+  components: {
+    VueOtp2,
+  },
   setup() {
     const email = ref("");
+    const otpCode = ref("");
     return {
       email,
+      otpCode,
+      isOTP: false,
+      countdown: "01:00", // Initial countdown time in mm:ss format
+      isResending: false, // Flag to indicate if the OTP is currently being resent
+      timer: null, // Variable to store the timer ID
     };
   },
   data() {
@@ -67,17 +110,89 @@ export default {
       isLoading: false,
     };
   },
+  mounted() {
+    this.startCountdown();
+  },
   methods: {
     submitEmail() {
       this.isLoading = true;
+      axios
+        .post("api/reset-password", {
+          email: this.email,
+        })
+        .then((response) => {
+          //Check email if registered
+          console.log(response.data.message);
+          Swal.fire({
+            icon: "success",
+            title: "Berhasil",
+            text: "Berhasil mengirimkan OTP ",
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#d33",
+          });
+          this.isLoading = false;
+          this.isOTP = true;
+        })
+        .catch((error) => {
+          this.isLoading = false;
+          this.isOTP = false;
+          Swal.fire({
+            icon: "error",
+            title: "Gagal",
+            text: "Email tidak terdaftar",
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#d33",
+          });
+          this.isLoading = false;
+        });
+    },
+    back() {
+      this.isOTP = false;
+    },
+    onOtpInput(value) {
+      // This function will be called whenever the user inputs a value in the OTP field
+      this.otpCode = value;
+      console.log(value)
+      if (this.otpCode.length === 4) {
+        this.submitOtp();
+      }
+    },
+    submitOtp() {
+      // Call the API or perform the action to submit the OTP
+      // For this example, we're using a simple alert to show the message
+      // You can modify this function with your actual API call or submission logic
       Swal.fire({
-        icon: "error",
-        title: "Login Gagal",
-        text: "Email dan Password tidak boleh kosong!",
+        icon: "success",
+        title: "OTP Submitted",
+        text: "Your OTP has been successfully submitted!",
         confirmButtonText: "Ok",
         confirmButtonColor: "#d33",
       });
-      this.isLoading = false;
+    },
+    resendOTP() {
+      this.startCountdown();
+    },
+    startCountdown() {
+      let remainingSeconds = 60; // Set the initial number of seconds for the countdown
+      this.isResending = true; // Set the flag to true to show the "Tunggu sebentar..." message
+      this.timer = setInterval(() => {
+        const minutes = Math.floor(remainingSeconds / 60);
+        const seconds = remainingSeconds % 60;
+        this.countdown = `${minutes
+          .toString()
+          .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+        remainingSeconds--;
+
+        if (remainingSeconds < 0) {
+          this.stopCountdown();
+        }
+      }, 1000);
+    },
+    stopCountdown() {
+      clearInterval(this.timer);
+      this.countdown = "00:00"; // Set the countdown to 00:00 when the timer is stopped
+      this.isResending = false; // Set the flag to false to show the "Kirim ulang" link again
     },
   },
 };
@@ -102,5 +217,23 @@ export default {
   text-align: center;
   margin-top: 20px;
   margin-bottom: 30px;
+}
+.otp-input {
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  margin: 0 10px;
+  font-size: 20px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  text-align: center;
+  &.error {
+    border: 1px solid red !important;
+  }
+}
+.otp-input::-webkit-inner-spin-button,
+.otp-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 </style>

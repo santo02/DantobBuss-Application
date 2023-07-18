@@ -15,20 +15,40 @@ class BusController extends BaseController
     public function store(Request $request)
     {
 
-        $input = $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'type' => 'required|string|max:20',
             'police_number' => 'required|string|unique:buses',
             'number_of_seats' => 'required|string',
             'merk' => 'required|string',
-            'nomor_pintu' => 'required|string',
+            'nomor_pintu' => 'required|string|unique:buses',
             'supir_id' => 'required:uniqe:users',
             'loket_id' => 'required'
+        ], [
+            'required' => ':attribute harus diisi.',
+            'string' => 'Input tidak valid!',
+            'police_number.unique' => 'Bus sudah digunakan',
+            'nomor_pintu.unique' => 'Bus sudah terdaftar',
+            'police_number.required' => 'Nomor polisi harus diisi.',
+            'nomor_pintu.required' => 'Nomor pintu harus diisi.',
+            'type.required' => 'Type polisi harus diisi.',
+            'max' => ':attribute maksimal :max digit',
+            'supir_id.required' => 'Supir harus diisi.',
+            'supir_id.unique' => 'Supir Telah terdaftar di mobil lain.',
+            'loket_id.required' => 'Loket harus diisi.',
+
         ]);
+
+
+        if ($validator->fails()) {
+            return $this->sendError('Input tidak boleh kosong', $validator->errors(), 422);
+        }
+
         $input = $request->all();
         $input['status'] = 1;
         bus::create($input);
 
-        return $this->sendResponse($input, 'Bus Created Successfully');
+        return $this->sendResponse($input, 'Berhasil menambhakan mobil.');
+
     }
 
     public function show()
@@ -106,11 +126,11 @@ class BusController extends BaseController
     public function notAssociated()
     {
         $supir = DB::table('users')
-        ->leftJoin('buses', 'users.id', '=', 'buses.supir_id')
-        ->where('users.role_id', 3)
-        ->whereNull('buses.supir_id')
-        ->select('users.*')
-        ->get();
+            ->leftJoin('buses', 'users.id', '=', 'buses.supir_id')
+            ->where('users.role_id', 3)
+            ->whereNull('buses.supir_id')
+            ->select('users.*')
+            ->get();
 
 
         return response()->json($supir);

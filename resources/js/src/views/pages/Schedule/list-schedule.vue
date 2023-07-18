@@ -5,27 +5,40 @@
         Schedule Baru
       </v-btn>
       <v-spacer></v-spacer>
-      <v-text-field v-model="search" append-icon="mdi-magnify" label="Cari" hide-details></v-text-field>
+      <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Cari"
+        hide-details
+      ></v-text-field>
     </v-card-title>
     <v-data-table :headers="headers" :items="schedule" :search="search">
       <template #item.edit="{ item }">
-        <v-btn small color="primary" :to="{ name: 'pages-edit-schedule', params: { id: item.schedule_id } }"><v-icon center>{{
-          icons.mdiPencil }}</v-icon></v-btn>
+        <v-btn
+          small
+          color="primary"
+          :to="{ name: 'pages-edit-schedule', params: { id: item.schedule_id } }"
+          ><v-icon center>{{ icons.mdiPencil }}</v-icon></v-btn
+        >
       </template>
-      <template #item.delete="{ item }">
-        <v-btn small color="error" @click="deleteSchedule(item.id)"><v-icon>{{ icons.mdiTrashCanOutline
-        }}</v-icon></v-btn>
+      <template v-slot:item.status="{ item }">
+        <v-chip v-if="item.status == 'not_started'" color="error" x-small>
+          Belum Berangkat
+        </v-chip>
+        <v-chip v-else-if="item.status == 'in_progress'" color="secondary" x-small>
+          Dalam Perjalanan
+        </v-chip>
+        <v-chip v-else color="info" x-small> Selesai </v-chip>
       </template>
     </v-data-table>
   </v-card>
 </template>
 
-
 <script>
-import axios from 'axios';
-import moment from 'moment';
-import 'moment/locale/id';
-import { mdiPencil, mdiTrashCanOutline } from '@mdi/js';
+import axios from "axios";
+import moment from "moment";
+import "moment/locale/id";
+import { mdiPencil, mdiTrashCanOutline } from "@mdi/js";
 
 export default {
   setup() {
@@ -33,56 +46,59 @@ export default {
       buss: [],
       icons: {
         mdiPencil,
-        mdiTrashCanOutline
-      }
-
-    }
+        mdiTrashCanOutline,
+      },
+    };
   },
   data() {
     return {
-      search: '',
+      search: "",
       headers: [
         {
-          text: 'Nomor pintu',
-          align: '',
+          text: "Nomor pintu",
+          align: "",
           sortable: false,
-          value: 'nomor_pintu',
-
+          value: "nomor_pintu",
         },
-        { text: 'Nomor Polisi', value: 'police_number' },
-        { text: 'Supir', value: 'name' },
-        { text: 'Asal', value: 'arrival' },
-        { text: 'Tujuan', value: 'derpature' },
-        { text: 'Tanggal', value: 'tanggal' },
-        { text: 'Harga', value: 'harga' },
-        // { text: 'Status', value: 'status' },
-        { text: 'Edit', value: 'edit', align: 'center', sortable: false },
-        { text: 'Delete', value: 'delete', align: 'center', sortable: false }
+        { text: "Nomor Polisi", value: "police_number" },
+        { text: "Sopir", value: "name" },
+        { text: "Asal", value: "derpature" },
+        { text: "Tujuan", value: "arrival" },
+        { text: "Loket", value: "loket" },
+        { text: "Tanggal", value: "tanggal" },
+        { text: "Harga", value: "harga" },
+        { text: "Status", value: "status" },
+        { text: "Edit", value: "edit", align: "center", sortable: false },
       ],
       schedule: [],
-    }
+    };
   },
   methods: {
     formatDate(date) {
       // moment.locale('id');
-      return moment(date).format('dddd, Do MMMM YYYY');
-    }
+      return moment(date).format("dddd, Do MMMM YYYY");
+    },
+    getColor(status) {
+      if (status == "not_started") return "red";
+      else if (status == "in_progress") return "orange";
+      else return "green";
+    },
   },
   mounted() {
-    const access_token = localStorage.getItem('access_token');
+    const access_token = localStorage.getItem("access_token");
 
-    axios.get('/api/schedule/admin/show/all', {
-      headers: {
-        'Authorization': `Bearer ${access_token}`
-      }
-    }).then(response => {
-      this.schedule = response.data.data;
-      console.log(this.schedule);
-
-
-    }).catch(error => {
-      console.log(error);
-    });
-  }
-}
+    axios
+      .get("/api/schedule/admin/show/all", {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+      .then((response) => {
+        this.schedule = response.data.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
+};
 </script>

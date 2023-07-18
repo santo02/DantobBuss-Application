@@ -77,7 +77,7 @@ export default {
     // console.log(combinedDat);
     let url = '';
 
-    if (this.userRole === "direksi") {
+    if (this.userRole === "direksi" || this.userRole === "admin_kantor") {
       url = "/api/Keuangan/all/index";
     } else if (this.userRole === "admin_loket") {
       url = "/api/Keuangan/index";
@@ -114,7 +114,7 @@ export default {
 
 
     JumlahSetoran(total, jlhTgl) {
-      return total - ((10 / 100) * total + jlhTgl * 53000 + jlhTgl * 5000);
+      return total - ((0.1 * total) + (jlhTgl * 53000 )+ (jlhTgl * 5000));
     },
 
     perusahaan(total, jlhTgl) {

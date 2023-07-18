@@ -8,7 +8,10 @@
         {{ formatDate(item.tanggal) }}
       </template>
       <template #item.Detail="{ item }">
-        <router-link :to="{ name: 'detail-keuangan-by-penumpang', params: { id: item.schedule_id } }">Detail</router-link>
+        <router-link
+          :to="{ name: 'detail-keuangan-by-penumpang', params: { id: item.schedule_id } }"
+          >Detail</router-link
+        >
       </template>
       <template #item.total="{ item }"> {{ item.total | toRupiah }} </template>
       <template v-slot:body.append>
@@ -104,6 +107,7 @@ export default {
         { text: "Keberangkatan", value: "derpature" },
         { text: "Tipe", value: "type" },
         { text: "Nama Supir", value: "name" },
+        { text: "Loket", value: "nama_loket" },
         { text: "Detail", value: "Detail", sortable: false },
         { text: "Total", value: "total" },
       ],
@@ -113,9 +117,9 @@ export default {
   mounted() {
     const access_token = localStorage.getItem("access_token");
 
-    let url = '';
+    let url = "";
 
-    if (this.userRole === "direksi") {
+    if (this.userRole === "direksi" || this.userRole === "admin_kantor") {
       url = `/api/Detail-keuangan-Bydate/all/${this.tanggal}`;
     } else if (this.userRole === "admin_loket") {
       url = `/api/Detail-keuangan-Bydate/${this.tanggal}`;
@@ -155,7 +159,7 @@ export default {
   },
   computed: {
     userRole() {
-      return this.$store.state.userRole
+      return this.$store.state.userRole;
     },
     komisi() {
       let komisi = 0;
@@ -172,6 +176,24 @@ export default {
       admin = this.jumlahSchedule * 5000;
       return admin;
     },
+    // perusahaan() {
+    //   let perusahaan = 0;
+    //   if (this.ListByDate.nama_loket == "Loket Medan") {
+    //     perusahaan = (40 / 100) * +this.komisi + +this.kantor + +this.admin;
+    //   } else {
+    //     perusahaan = (60 / 100) * +this.komisi + +this.kantor + +this.admin;
+    //   }
+    //   return perusahaan;
+    // },
+    // AdminAgen() {
+    //   let AdminAgen = 0;
+    //   if (this.ListByDate.nama_loket == "Loket Medan") {
+    //     AdminAgen = (60 / 100) * +this.komisi;
+    //   } else {
+    //     AdminAgen = (40 / 100) * +this.komisi;
+    //   }
+    //   return AdminAgen;
+    // },
     perusahaan() {
       let perusahaan = 0;
       perusahaan = (60 / 100) * +this.komisi + +this.kantor + +this.admin;

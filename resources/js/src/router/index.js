@@ -23,6 +23,15 @@ const routes = [{
     },
   },
   {
+    path: '/profile',
+    name: 'pages-profile',
+    component: () => import('@/views/pages/Profile/profile.vue'),
+    meta: {
+      requiresAuth: true,
+      requiresRole: ['admin_loket', 'passenger', 'driver', 'admin_kantor', 'direksi'],
+    },
+  },
+  {
     path: '/supir',
     name: 'pages-supir',
     component: () => import('@/views/pages/supir/list-supir.vue'),
@@ -254,10 +263,10 @@ const routes = [{
     path: '/dashboard',
     name: 'dashboard',
     component: () => import('@/views/dashboard/Dashboard.vue'),
-    meta: {
-      requiresAuth: true,
-      // requiresRole: 'passenger',
-    },
+    // meta: {
+    //   requiresAuth: true,
+    //   requiresRole: ['admin_loket', 'passenger', 'driver', 'admin_kantor', 'direksi'],
+    // },
   },
   {
     path: '/Beranda',
@@ -329,7 +338,7 @@ const routes = [{
     component: () => import('@/views/pages/Keuangan/catatan-keuangan.vue'),
     meta: {
       requiresAuth: true,
-      requiresRole: ['admin_loket', 'direksi'],
+      requiresRole: ['admin_loket', 'direksi','admin_kantor'],
     },
   },
   {
@@ -338,7 +347,7 @@ const routes = [{
     component: () => import('@/views/pages/Keuangan/detail-catatan-keuangan.vue'),
     meta: {
       requiresAuth: true,
-      requiresRole: ['admin_loket', 'direksi'],
+      requiresRole: ['admin_loket', 'direksi', 'admin_kantor'],
     },
   },
   {
@@ -347,7 +356,7 @@ const routes = [{
     component: () => import('@/views/pages/Keuangan/detail-keuangan.vue'),
     meta: {
       requiresAuth: true,
-      requiresRole: ['admin_loket', 'direksi'],
+      requiresRole: ['admin_loket', 'direksi', 'admin_kantor'],
     },
   },
   {
@@ -356,7 +365,7 @@ const routes = [{
     component: () => import('@/views/pages/Komisi/komisi.vue'),
     meta: {
       requiresAuth: true,
-      requiresRole: ['admin_loket', 'direksi'],
+      requiresRole: ['admin_loket', 'direksi', 'admin_kantor'],
     },
   },
   {
@@ -365,7 +374,7 @@ const routes = [{
     component: () => import('@/views/pages/Komisi/detail-komisi.vue'),
     meta: {
       requiresAuth: true,
-      requiresRole: ['admin_loket', 'direksi'],
+      requiresRole: ['admin_loket', 'direksi', 'admin_kantor'],
     },
   },
   {
@@ -458,8 +467,7 @@ router.beforeEach((to, from, next) => {
     const roles = Array.isArray(requiresRole) ? requiresRole : [requiresRole];
 
     if (!roles.some(role => store.getters.hasRole(role))) {
-      return next(
-        '/');
+      return next('/');
       // Redirect to the default page if the user does not have any required role
     }
   }

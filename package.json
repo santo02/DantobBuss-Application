@@ -31,6 +31,7 @@
     "vuetify-loader": "^1.7.0"
   },
   "dependencies": {
+    "@bachdgvn/vue-otp-input": "^1.0.8",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
     "@fortawesome/free-regular-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
@@ -48,11 +49,13 @@
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.28",
     "moment": "^2.29.4",
+    "otp-input-vue2": "^1.1.0",
     "socket.io-client": "^4.6.1",
     "sweetalert2": "^11.7.3",
     "uuid": "^9.0.0",
     "vue": "^2.6.11",
     "vue-apexcharts": "^1.6.2",
+    "vue-otp-2": "^1.0.4",
     "vue-router": "^3.6.5",
     "vue2-google-maps": "^0.10.7",
     "vuetify": "^2.4.0",
