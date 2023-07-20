@@ -126,7 +126,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .status {
   position: absolute;
   top: -15px;
@@ -140,5 +140,12 @@ export default {
   position: absolute;
   right: 20px;
   top: 5px;
+}
+@media only screen and (max-width: 600px) {
+  .harga {
+    position: absolute;
+    right: 20px;
+    top: 30px;
+  }
 }
 </style>

@@ -18,7 +18,9 @@
 
         <!-- title -->
         <v-card-text>
-          <p class="text-1xl font-weight-semibold text--primary mb-2 text-center">Welcome to E-KBT</p>
+          <p class="text-1xl font-weight-semibold text--primary mb-2 text-center">
+            Welcome to E-KBT
+          </p>
           <p class="mb-2 text-center">Kepuasan Penumpang adalah Kebahagian Kami</p>
         </v-card-text>
         <v-card-text>
@@ -55,11 +57,17 @@
             </label>
 
             <div class="d-flex align-center justify-space-between flex-wrap">
-              <v-checkbox label="Ingat saya" hide-details class="me-3 mt-1">
-              </v-checkbox>
+              <v-checkbox
+                label="Ingat saya"
+                hide-details
+                class="me-3 mt-1"
+                v-model="rememberMe"
+              ></v-checkbox>
 
               <!-- forgot link -->
-              <router-link :to="{ name: 'pages-forgot-password' }"> Lupa Password? </router-link>
+              <router-link :to="{ name: 'pages-forgot-password' }">
+                Lupa Password?
+              </router-link>
             </div>
 
             <v-btn type="submit" block color="primary" class="mt-6" :loading="isLoading">
@@ -80,8 +88,6 @@
           <span class="me-2"> Belum memiliki akun?</span>
           <router-link :to="{ name: 'pages-register' }"> Daftar sekarang</router-link>
         </v-card-text>
-
-
       </v-card>
     </div>
   </div>
@@ -93,18 +99,18 @@ import { ref } from "@vue/composition-api";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-// import doku from "../../utils/doku";
-
 export default {
   setup() {
     const isPasswordVisible = ref(false);
     const email = ref("");
     const password = ref("");
+    const rememberMe = ref(false);
+
     return {
       isPasswordVisible,
       email,
       password,
-      // socialLink,
+      rememberMe,
       icons: {
         mdiEyeOutline,
         mdiEyeOffOutline,
@@ -113,8 +119,6 @@ export default {
   },
   data() {
     return {
-      email: "",
-      password: "",
       registrationSuccess: false,
       errors: {},
       isLoading: false,
@@ -123,12 +127,28 @@ export default {
   methods: {
     login() {
       this.isLoading = true;
+
+      const data = {
+        email: this.email,
+        password: this.password,
+      };
+
+      if (this.rememberMe) {
+        data.remember_me = true;
+      }
+
       axios
-        .post("/api/login", {
-          email: this.email,
-          password: this.password,
-        })
+        .post("/api/login", data)
         .then((response) => {
+          if (this.rememberMe) {
+            // Save user data to localStorage when "Ingat saya" is checked
+            const userData = {
+              access_token: response.data.access_token,
+              expires_at: response.data.expires_at,
+            };
+            localStorage.setItem("user_data", JSON.stringify(userData));
+          }
+
           const token = response.data.access_token;
           localStorage.setItem("access_token", token);
           this.$store.dispatch("updateUserRole", token);
@@ -138,19 +158,23 @@ export default {
         .catch((error) => {
           if (error.response.status === 422) {
             this.errors = error.response.data.errors;
-            // console.log(this.errors);
             Swal.fire({
               icon: "error",
               title: "Login Gagal",
-              text: "Email dan Password tidak boleh kosong!",
+              text: this.errors.account
+                ? this.errors.account[0]
+                : "Email dan Password tidak boleh kosong!",
               confirmButtonText: "Ok",
               confirmButtonColor: "#d33",
             });
           } else if (error.response.status === 401) {
+            this.errors = error.response.data.errors;
             Swal.fire({
               icon: "error",
               title: "Login gagal",
-              text: "Email atau Password salah!",
+              text: this.errors.credentials
+                ? this.errors.credentials[0]
+                : "Email atau Password salah!",
               confirmButtonText: "Ok",
               confirmButtonColor: "#d33",
             });
@@ -160,6 +184,24 @@ export default {
           this.isLoading = false;
         });
     },
+    checkSavedUserData() {
+      const userDataString = localStorage.getItem("user_data");
+      if (userDataString) {
+        const userData = JSON.parse(userDataString);
+        const expirationDate = new Date(userData.expires_at);
+        if (expirationDate > new Date()) {
+          // Token is still valid, automatically log in the user
+          this.$store.dispatch("updateUserRole", userData.access_token);
+          this.$router.push("/dashboard");
+        } else {
+          // Token has expired, remove saved user data
+          localStorage.removeItem("user_data");
+        }
+      }
+    },
+  },
+  mounted() {
+    this.checkSavedUserData();
   },
 };
 </script>

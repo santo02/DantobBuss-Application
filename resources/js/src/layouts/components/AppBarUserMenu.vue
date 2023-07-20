@@ -16,7 +16,7 @@
         </v-badge>
         <div class="d-inline-flex flex-column justify-center ms-3" style="vertical-align: middle">
           <span class="text--primary text-capitalize font-weight-semibold mb-n1"> {{ user.name }}</span>
-          <small class="text--disabled text-capitalize">{{ user.email }}</small>
+          <small class="text--disabled">{{ user.email }}</small>
         </div>
       </div>
 
@@ -175,6 +175,7 @@ methods: {
         })
           .then(response => {
             localStorage.removeItem('access_token');
+            localStorage.removeItem('user_data');
             localStorage.removeItem('expires_at');
             this.$store.commit('SET_USER_ROLE', '');
             this.$router.push('/');
@@ -188,7 +189,6 @@ methods: {
 },
 mounted() {
   const access_token = localStorage.getItem('access_token');
-
   axios.get('api/user/profile', {
     headers: {
       'Authorization': `Bearer ${access_token}`

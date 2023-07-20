@@ -19,7 +19,7 @@
             <v-card-title class="text-h6"
               >{{ item.derpature }} - {{ item.arrival }}</v-card-title
             >
-            <div class="text-h6 mt-2 mr-5 harga" style="color: #ff4c51">
+            <div class="text-h6 mt-3 mr-5 harga" style="color: #ff4c51">
               {{ item.harga | toRupiah }}
             </div>
             <v-btn
@@ -260,8 +260,13 @@ v-btn {
   right: 20px;
   top: 10px;
 }
-@media only screen and (min-width: 481px) {
-  .btn-pesan {
+@media only screen and (max-width: 600px) {
+  .harga {
+    position: absolute;
+    right: 20px;
+    top: 70px;
+
+  }.btn-pesan {
     margin-top: 160px;
   }
 }

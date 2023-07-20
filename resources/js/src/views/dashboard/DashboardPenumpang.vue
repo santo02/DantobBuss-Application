@@ -39,7 +39,7 @@
         <v-col
           ><v-select
             v-model="selectedType"
-            :items="['Economi', 'Executive']"
+            :items="['Ekonomi', 'Eksekutif']"
             placeholder="Pilih Type"
             clearable
             hide-details

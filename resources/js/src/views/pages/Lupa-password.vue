@@ -11,6 +11,7 @@
             </p>
             <div class="otp-container">
               <vue-otp2
+                ref="otpInput"
                 :length="4"
                 :input-style="{
                   width: '30px',
@@ -19,15 +20,13 @@
                   textAlign: 'center',
                   fontSize: '18px',
                 }"
-                @onChange="onOtpInput"
-
-
+                @onComplete="onOtpInput"
               />
             </div>
             <div class="text-center mt-3">
               <span v-if="!isResending">
                 Tidak menerima OTP?
-                <span color="primary" style="font-weight: bold" @click="resendOTP"
+                <span color="primary" style="font-weight: bold" @click="submitAgain"
                   >Kirim ulang</span
                 >
                 <span v-if="countdown !== '00:00'">({{ countdown }})</span>
@@ -51,13 +50,9 @@
               outlined
               label="Email"
               placeholder="john@example.com"
-              hide-details
               :error-messages="errors.email"
               class="mb-1"
             ></v-text-field>
-            <label class="text-danger" v-if="errors.email" type="error" dismissible>
-              Email harus di isi!
-            </label>
             <center>
               <v-btn
                 type="submit"
@@ -123,6 +118,7 @@ export default {
         .then((response) => {
           //Check email if registered
           console.log(response.data.message);
+          console.log(this.otpCode);
           Swal.fire({
             icon: "success",
             title: "Berhasil",
@@ -134,6 +130,18 @@ export default {
           this.isOTP = true;
         })
         .catch((error) => {
+          if (error.response.status === 422) {
+            this.errors = error.response.data.data;
+            this.errors_general = error.response.data.message;
+            console.log(this.errors);
+          }
+          Swal.fire({
+            icon: "error",
+            title: "Gagal",
+            text: this.errors,
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#d33",
+          });
           this.isLoading = false;
           this.isOTP = false;
           Swal.fire({
@@ -146,28 +154,70 @@ export default {
           this.isLoading = false;
         });
     },
+    submitAgain() {
+      axios
+        .post("api/reset-password", {
+          email: this.email,
+        })
+        .then((response) => {
+          //Check email if registered
+          console.log(response.data.message);
+          console.log(this.otpCode);
+          Swal.fire({
+            icon: "success",
+            title: "Berhasil",
+            text: "Berhasil mengirimkan OTP ",
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#d33",
+          });
+        });
+        this.startCountdown();
+    },
     back() {
       this.isOTP = false;
     },
     onOtpInput(value) {
-      // This function will be called whenever the user inputs a value in the OTP field
-      this.otpCode = value;
-      console.log(value)
+      const enteredOtpValueArray = this.$refs.otpInput.otp;
+      const enteredOtpValue = enteredOtpValueArray.join("");
+      console.log("Entered OTP:", enteredOtpValue);
+      this.otpCode = enteredOtpValue;
       if (this.otpCode.length === 4) {
         this.submitOtp();
       }
     },
     submitOtp() {
-      // Call the API or perform the action to submit the OTP
-      // For this example, we're using a simple alert to show the message
-      // You can modify this function with your actual API call or submission logic
-      Swal.fire({
-        icon: "success",
-        title: "OTP Submitted",
-        text: "Your OTP has been successfully submitted!",
-        confirmButtonText: "Ok",
-        confirmButtonColor: "#d33",
-      });
+      axios
+        .post("api/getOtp", {
+          email: this.email,
+          otp: this.otpCode,
+        })
+        .then((response) => {
+          this.msg = response.data;
+          console.log(this.msg);
+          Swal.fire({
+            icon: "success",
+            title: "Berhasil",
+            text: "OTP sesuai.",
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#307475",
+          });
+          this.$router.push(`/reset-password/${this.email}`);
+        })
+        .catch((error) => {
+          if (error.response.status === 422) {
+            this.errors = error.response.data.data;
+            this.errors_general = error.response.data.message;
+            console.log(this.errors);
+          }
+          Swal.fire({
+            icon: "error",
+            title: "Gagal",
+            text: this.errors,
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#d33",
+          });
+          console.log(error);
+        });
     },
     resendOTP() {
       this.startCountdown();
