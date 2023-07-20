@@ -13,22 +13,36 @@ class LoginController extends BaseController
 {
   public function login(Request $request)
   {
-
     $fields = $request->validate([
       'email' => 'required|string',
       'password' => 'required|string',
     ]);
-    if (Auth::attempt($fields)) {
-      $accessToken = Auth::user()->createToken('authToken')->accessToken;
 
+    if (Auth::attempt($fields)) {
+      $user = auth()->user();
+      $status = $user->status;
+
+      if ($status) {
+        $accessToken = Auth::user()->createToken('authToken')->accessToken;
+        $expired = now()->addDays(1);
+        return response()->json([
+          'access_token' => $accessToken,
+          'expires_at' => $expired,
+        ], 200);
+      } else {
+        return response()->json([
+          'message' => 'Login gagal',
+          'errors' => ['account' => ['Akun tidak aktif']],
+        ], 422);
+      }
+    } else {
       return response()->json([
-        'access_token' => $accessToken,
-        'token_type' => 'Bearer',
-        'expires_at' => now()->addDays(7),
-      ]);
+        'message' => 'Login gagal',
+        'errors' => ['credentials' => ['Email atau Password salah']],
+      ], 401);
     }
-    return response()->json(['message' => 'Invalid credentials'], 401);
   }
+
 
 
   public function user(Request $request)

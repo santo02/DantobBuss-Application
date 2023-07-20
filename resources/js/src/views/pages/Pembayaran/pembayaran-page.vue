@@ -1,7 +1,8 @@
 <template>
   <div>
-    <h3 pa-3 ma-3>Konfirmasi Data Penumpang</h3>
     <v-card v-for="item in schedule" :key="item.id">
+      <v-card-title>Konfirmasi Data Penumpang</v-card-title>
+
       <div class="container mt-3">
         <div class="text-center">
           <h2>{{ item.derpature }} -> {{ item.arrival }}</h2>
@@ -51,47 +52,45 @@
           </v-col>
         </div>
       </div>
-      <div class="check">
-        <v-container class="grey text-center">
-          <v-card class="mb-3">
-            <v-row>
-              <v-col cols="2" sm="4">
-                <div class="pa-2" tile>
-                  <h3>Seat</h3>
-                  <h5>{{ selectedSeat }}</h5>
-                </div>
-              </v-col>
-              <v-col cols="2" sm="4">
-                <div class="pa-2">
-                  <v-btn class="mx-2" fab dark color="secondary" @click="submitData">
-                    <v-icon dark>
-                      {{ icons.mdiChevronRight }}
-                    </v-icon>
-                  </v-btn>
-                </div>
-              </v-col>
-              <v-col cols="2" sm="4">
-                <div class="pa-2" tile>
-                  <h3>Harga</h3>
-                  <h5>{{ item.harga | toRupiah}}</h5>
-                </div>
-              </v-col>
-              <v-col cols="2" sm="6">
-                <div class="pa-2" tile>
-                  <h3>Menaikkan</h3>
-                  <h5>{{ item.derpature }}</h5>
-                </div>
-              </v-col>
-              <v-col cols="2" sm="6">
-                <div class="pa-2" tile>
-                  <h3>Menurunkan</h3>
-                  <h5>{{ item.arrival }}</h5>
-                </div>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-container>
-      </div>
+      <v-container class="grey text-center">
+        <v-card class="mb-3">
+          <v-row>
+            <v-col cols="4" md="4" sm="4">
+              <div class="pa-2" tile>
+                <h3>Seat</h3>
+                <h5>{{ selectedSeat }}</h5>
+              </div>
+            </v-col>
+            <v-col cols="4" md="4" sm="4">
+              <div class="pa-2">
+                <v-btn class="mx-2" fab dark color="secondary" @click="submitData">
+                  <v-icon dark>
+                    {{ icons.mdiChevronRight }}
+                  </v-icon>
+                </v-btn>
+              </div>
+            </v-col>
+            <v-col cols="4" md="4" sm="4">
+              <div class="pa-2" tile>
+                <h3>Harga</h3>
+                <h5>{{ item.harga | toRupiah }}</h5>
+              </div>
+            </v-col>
+            <v-col cols="6" md="6" sm="6">
+              <div class="pa-2" tile>
+                <h3>Menaikkan</h3>
+                <h5>{{ item.derpature }}</h5>
+              </div>
+            </v-col>
+            <v-col cols="6" md="6" sm="6">
+              <div class="pa-2" tile>
+                <h3>Menurunkan</h3>
+                <h5>{{ item.arrival }}</h5>
+              </div>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-container>
     </v-card>
   </div>
 </template>

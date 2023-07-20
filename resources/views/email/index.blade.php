@@ -57,7 +57,7 @@
         </tr>
         <tr>
             <td>{{ \Carbon\Carbon::now()->format('Y-m-d H:i:s') }}</td>
-            <td>{{ $user->name }}</td>-- Replace "Your Application Name" with your actual application name -->
+            <td>{{ $user->name }}</td>
         </tr>
     </table>
 

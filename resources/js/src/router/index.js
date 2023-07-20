@@ -23,6 +23,15 @@ const routes = [{
     },
   },
   {
+    path: '/reset-password/:email',
+    name: 'pages-reset-password',
+    component: () => import('@/views/pages/Password-reset.vue'),
+    meta: {
+      requiresAuth: false,
+      layout: 'blank',
+    },
+  },
+  {
     path: '/profile',
     name: 'pages-profile',
     component: () => import('@/views/pages/Profile/profile.vue'),

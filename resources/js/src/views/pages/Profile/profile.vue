@@ -238,6 +238,7 @@ export default {
             .then((response) => {
               localStorage.removeItem("access_token");
               localStorage.removeItem("expires_at");
+              localStorage.removeItem("user_data");
               this.$store.commit("SET_USER_ROLE", "");
               this.$router.push("/");
             })

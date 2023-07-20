@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h3 pa-3 ma-3>Pembayaran</h3>
     <v-card v-for="item in schedule" :key="item.id">
+      <v-card-title>Pembayaran</v-card-title>
       <div class="container mt-3">
         <div class="text-center">
           <h2>{{ item.derpature }} -> {{ item.arrival }}</h2>

@@ -1,16 +1,30 @@
 <template>
   <v-app>
-    <h3 pa-3 ma-3>Pilih Nomor Kursi</h3>
     <v-card>
+      <v-card-title>Pilih nomor kursi</v-card-title>
       <div v-for="item in schedule" :key="item.id">
-        <div class="chair" style="width: 400px; margin: 100 auto">
-          <v-container
-            v-if="item.type === 'Ekonomi'"
-            class="grey text-center"
-            style="width: 400px"
-          >
+        <v-container class="note" style="align-items: center">
+          <v-row class="text-center">
+            <v-col cols="2" sm="4">
+              <v-icon x-large>{{ icons.mdiSofaSingleOutline }}</v-icon>
+              <h4>Tersedia</h4>
+            </v-col>
+            <v-col cols="2" sm="4">
+              <v-icon x-large>{{ icons.mdiSofaSingle }}</v-icon>
+              <h4>Dipilih</h4>
+            </v-col>
+            <v-col cols="2"  sm="4"
+              ><div class="booked">
+                <v-icon x-large>{{ icons.mdiSofaSingleOutline }}</v-icon>
+              </div>
+              <h5>Tidak tersedia</h5>
+            </v-col>
+          </v-row>
+        </v-container>
+        <div class="chair">
+          <v-container v-if="item.type === 'Ekonomi'" class="grey text-center">
             <v-row no-gutters>
-              <v-col v-for="n in +item.number_of_seats" :key="n" cols="2" sm="4">
+              <v-col v-for="n in +item.number_of_seats" :key="n" cols="4" sm="4">
                 <div
                   v-if="n !== 3"
                   :class="[
@@ -124,13 +138,13 @@
           <v-container class="grey text-center">
             <v-card class="mb-3">
               <v-row>
-                <v-col cols="2" sm="4">
+                <v-col cols="4" md="4" sm="4">
                   <div class="pa-2" tile>
                     <h3>Seat</h3>
                     <h5>{{ selectedChair }}</h5>
                   </div>
                 </v-col>
-                <v-col cols="2" sm="4">
+                <v-col cols="4" md="4" sm="4">
                   <div class="pa-2">
                     <v-btn
                       class="mx-2"
@@ -145,19 +159,19 @@
                     </v-btn>
                   </div>
                 </v-col>
-                <v-col cols="2" sm="4">
+                <v-col cols="4" md="4" sm="4">
                   <div class="pa-2" tile>
                     <h3>Harga</h3>
-                    <h5>{{ item.harga | toRupiah}}</h5>
+                    <h5>{{ item.harga | toRupiah }}</h5>
                   </div>
                 </v-col>
-                <v-col cols="2" sm="6">
+                <v-col cols="6" md="6" sm="6">
                   <div class="pa-2" tile>
                     <h3>Menaikkan</h3>
                     <h5>{{ item.derpature }}</h5>
                   </div>
                 </v-col>
-                <v-col cols="2" sm="6">
+                <v-col cols="6" md="6" sm="6">
                   <div class="pa-2" tile>
                     <h3>Menurunkan</h3>
                     <h5>{{ item.arrival }}</h5>
@@ -353,14 +367,22 @@ export default {
 
 <style scoped>
 .chair {
-  width: 400px;
-  margin: 100px auto;
-}
+  /* Set the default width to 100% for mobile screens */
+  width: 100%;
+  margin: 50px auto; /* Adjust the margin as needed */
 
-@media (max-width: 600px) {
-  .chair {
-    width: 100%;
-    margin: 0 auto;
+  @media (min-width: 600px) {
+    /* For screens with width >= 600px, set a fixed width of 600px */
+    width: 600px;
+  }
+}
+.note {
+  width: 100%;
+  margin: 100px auto; /* Adjust the margin as needed */
+
+  /* Adjust the margin as needed */
+  @media (min-width: 600px) {
+    width: 400px;
   }
 }
 
@@ -371,7 +393,7 @@ export default {
 }
 
 .booked {
-  background-color: rgb(173, 173, 173);
+  background-color: #bbbbbbd0;
   color: black;
   position: relative;
 }
@@ -379,7 +401,7 @@ export default {
 .booked::before {
   content: "Tidak Tersedia";
   position: absolute;
-  color: #000;
+  color: #030000;
   padding: 5px 10px;
   margin: 2px;
   border-radius: 5px;
