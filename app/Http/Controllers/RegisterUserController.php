@@ -18,7 +18,7 @@ class RegisterUserController extends BaseController
             'phone_number' => 'required|string',
             'address' => 'required|string',
             'gender' => 'required|string',
-            'password' => 'required|string',
+            'password' => 'required|string|min:6',
             'confirm_password' => 'required|same:password'
         ], [
             'required' => ':attribute tidak boleh kosong',

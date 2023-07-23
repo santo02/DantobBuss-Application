@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <v-card v-for="item in schedule" :key="item.id">
       <v-card-title>Konfirmasi pesanan anda</v-card-title>
       <div class="container mt-3">
@@ -12,7 +11,12 @@
         <div class="d-flex justify-end">
           <div v-if="userRole == 'passenger'" class="d-flex justify-start align-center">
             <label for="pesan-orang-lain" class="mr-2">Pesan untuk orang lain</label>
-            <v-switch v-model="autoFill" inset color="secondary" id="pesan-orang-lain"></v-switch>
+            <v-switch
+              v-model="autoFill"
+              inset
+              color="secondary"
+              id="pesan-orang-lain"
+            ></v-switch>
           </div>
         </div>
         <div>
@@ -20,8 +24,16 @@
             <label for="name">Nama Lengkap</label>
           </v-col>
           <v-col>
-            <v-text-field id="name" v-model="passenger.name" outlined dense placeholder="Nama Lengkap" required
-              hide-details :rules="[(v) => !!v || 'Nama harus diisi']"></v-text-field>
+            <v-text-field
+              id="name"
+              v-model="passenger.name"
+              outlined
+              dense
+              placeholder="Nama Lengkap"
+              required
+              hide-details
+              :rules="[(v) => !!v || 'Nama harus diisi']"
+            ></v-text-field>
           </v-col>
         </div>
         <div>
@@ -30,9 +42,17 @@
           </v-col>
 
           <v-col>
-            <v-text-field id="Nomor Handphone" v-model="passenger.number_phone" type="number" outlined dense
-              placeholder="Nomor Handphone" required hide-details
-              :rules="[(v) => !!v || 'Nomor Handphone harus diisi']"></v-text-field>
+            <v-text-field
+              id="Nomor Handphone"
+              v-model="passenger.number_phone"
+              type="number"
+              outlined
+              dense
+              placeholder="Nomor Handphone"
+              required
+              hide-details
+              :rules="[(v) => !!v || 'Nomor Handphone harus diisi']"
+            ></v-text-field>
           </v-col>
         </div>
 
@@ -45,7 +65,13 @@
             dengan posisi terdekat dari sekitaran alamat yang dicantumkan sistem.
           </p>
           <v-col v-if="!jemput" cols="12">
-            <v-text-field v-model="item.derpature" outlined dense readonly hide-details></v-text-field>
+            <v-text-field
+              v-model="item.derpature"
+              outlined
+              dense
+              readonly
+              hide-details
+            ></v-text-field>
           </v-col>
         </div>
         <div v-if="userRole == 'passenger'">
@@ -56,8 +82,14 @@
           </p>
           <v-switch v-model="jemput" color="primary"></v-switch>
           <v-col v-if="jemput" cols="12">
-            <v-autocomplete filled solo clearable v-model="passenger.alamatJemput" :items="items"
-              label="Pilih Lokasi Penjemputan"></v-autocomplete>
+            <v-autocomplete
+              filled
+              solo
+              clearable
+              v-model="passenger.alamatJemput"
+              :items="items"
+              label="Pilih Lokasi Penjemputan"
+            ></v-autocomplete>
           </v-col>
         </div>
       </div>
@@ -68,18 +100,12 @@
               <v-col cols="4" md="4" sm="4">
                 <div class="pa-2" tile>
                   <h3>Seat</h3>
-                  <h5>{{ selectedSeat  }}</h5>
+                  <h5>{{ selectedSeat }}</h5>
                 </div>
               </v-col>
               <v-col cols="4" md="4" sm="4">
                 <div class="pa-2">
-                  <v-btn
-                    class="mx-2"
-                    fab
-                    dark
-                    color="secondary"
-                    @click="submitData"
-                  >
+                  <v-btn class="mx-2" fab dark color="secondary" @click="submitData">
                     <v-icon dark>
                       {{ icons.mdiChevronRight }}
                     </v-icon>
@@ -89,7 +115,7 @@
               <v-col cols="4" md="4" sm="4">
                 <div class="pa-2" tile>
                   <h3>Harga</h3>
-                  <h5>{{ item.harga | toRupiah}}</h5>
+                  <h5>{{ item.harga | toRupiah }}</h5>
                 </div>
               </v-col>
               <v-col cols="6" md="6" sm="6">
@@ -179,7 +205,24 @@ export default {
         alamatJemput: "",
       },
       snackbar: false,
-      items: ["Balige", "Tambunan", "Tampubolon", "Laguboti"],
+      items: [
+        "Amplas Terminal Bus",
+        "Sekolah Parulian 3 Medan",
+        "Wisma Amplas",
+        "Indomaret Fresh, Jl. Sisingamangaraja, Harjosari II, Kec. Medan Amplas",
+        "RSU. Mitra Medika-Amplas",
+        "Sm. Raja Harjosari Indomaret",
+        "Multi Batang Indonesia",
+        "Indomart Spbu Amplas",
+        "Naga Mas Amplas",
+        "Kantor Camat Medan Amplas",
+        "Simpang dua pematang Siantar",
+        "Terminal Sosor Saba Parapat",
+        "Indomaret Porsea Laguboti",
+        "Indomaret SM Raja Sitoluama",
+        "Alfamidi Hinalang Bagasan Balige",
+        "Wisata Pemandian Air Panas Sipoholon",
+      ],
       loket: [
         "Loket Balige",
         "Loket Tarutung",
@@ -188,16 +231,15 @@ export default {
         "Loket Medan",
       ],
       autoFill: false,
-      user: {}
+      user: {},
     };
   },
 
   mounted() {
     this.getSchedule();
-    console.log(this.autoFill)
+    console.log(this.autoFill);
     // Mengisi data nama dan nomor hp jika autoFill bernilai true
     if (!this.autoFill) {
-      console.log("hiiiii");
       const access_token = localStorage.getItem("access_token");
 
       axios
@@ -214,11 +256,8 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-    }
-    else {
+    } else {
       //user will filled manual the input text
-
-
     }
   },
   watch: {
@@ -226,13 +265,11 @@ export default {
       if (val) {
         this.passenger.name = "";
         this.passenger.number_phone = "";
-      }
-      else {
+      } else {
         this.passenger.name = this.user.name;
         this.passenger.number_phone = this.user.phone_number;
       }
-    }
-
+    },
   },
   methods: {
     formatDate(date) {

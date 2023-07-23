@@ -1,7 +1,14 @@
 <template>
   <v-app>
-    <h3 class="mt-3">Jadwal Pengoperasian Mobil Bus Kamu</h3>
-    <v-data-table :headers="headers" :items="schedules" :items-per-page="10" class="elevation-1">
+    <v-card-title>
+     Jadwal Pengoperasian Mobil Bus Kamu
+    </v-card-title>
+    <v-data-table
+      :headers="headers"
+      :items="schedules"
+      :items-per-page="10"
+      class="elevation-1"
+    >
       <template v-slot:[`item.tanggal`]="{ item }">
         {{ formatDate(item.tanggal) }}
       </template>
@@ -14,73 +21,75 @@
   </v-app>
 </template>
 <script>
-import axios from 'axios';
-import moment from 'moment';
-import 'moment/locale/id';
-import { mapActions } from 'vuex';
-import { mdiCalendarClock, mdiAccountGroup, mdiAccount } from '@mdi/js';
+import axios from "axios";
+import moment from "moment";
+import "moment/locale/id";
+import { mapActions } from "vuex";
+import { mdiCalendarClock, mdiAccountGroup, mdiAccount } from "@mdi/js";
 export default {
   setup() {
     return {
       icons: {
         mdiCalendarClock,
         mdiAccountGroup,
-        mdiAccount
+        mdiAccount,
       },
       headers: [
-        { text: 'Tanggal', value: 'tanggal' },
-        { text: 'Keberangkatan', value: 'derpature' },
-        { text: 'Kedatangan', value: 'arrival' },
-        { text: 'Jumlah Kursi', value: 'number_of_seats' },
-        { text: 'Detail', value: 'detail' },
-      ]
-    }
+        { text: "Tanggal", value: "tanggal" },
+        { text: "Keberangkatan", value: "derpature" },
+        { text: "Kedatangan", value: "arrival" },
+        { text: "Jumlah Kursi", value: "number_of_seats" },
+        { text: "Detail", value: "detail" },
+      ],
+    };
   },
   data() {
     return {
       schedules: [],
       bookingCounts: {},
       dateFilter: null,
-      routeFilter: null
-
-    }
+      routeFilter: null,
+    };
   },
   methods: {
-    ...mapActions(['setSelectedSeat']),
+    ...mapActions(["setSelectedSeat"]),
     selectBus(idSchedulues) {
       // set data bus yang dipilih ke state Vuex
-      this.$store.dispatch('setBusData', idSchedulues)
+      this.$store.dispatch("setBusData", idSchedulues);
 
       // pindah ke komponen selanjutnya (pilih tempat duduk)
-      this.$router.push('/costumize-pemesanan')
+      this.$router.push("/costumize-pemesanan");
     },
     isSelected(seatNumber) {
       // check apakah tempat duduk sudah dipilih sebelumnya
-      return this.$store.state.selectedSeat === seatNumber
+      return this.$store.state.selectedSeat === seatNumber;
     },
     formatDate(date) {
-      moment.locale('id');
-      return moment(date).format('dddd, Do MMMM YYYY, hh:mm:ss');
+      moment.locale("id");
+      return moment(date).format("dddd, Do MMMM YYYY, hh:mm:ss");
     },
 
     getSchedule() {
-      const access_token = localStorage.getItem('access_token');
+      const access_token = localStorage.getItem("access_token");
 
-      axios.get('/api/schedules/driver', {
-        headers: {
-          'Authorization': `Bearer ${access_token}`
-        }
-      }).then(response => {
-        this.schedules = response.data.data;
-        console.log(this.schedules)
-        this.st = response.data.total;
-        this.bookingCounts = this.countBookings(response.data.total);
+      axios
+        .get("/api/schedules/driver", {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        })
+        .then((response) => {
+          this.schedules = response.data.data;
+          console.log(this.schedules);
+          this.st = response.data.total;
+          this.bookingCounts = this.countBookings(response.data.total);
 
-        console.log(this.schedules);
-        console.log(this.st);
-      }).catch(error => {
-        console.log(error);
-      });
+          console.log(this.schedules);
+          console.log(this.st);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     countBookings(bookings) {
       const count = {};
@@ -93,22 +102,22 @@ export default {
       });
       return count;
     },
-
   },
   mounted() {
     this.getSchedule();
   },
   computed: {
     todaySchedules() {
-      const today = moment().format('YYYY-MM-DD');
+      const today = moment().format("YYYY-MM-DD");
 
       console.log(today);
-      return this.schedules.filter((item) => moment(item.tanggal).format('YYYY-MM-DD') === today);
-    }
-  }
-}
+      return this.schedules.filter(
+        (item) => moment(item.tanggal).format("YYYY-MM-DD") === today
+      );
+    },
+  },
+};
 </script>
-
 
 <style scoped>
 @media only screen and (max-width: 480px) {
@@ -147,15 +156,12 @@ export default {
     right: 10px;
     /*  transform: rotate(38deg); */
     /* Mengatur rotasi button */
-
   }
 
   /* Mengatur jarak dari kanan card */
   .harga {
     position: absolute;
     right: 150px;
-
   }
 }
 </style>
-

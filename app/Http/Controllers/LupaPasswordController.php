@@ -40,6 +40,8 @@ class LupaPasswordController extends BaseController
         $user = User::where('email', $request->email)->first();
         $otp = $user->remember_token;
 
+        
+      
         if ($otp == $request->otp) {
             return $this->sendResponse($user, 'OTP Sesuai');
         } else {

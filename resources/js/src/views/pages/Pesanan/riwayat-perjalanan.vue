@@ -1,8 +1,13 @@
 <template>
   <div>
-    <h2>Riwayat Perjalanan Anda</h2>
     <v-card flat>
+      <v-card class="mb-3">
+        <v-card-title> Riwayat Perjalanan Anda </v-card-title>
+      </v-card>
       <v-card v-for="item in pesanan" :key="item.schedule_id" class="mb-2">
+        <v-card v-if="item.length < 1">
+          <h3 class="text-center py-4">Maaf, tidak ada jadwal yang tersedia saat ini.</h3>
+        </v-card>
         <v-row no-gutters>
           <v-col cols="auto">
             <v-avatar size="40" class="mt-2 ml-2">
@@ -19,11 +24,11 @@
               <v-card-title class="text-h6"
                 >{{ item.derpature }} - {{ item.arrival }}</v-card-title
               >
-              <div class="text-h6 mt-4 mr-5 harga" style="color: #ff4c51">
-                Rp.{{ item.harga }}
+              <div class="text-h6 harga" style="color: #ff4c51">
+                {{ item.harga | toRupiah }}
               </div>
             </div>
-            <div class="d-flex justify-content-between ml-5">
+            <div class="d-flex justify-content-between ml-5 type">
               <h6>{{ item.nomor_pintu }}</h6>
               <h6 class="text--primary ml-5">{{ item.type }}</h6>
             </div>
@@ -123,6 +128,16 @@ export default {
         console.log(error);
       });
   },
+  filters: {
+    toRupiah(value) {
+      const formatter = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+      return formatter.format(value);
+    },
+  },
 };
 </script>
 
@@ -141,11 +156,15 @@ export default {
   right: 20px;
   top: 5px;
 }
-@media only screen and (max-width: 600px) {
-  .harga {
+@media only screen and (max-width: 480px) {
+  .harga{
     position: absolute;
-    right: 20px;
-    top: 30px;
+    margin-top: 50px;
+    left: 65px;
+
+  }
+  .type{
+    margin-top: 28px;
   }
 }
 </style>

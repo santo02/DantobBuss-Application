@@ -87,15 +87,15 @@ class RoutesController extends BaseController
         return $this->sendResponse($routes, 'Bus Deleted Successfully');
     }
 
-    public function UpdateStatusRoute($id)
-    {
-        $routes = Routes::find($id);
+        public function UpdateStatusRoute($id)
+        {
+            $routes = Routes::find($id);
 
-        if (!$routes) {
-            return response()->json(['message' => 'Route not found.'], 404);
+            if (!$routes) {
+                return response()->json(['message' => 'Route not found.'], 404);
+            }
+            $routes->status = ($routes->status == 1) ? 0 : 1;
+            $routes->save();
+            return response()->json(['data' => $routes, 'message' => 'Status Bus Updated Successfully']);
         }
-        $routes->status = ($routes->status == 1) ? 0 : 1;
-        $routes->save();
-        return response()->json(['data' => $routes, 'message' => 'Status Bus Updated Successfully']);
-    }
 }

@@ -15,21 +15,21 @@ class ScheduleController extends BaseController
 {
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'bus_id' => 'required',
             'route_id' => 'required',
             'tanggal' => 'required|date',
             'harga' => 'required|string',
-        ],[
-            'bus_id.required'=> 'Bus harus diisi!',
-            'route_id.required'=> 'Rute harus diisi!',
-            'tanggal.required'=>'Tanggal Harus Di Isi!',
-            'tanggal.date'=>'Format Tanggal Salah!',
-            'harga.required'=>'Harga harus di isi!'
+        ], [
+            'bus_id.required' => 'Bus harus diisi!',
+            'route_id.required' => 'Rute harus diisi!',
+            'tanggal.required' => 'Tanggal Harus Di Isi!',
+            'tanggal.date' => 'Format Tanggal Salah!',
+            'harga.required' => 'Harga harus di isi!'
 
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return $this->sendError('Input tidak boleh kosong', $validator->errors(), 422);
         }
         $input = $request->all();
@@ -46,7 +46,7 @@ class ScheduleController extends BaseController
             ->join('routes', 'schedules.route_id', '=', 'routes.id')
             ->join('lokets', 'buses.loket_id', '=', 'lokets.id')
             // ->where('schedules.status', "!=", 'complete')
-            ->select('schedules.id as schedule_id', 'schedules.tanggal','schedules.status', 'schedules.harga', 'buses.status as status_bus', 'buses.nomor_pintu', 'buses.police_number', 'routes.status as routes_status', 'routes.derpature', 'routes.arrival', 'users.name', 'lokets.nama_loket as loket')
+            ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.status', 'schedules.harga', 'buses.status as status_bus', 'buses.nomor_pintu', 'buses.police_number', 'routes.status as routes_status', 'routes.derpature', 'routes.arrival', 'users.name', 'lokets.nama_loket as loket')
             ->orderBy('schedules.tanggal', 'DESC')
             ->get();
 
@@ -54,13 +54,14 @@ class ScheduleController extends BaseController
     }
     public function index()
     {
-        // $schedule = Schedule::with('buses.driver', 'routes')
-        //     ->get();
+        $currentDate = Carbon::now();
+        // return $currentDate;
         $schedule = DB::table('schedules')
             ->join('buses', 'buses.id', '=', 'schedules.bus_id')
             ->join('users', 'buses.supir_id', '=', 'users.id')
             ->join('routes', 'schedules.route_id', '=', 'routes.id')
             ->where('schedules.status', "!=", 'complete')
+            // ->whereDate('schedules.tanggal', '>', $currentDate)
             ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'buses.*', 'routes.*', 'users.name')
             ->orderBy('schedules.tanggal', 'DESC')
             ->get();
@@ -71,6 +72,7 @@ class ScheduleController extends BaseController
             ->join('bookings', 'bookings.schedules_id', '=', 'schedules.id')
             ->join('pembayarans', 'pembayarans.bookings_id', 'bookings.id')
             ->join('buses', 'schedules.bus_id', '=', 'buses.id')
+            // ->whereDate('schedules.tanggal', '>', $currentDate)
             ->whereIn('pembayarans.status', ['Berhasil', 'Menunggu'])
             ->select('bookings.schedules_id')
             ->get();
@@ -80,16 +82,19 @@ class ScheduleController extends BaseController
     public function showForAdmin()
     {
         $user = Auth::user()->id;
+        $currentDate = Carbon::now();
+
         // return $user;
         $schedule = DB::table('schedules')
             ->join('buses', 'buses.id', '=', 'schedules.bus_id')
             ->join('users', 'buses.supir_id', '=', 'users.id')
-            // ->join('buses as bus_sc', 'bus_sc.loket_id', '=', 'schedules.bus_id')
             ->join('lokets as lok', 'lok.id', '=', 'buses.loket_id')
             ->join('users as us', 'us.id', '=', 'lok.admin_id')
             ->join('routes', 'schedules.route_id', '=', 'routes.id')
             ->where('lok.admin_id', "=", $user)
             ->where('schedules.status', "!=", 'complete')
+            // ->whereDate('schedules.tanggal', '>', $currentDate)
+
             ->select('schedules.id as schedule_id', 'schedules.tanggal', 'schedules.harga', 'buses.*', 'routes.*', 'users.name', 'lok.admin_id as admin_loket')
             ->orderBy('schedules.tanggal', 'DESC')
             ->get();
@@ -101,6 +106,7 @@ class ScheduleController extends BaseController
             ->join('pembayarans', 'pembayarans.bookings_id', 'bookings.id')
             ->join('buses', 'schedules.bus_id', '=', 'buses.id')
             ->whereIn('pembayarans.status', ['Berhasil', 'Menunggu'])
+            // ->whereDate('schedules.tanggal', '>', $currentDate)
             ->select('bookings.schedules_id')
             ->get();
 
@@ -182,7 +188,7 @@ class ScheduleController extends BaseController
 
 
 
-        return response()->json( ['data' => $schedule]);
+        return response()->json(['data' => $schedule]);
     }
     public function update($id)
     {
@@ -218,5 +224,19 @@ class ScheduleController extends BaseController
             $s->save();
         }
         return $this->sendResponse($s, 'Satus has been update');
+    }
+    public function UpdateStatusAuto($id)
+    {
+        $s = Schedule::find($id);
+        if (!$s) {
+            return response()->json(['message' => 'Route not found.'], 404);
+        }
+        $dateBus = $s->tanggal;
+        $carbonDate = Carbon::parse($dateBus)->addDay();
+
+        if ($dateBus < $carbonDate) {
+            $s->status = "complete";
+            $s->save();
+        }
     }
 }
