@@ -287,6 +287,7 @@ export default {
     BayarNontunai() {
       const access_token = localStorage.getItem("access_token");
       try {
+
         axios
           .post(
             "api/bookings/nontunai",
@@ -314,7 +315,7 @@ export default {
               this.$router.push({
                 name: 'pesananku',
               });
-            }, 3000);
+            }, 1000);
 
             // console.log(data);
             // if (data.code === 200 && data.data.virtual_account_info.how_to_pay_api) {

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h2>Riwayat Perjalanan Anda</h2>
-    <v-card v-for="item in pesanan" :key="item.schedule_id" class="mb-2">
+    <v-card-title> Riwayat Perjalanan Anda </v-card-title>
+    <v-card v-for="item in pesanan" :key="item.schedule_id" class="mb-3 mt-4">
       <v-row no-gutters>
         <v-col cols="auto">
           <v-avatar size="40" class="mt-2 ml-2">
@@ -18,11 +18,8 @@
             <v-card-title class="text-h6"
               >{{ item.derpature }} - {{ item.arrival }}</v-card-title
             >
-            <div class="pendapatan">
-
-              <div>
-                <small color="secondary">{{ item.harga | toRupiah }} </small>
-              </div>
+            <div class="text-h6 harga" style="color: #ff4c51">
+              {{ item.harga | toRupiah }}
             </div>
             <v-btn
               v-if="item.schedules_status == 'in_progress'"
@@ -55,7 +52,7 @@
               Belum Berangkat
             </v-btn>
           </div>
-          <div class="d-flex justify-content-between ml-5">
+          <div class="d-flex justify-content-between ml-5 type">
             <h6>{{ item.nomor_pintu }}</h6>
             <h6 class="text--primary ml-5">{{ item.type }}</h6>
           </div>
@@ -98,7 +95,7 @@ export default {
     return {
       tab: null,
       pesanan: [],
-      total: ''
+      total: "",
     };
   },
   setup() {
@@ -128,7 +125,6 @@ export default {
       moment.locale("id");
       return moment(date).format("dddd, Do MMMM YYYY, hh:mm:ss");
     },
-
   },
   filters: {
     toRupiah(value) {
@@ -183,5 +179,15 @@ export default {
 .harga {
   position: absolute;
   right: 150px;
+}
+@media only screen and (max-width: 600px) {
+  .harga {
+    position: absolute;
+    margin-top: 50px;
+    left: 65px;
+  }
+  .type {
+    margin-top: 28px;
+  }
 }
 </style>

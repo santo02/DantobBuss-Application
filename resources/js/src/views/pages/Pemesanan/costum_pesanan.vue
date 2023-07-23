@@ -3,8 +3,8 @@
     <v-card>
       <v-card-title>Pilih nomor kursi</v-card-title>
       <div v-for="item in schedule" :key="item.id">
-        <v-container class="note" style="align-items: center">
-          <v-row class="text-center">
+        <v-container class="note" >
+          <v-row class="text-center" style="display: flex; justify-content: center;">
             <v-col cols="2" sm="4">
               <v-icon x-large>{{ icons.mdiSofaSingleOutline }}</v-icon>
               <h4>Tersedia</h4>
@@ -367,20 +367,19 @@ export default {
 
 <style scoped>
 .chair {
-  /* Set the default width to 100% for mobile screens */
   width: 100%;
-  margin: 50px auto; /* Adjust the margin as needed */
+  margin: 50px auto;
+  font-size: 12px;
 
   @media (min-width: 600px) {
-    /* For screens with width >= 600px, set a fixed width of 600px */
     width: 600px;
   }
 }
 .note {
   width: 100%;
-  margin: 100px auto; /* Adjust the margin as needed */
+  margin: 20px auto;
+  font-size: 9px;
 
-  /* Adjust the margin as needed */
   @media (min-width: 600px) {
     width: 400px;
   }

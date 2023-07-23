@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>E-ticket</h3>
+    <v-card-title> E-Ticket </v-card-title>
     <div>
       <v-menu right>
         <template v-slot:activator="{ on, attrs }">

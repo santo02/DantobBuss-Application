@@ -21,7 +21,7 @@ class BusController extends BaseController
             'number_of_seats' => 'required|string',
             'merk' => 'required|string',
             'nomor_pintu' => 'required|string|unique:buses',
-            'supir_id' => 'required:uniqe:users',
+            'supir_id' => 'required:unique:users',
             'loket_id' => 'required'
         ], [
             'required' => ':attribute harus diisi.',

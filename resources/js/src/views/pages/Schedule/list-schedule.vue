@@ -94,7 +94,55 @@ export default {
         },
       })
       .then((response) => {
-        this.schedule = response.data.data;
+        function formatDateToYMDHIS(date) {
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, "0");
+          const day = String(date.getDate()).padStart(2, "0");
+          const hours = String(date.getHours()).padStart(2, "0");
+          const minutes = String(date.getMinutes()).padStart(2, "0");
+          const seconds = String(date.getSeconds()).padStart(2, "0");
+
+          return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+
+        const schedules = response.data.data;
+
+        schedules.forEach((schedule) => {
+          // current dat
+          const currentDate = new Date();
+          // add 1 day
+          const scheduleDate = new Date(schedule.tanggal);
+          scheduleDate.setHours(scheduleDate.getHours() + 24);
+          // update format
+          const scheduledateUp = formatDateToYMDHIS(scheduleDate);
+
+          const scheduledateUpObj = new Date(scheduledateUp);
+
+          if (scheduledateUpObj < currentDate) {
+            schedule.status = "complete"
+            axios
+              .put(
+                `/api/status/update/auto/${schedule.schedule_id}`,
+                {
+                  status: "complete",
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${access_token}`,
+                  },
+                }
+              )
+              .then((response) => {
+                console.log(`Schedule with id=${schedule.schedule_id} marked as complete`);
+              })
+              .catch((error) => {
+                console.log("Error updating schedule status:", error);
+              });
+          }
+        });
+
+        // Now, the schedules array will have the "status" property updated for each schedule
+        this.schedule = schedules;
       })
       .catch((error) => {
         console.log(error);

@@ -1,6 +1,10 @@
 <template>
   <div>
-    <h2>Pesanan anda</h2>
+    <v-card>
+      <v-card-title>
+        Pesanan anda
+      </v-card-title>
+    </v-card>
     <!-- <v-card flat> -->
     <v-card v-for="item in pesanan" :key="item.bookings_id" class="card">
       <v-row no-gutters>
@@ -15,11 +19,11 @@
           </v-avatar>
         </v-col>
         <v-col>
-          <div class="d-flex justify-content-between">
+          <div class="d-flex justify-content-between ">
             <v-card-title class="text-h6"
               >{{ item.derpature }} - {{ item.arrival }}</v-card-title
             >
-            <div class="text-h6 mt-3 mr-5 harga" style="color: #ff4c51">
+            <div class="text-h6  harga" style="color: #ff4c51">
               {{ item.harga | toRupiah }}
             </div>
             <v-btn
@@ -43,18 +47,18 @@
               Menunggu Pembayaran
             </v-btn>
           </div>
-          <div class="d-flex justify-content-between ml-5">
+          <div class="d-flex justify-content-between ml-5 rute">
             <h6>{{ item.nomor_pintu }}</h6>
             <h6 class="text--primary ml-5">{{ item.type }}</h6>
           </div>
           <v-row no-gutters class="my-3">
             <v-col cols="12">
               <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 det">
                   <v-icon left>{{ icons.mdiCalendarClock }}</v-icon>
                   {{ formatDate(item.tanggal) }}
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2 det">
                   <v-icon left>{{ icons.mdiAccount }}</v-icon> {{ item.name }}
                 </div>
                 <v-row class="col-md-6 d-flex">
@@ -258,16 +262,22 @@ v-btn {
 .harga {
   position: absolute;
   right: 20px;
-  top: 10px;
+  top: 20px;
 }
 @media only screen and (max-width: 600px) {
   .harga {
     position: absolute;
-    right: 20px;
-    top: 70px;
+    left: 65px;
+    top: 50px;
 
   }.btn-pesan {
     margin-top: 160px;
   }
+ .rute{
+  margin-top: 30px;
+ }
+ .det{
+  margin-left: 13px;
+ }
 }
 </style>

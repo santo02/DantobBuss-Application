@@ -68,7 +68,7 @@
               {{ item.harga | toRupiah }}
             </div>
           </div>
-          <div class="d-flex justify-content-between ml-5">
+          <div class="d-flex justify-content-between ml-5 type">
             <h6>{{ item.nomor_pintu }}</h6>
             <h6 class="text--primary ml-5">{{ item.type }}</h6>
           </div>
@@ -319,6 +319,14 @@ export default {
     display: flex;
     justify-content: flex-start;
     margin-bottom: 20px;
+  }
+  .harga{
+    position: absolute;
+    margin-top: 30px;
+
+  }
+  .type{
+    margin-top: 28px;
   }
 
 }

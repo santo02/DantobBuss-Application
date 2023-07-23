@@ -56,6 +56,7 @@ Route::post('reset/update-password/{email}', [LupaPasswordController::class, 're
 
 Route::get('/schedule/show/all', [ScheduleController::class, 'index']);
 Route::put('user/update/{id}', [UserController::class, 'update']);
+Route::put('status/update/auto/{id}', [ScheduleController::class, 'UpdateStatusAuto']);
 
 Route::middleware(['auth:api', 'role:admin_loket,admin_kantor,driver,passenger,direksi'])->group(function () {
     Route::post('logout', [LoginController::class, 'logout']);

@@ -212,7 +212,7 @@ export default {
           Swal.fire({
             icon: "error",
             title: "Gagal",
-            text: this.errors,
+            text: this.errors_general,
             confirmButtonText: "Ok",
             confirmButtonColor: "#d33",
           });
