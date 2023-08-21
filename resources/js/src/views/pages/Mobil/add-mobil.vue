@@ -122,7 +122,7 @@ export default {
         "driver",
         "number_of_seats",
         "nomor_pintu",
-        "merk",
+        "merk_id",
         "status",
       ],
     };
@@ -174,7 +174,6 @@ export default {
               id: item.id,
             };
           });
-        console.log("ini", this.loket);
       })
       .catch((error) => {
         console.log(error);
@@ -200,7 +199,7 @@ export default {
             supir_id: this.mobil.driver,
             number_of_seats: this.mobil.number_of_seats,
             nomor_pintu: this.mobil.nomor_pintu,
-            merk: "KBT",
+            merk_id: '1',
             loket_id: this.mobil.loket,
           },
           {

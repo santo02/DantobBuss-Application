@@ -171,7 +171,7 @@ export default {
             loket_id: this.mobil.loket,
             number_of_seats: this.mobil.number_of_seats,
             nomor_pintu: this.mobil.nomor_pintu,
-            merk: "KBT",
+            merk_id: '1',
           },
           {
             headers: {

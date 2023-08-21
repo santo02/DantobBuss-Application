@@ -70,10 +70,10 @@ class ScheduleController extends BaseController
 
         $hasBooked = DB::table('schedules')
             ->join('bookings', 'bookings.schedules_id', '=', 'schedules.id')
-            ->join('pembayarans', 'pembayarans.bookings_id', 'bookings.id')
+            ->join('payments', 'payments.bookings_id', 'bookings.id')
             ->join('buses', 'schedules.bus_id', '=', 'buses.id')
             // ->whereDate('schedules.tanggal', '>', $currentDate)
-            ->whereIn('pembayarans.status', ['Berhasil', 'Menunggu'])
+            ->whereIn('payments.status', ['Berhasil', 'Menunggu'])
             ->select('bookings.schedules_id')
             ->get();
 
@@ -103,9 +103,9 @@ class ScheduleController extends BaseController
 
         $hasBooked = DB::table('schedules')
             ->join('bookings', 'bookings.schedules_id', '=', 'schedules.id')
-            ->join('pembayarans', 'pembayarans.bookings_id', 'bookings.id')
+            ->join('payments', 'payments.bookings_id', 'bookings.id')
             ->join('buses', 'schedules.bus_id', '=', 'buses.id')
-            ->whereIn('pembayarans.status', ['Berhasil', 'Menunggu'])
+            ->whereIn('payments.status', ['Berhasil', 'Menunggu'])
             // ->whereDate('schedules.tanggal', '>', $currentDate)
             ->select('bookings.schedules_id')
             ->get();

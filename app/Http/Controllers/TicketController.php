@@ -15,9 +15,9 @@ class TicketController extends Controller
             ->join('buses', 'schedules.bus_id', 'buses.id')
             ->join('users', 'buses.supir_id', 'users.id')
             ->join('routes', 'schedules.route_id', 'routes.id')
-            ->join('pembayarans', 'pembayarans.bookings_id', 'bookings.id')
+            ->join('payments', 'payments.bookings_id', 'bookings.id')
             ->where('bookings.id', $id)
-            ->select('bookings.id as bookings_id', 'bookings.name','bookings.number_phone','bookings.alamatJemput','bookings.num_seats', 'routes.derpature', 'routes.arrival', 'buses.nomor_pintu', 'buses.type', 'schedules.tanggal', 'schedules.harga', 'pembayarans.status')
+            ->select('bookings.id as bookings_id', 'bookings.name','bookings.number_phone','bookings.alamatJemput','bookings.num_seats', 'routes.derpature', 'routes.arrival', 'buses.nomor_pintu', 'buses.type', 'schedules.tanggal', 'schedules.harga', 'payments.status')
             ->get();
         return response()->json(['data' => $ticket, 'message' => 'TIcket Retrieved Successfully']);
     }

@@ -7,7 +7,7 @@
           <h2>{{ item.derpature }} -> {{ item.arrival }}</h2>
           <h5>{{ formatHour(item.tanggal) }}</h5>
           <h5>{{ formatDate(item.tanggal) }}</h5>
-          <h5>{{ item.harga | toRupiah}}</h5>
+          <h5>{{ item.harga | toRupiah }}</h5>
         </div>
         <template class="text-center">
           <v-container class="grey lighten-5">
@@ -20,7 +20,7 @@
               </v-col>
               <v-col cols="12" sm="4">
                 <v-card class="pa-2" outlined tile>
-                  <h5>Nmor Handphone</h5>
+                  <h5>Nomor Handphone</h5>
                   <h6>{{ passengerData.number_phone }}</h6>
                 </v-card>
               </v-col>
@@ -44,7 +44,6 @@
               v-model="passengerData.alamatJemput"
               outlined
               dense
-              placeholder="Umur"
               required
               hide-details
               readonly
@@ -52,7 +51,26 @@
           </v-col>
         </div>
         <v-container>
-          <div v-if="userRole == 'admin_loket'">
+          <div v-if="userRole === 'admin_loket'">
+            <label for="pesan-orang-lain" class="mr-2">Penumpang punya akun?</label>
+            <v-switch
+              v-model="isAccount"
+              inset
+              color="secondary"
+              id="pesan-akun-lain"
+            ></v-switch>
+            <v-col v-if="isAccount">
+              <label for="">cari akun berdasarkan email</label>
+              <v-text-field
+                id="loket"
+                v-model="bookings.email"
+                outlined
+                dense
+                placeholder="Email"
+                required
+                hide-details
+              ></v-text-field>
+            </v-col>
             <div class="text-center">
               <v-row justify="center">
                 <v-col class="col">
@@ -145,6 +163,7 @@ export default {
       howtoPayStep: {},
       schedule: {},
       loading: false,
+      isAccount: false,
       icons: {
         mdiChevronRight,
         mdiCreditCard,
@@ -160,6 +179,7 @@ export default {
         "alamat_jemput",
         "status",
         "harga",
+        "email"
       ],
     };
   },
@@ -227,7 +247,8 @@ export default {
     },
     BayarCash() {
       const access_token = localStorage.getItem("access_token");
-
+      const email = this.isAccount ? this.bookings.email : null;
+      console.log('email', this.bookings.email);
       axios
         .post(
           "api/bookings",
@@ -239,6 +260,7 @@ export default {
             alamatJemput: this.passengerData.alamatJemput,
             harga: this.harga,
             status: "berhasil",
+            email: email
           },
           {
             headers: {
@@ -259,7 +281,7 @@ export default {
           });
         })
         .catch((error) => {
-          console.log(error.response.data.errors);
+          console.log(error);
           Swal.fire({
             icon: "error",
             title: "Oops...",
@@ -287,7 +309,6 @@ export default {
     BayarNontunai() {
       const access_token = localStorage.getItem("access_token");
       try {
-
         axios
           .post(
             "api/bookings/nontunai",
@@ -313,7 +334,7 @@ export default {
 
             setTimeout(() => {
               this.$router.push({
-                name: 'pesananku',
+                name: "pesananku",
               });
             }, 1000);
 

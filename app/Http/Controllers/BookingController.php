@@ -7,6 +7,7 @@ use App\Models\Bookings;
 use App\Models\bus;
 use App\Models\Pembayaran;
 use App\Models\Routes;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,9 +18,21 @@ class BookingController extends BaseController
 {
     public function store(Request $request)
     {
+        $email = $request->email;
 
-        $user = Auth::user();
-        $currentDate = Carbon::now()->format('Ymd');
+        if ($email !== null) {
+            $user = User::where('email', $email)->first(); // Find the user by email
+            if ($user) {
+                $user_id = $user->id; // Get the user ID if found
+            } else {
+                // Email is not registered
+                return response()->json(['error' => 'Email not registered'], 404); // Return a JSON response with an error message and status code 404 (Not Found)
+            }
+        } else {
+            $user_id = Auth::id(); // Get the ID of the authenticated user
+        }
+
+
         $validator = Validator::make($request->all(), [
             'schedules_id' => 'required|exists:schedules,id',
             'name' => 'required|string',
@@ -35,7 +48,7 @@ class BookingController extends BaseController
         }
 
         $booking = new Bookings;
-        $booking->user_id = $user->id;
+        $booking->user_id = $user_id;
         $booking->schedules_id = $request->schedules_id;
         $booking->name = $request->name;
         $booking->number_phone = $request->number_phone;
@@ -101,11 +114,11 @@ class BookingController extends BaseController
             ->join('buses', 'schedules.bus_id', 'buses.id')
             ->join('users', 'buses.supir_id', 'users.id')
             ->join('routes', 'schedules.route_id', 'routes.id')
-            ->join('pembayarans', 'pembayarans.bookings_id', 'bookings.id')
+            ->join('payments', 'payments.bookings_id', 'bookings.id')
             ->where('bookings.user_id', $user->id)
             // ->where('pembayarans.status', '=', 'Berhasil')
             ->select(
-                'pembayarans.id as pembayarans_id',
+                'payments.id as pembayarans_id',
                 'bookings.id as bookings_id',
                 'bookings.created_at',
                 'schedules.id as schedule_id',
@@ -118,11 +131,11 @@ class BookingController extends BaseController
                 'users.name',
                 'schedules.harga',
                 'schedules.status',
-                'pembayarans.status as status_pay',
-                'pembayarans.how_to_pay_page',
-                'pembayarans.how_to_pay_api',
-                'pembayarans.created_date',
-                'pembayarans.expired_date'
+                'payments.status as status_pay',
+                'payments.how_to_pay_page',
+                'payments.how_to_pay_api',
+                'payments.created_date',
+                'payments.expired_date'
             )
             ->orderBy('bookings.created_at', 'DESC')
             ->get();
@@ -141,10 +154,10 @@ class BookingController extends BaseController
             ->join('schedules', 'bookings.schedules_id', 'schedules.id')
             ->join('buses', 'schedules.bus_id', 'buses.id')
             ->join('routes', 'schedules.route_id', 'routes.id')
-            ->join('pembayarans', 'pembayarans.bookings_id', 'bookings.id')
+            ->join('payments', 'payments.bookings_id', 'bookings.id')
             ->where('schedules.id', $id)
-            ->whereIn('pembayarans.status', ['Berhasil', 'Menunggu'])
-            ->select('bookings.*', 'schedules.id', 'routes.derpature', 'routes.arrival', 'buses.nomor_pintu', 'buses.type', 'buses.number_of_seats', 'schedules.tanggal', 'schedules.harga', 'schedules.status', 'pembayarans.method', 'pembayarans.status as status_pembayaran')
+            ->whereIn('payments.status', ['Berhasil', 'Menunggu'])
+            ->select('bookings.*', 'schedules.id', 'routes.derpature', 'routes.arrival', 'buses.nomor_pintu', 'buses.type', 'buses.number_of_seats', 'schedules.tanggal', 'schedules.harga', 'schedules.status', 'payments.method', 'payments.status as status_pembayaran')
             ->get();
 
 
@@ -161,10 +174,10 @@ class BookingController extends BaseController
             ->join('schedules', 'bookings.schedules_id', 'schedules.id')
             ->join('buses', 'schedules.bus_id', 'buses.id')
             ->join('routes', 'schedules.route_id', 'routes.id')
-            ->join('pembayarans', 'pembayarans.bookings_id', 'bookings.id')
+            ->join('payments', 'payments.bookings_id', 'bookings.id')
             ->where('schedules.id', $id)
-            ->where('pembayarans.status', 'Menunggu')
-            ->select('bookings.*', 'schedules.id', 'routes.derpature', 'routes.arrival', 'buses.nomor_pintu', 'buses.type', 'buses.number_of_seats', 'schedules.tanggal', 'schedules.harga', 'schedules.status', 'pembayarans.method', 'pembayarans.status as status_pembayaran')
+            ->where('payments.status', 'Menunggu')
+            ->select('bookings.*', 'schedules.id', 'routes.derpature', 'routes.arrival', 'buses.nomor_pintu', 'buses.type', 'buses.number_of_seats', 'schedules.tanggal', 'schedules.harga', 'schedules.status', 'payments.method', 'payments.status as status_pembayaran')
             ->get();
 
         $num_of_bookings = $wait->count();

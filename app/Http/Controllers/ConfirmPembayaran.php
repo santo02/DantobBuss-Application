@@ -13,12 +13,12 @@ class ConfirmPembayaran extends Controller
     {
         $user = Auth::user();
 
-        $pembayaran = DB::table('pembayarans')
-            ->join('schedules', 'pembayarans.schedules_id', '=', 'schedules.id')
+        $pembayaran = DB::table('payments')
+            ->join('schedules', 'payments.schedules_id', '=', 'schedules.id')
             ->join('buses', 'buses.id', '=', 'schedules.bus_id')
             ->join('users', 'users.id', '=', 'buses.supir_id')
             ->where('buses.supir_id', $user->id)
-            ->join('bookings', 'pembayarans.bookings_id', 'bookings.id')
+            ->join('bookings', 'payments.bookings_id', 'bookings.id')
             ->select('schedules.*', 'buses.*', 'users.name', 'users.email', 'bookings.*')
             ->get();
 

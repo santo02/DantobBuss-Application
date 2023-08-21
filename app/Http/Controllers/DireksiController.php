@@ -54,9 +54,9 @@ class DireksiController extends Controller
         $penumpang = DB::table('bookings')
             ->join('users', 'bookings.user_id', '=', 'users.id')
             ->join('schedules', 'bookings.schedules_id', '=', 'schedules.id')
-            ->join('pembayarans', 'bookings.id', 'pembayarans.bookings_id')
+            ->join('payments', 'bookings.id', 'payments.bookings_id')
             ->join('routes', 'schedules.route_id', '=', 'routes.id')
-            ->select('bookings.name', 'bookings.num_seats', 'bookings.number_phone', 'bookings.alamatJemput', 'pembayarans.method', 'routes.harga')
+            ->select('bookings.name', 'bookings.num_seats', 'bookings.number_phone', 'bookings.alamatJemput', 'payments.method', 'routes.harga')
             ->where('bookings.schedules_id', '=', $id)
             ->get();
 

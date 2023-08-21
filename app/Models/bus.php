@@ -14,7 +14,7 @@ class bus extends Model
         'police_number',
         'nomor_pintu',
         'number_of_seats',
-        'merk',
+        'merk_id',
         'status',
         'supir_id',
         'loket_id',

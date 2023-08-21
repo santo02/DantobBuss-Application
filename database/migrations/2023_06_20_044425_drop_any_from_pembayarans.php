@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('pembayarans', function (Blueprint $table) {
+        Schema::table('payments', function (Blueprint $table) {
             $table->dropColumn('original_request_id');
             $table->dropColumn('transaksi_id');
             $table->dropColumn('terminal_id');

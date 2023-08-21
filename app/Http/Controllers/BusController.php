@@ -19,7 +19,7 @@ class BusController extends BaseController
             'type' => 'required|string|max:20',
             'police_number' => 'required|string|unique:buses',
             'number_of_seats' => 'required|string',
-            'merk' => 'required|string',
+            'merk_id' => 'required|string',
             'nomor_pintu' => 'required|string|unique:buses',
             'supir_id' => 'required:unique:users',
             'loket_id' => 'required'
@@ -69,22 +69,19 @@ class BusController extends BaseController
             'type' => 'required|string',
             'police_number' => 'required|string|unique:buses,police_number,' . $id,
             'number_of_seats' => 'required|string',
-            'merk' => 'required|string',
+            'merk_id' => 'required|string',
             // 'supir_id' => 'required|unique:buses'
         ]);
 
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
         }
-
-
-
         $bus = Bus::find($id);
         $bus->type = $request->input('type');
         $bus->police_number = $request->input('police_number');
         $bus->loket_id = $request->input('loket_id');
         $bus->number_of_seats = $request->input('number_of_seats');
-        $bus->merk = $request->input('merk');
+        $bus->merk_id = $request->input('merk');
         $bus->supir_id = $request->input('supir_id');
         $bus->save();
 
